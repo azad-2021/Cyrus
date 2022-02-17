@@ -1,0 +1,31 @@
+//delete
+
+SELECT * FROM cyrusbackend.orders
+join demandbase on orders.OrderID=demandbase.OrderID
+join branchdetails on orders.BranchCode=branchdetails.BranchCode
+WHERE demandbase.StatusID=2 and branchdetails.BankCode=22 and orders.Discription like 'Installation of 4 ch. NVR with 4 cameras%';
+
+
+
+//insert
+
+SELECT * FROM cyrusbackend.orders
+join branchdetails on orders.BranchCode=branchdetails.BranchCode
+join demandbase on orders.OrderID=demandbase.OrderID
+WHERE demandbase.StatusID=1 and BankCode=22 and orders.Discription like 'Installation of 4 ch. NVR with 4 cameras%';
+
+//NEW Delete
+
+Select * from cyrusbackend.demandextended 
+WHERE demandextended.OrderID=(
+SELECT demandbase.OrderID from cyrusbackend.demandbase
+join cyrusbackend.orders on demandbase.OrderID=Orders.OrderID
+WHERE demandbase.OrderID=demandextended.OrderID and StatusID=2 and orders.Discription like 'Installation of 4 ch. NVR with 4 cameras%');
+
+
+//update by sir
+Select * from cyrusbackend.demandextended 
+WHERE demandextended.OrderID=(
+SELECT demandbase.OrderID from cyrusbackend.demandbase
+join cyrusbackend.orders on demandbase.OrderID=Orders.OrderID where orders.Discription like 'Installation of 4 ch. NVR with 4 cameras%') 
+WHERE demandbase.OrderID=demandextended.OrderID and StatusID=2;

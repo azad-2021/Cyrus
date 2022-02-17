@@ -1,0 +1,8 @@
+SELECT BankName, ZoneRegionName, orders.BranchCode, OrderID, `Employee NAME`, employees.EmployeeCode, OrderID, orders.BranchCode, Discription, Branch_code, branchdetails.Address3, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, AssignDate, Attended
+FROM cyrusbackend.orders 
+join branchdetails on orders.BranchCode=branchdetails.BranchCode
+join districts on branchdetails.Address3=districts.District
+left join employees on employees.EmployeeCode = districts.`Assign To`
+right join reporting on employees.EmployeeCode=reporting.EmployeeID
+where branchdetails.`Address3`  not like 'Reserved' and AssignDate is null
+ order by `orders`.`OrderID` desc;
