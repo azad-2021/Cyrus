@@ -20,7 +20,7 @@ if (!empty($Data)){
 
   if ($Type=="Add") {
 
-    $sql = "SELECT * FROM cyrusbilling.add_product WHERE order_id=$OrderID and paRateID=$RateID";
+    $sql = "SELECT * FROM cyrusbilling.add_product WHERE order_id=$OrderID and IttemID=$ItemID";
     $result = $con2->query($sql);
 
     $sql3 = "SELECT StatusID FROM cyrusbackend.demandbase WHERE OrderID=$OrderID and StatusID=3";

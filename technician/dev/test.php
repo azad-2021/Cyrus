@@ -1,14 +1,9 @@
 <?php
-$filePath = '/jobcard/test.pdf';
-  
-/* Store the path of destination file */
-$destinationFilePath = '/ftp://192.168.1.252/onlinejobcard/test.pdf';
+$filename = 'jobcard/TEST.pdf';
 
-if( !rename($filePath, $destinationFilePath) ) {  
-    echo "File can't be moved!";  
-}  
-else {  
-    echo "File has been moved!";  
+if (file_exists($filename)) {
+    echo "The file $filename exists";
+} else {
+    echo "The file $filename does not exist";
 }
 ?>
-

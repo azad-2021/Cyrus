@@ -8,12 +8,14 @@ $EmployeeUID = $_GET['eid'];
 $BranchCode = $_GET['brcode'];
 $ZoneCode = $_GET['zcode'];
 $GadgetID = $_GET['gid'];
-$AMCID = $_GET['amcid'];
+$AMCID = $_GET['amcid']; 
+$PostedDate=$_GET['PostedDate']; 
 
 date_default_timezone_set('Asia/Kolkata');
 $timestamp =date('y-m-d H:i:s');
-$Date =date('Y-m-d',strtotime($timestamp));
-
+$LDate =date('Y-m-d',strtotime($timestamp));
+$dedline = date('Y-m-d', strtotime($LDate. ' -2 days'));
+//echo $dedline;
 if(empty($GadgetID)==true){
 
   $querygadget="SELECT * FROM gadget";
@@ -60,13 +62,13 @@ if(isset($_FILES['image'])){
   $errors='';
   $JOBCARD = getjobcard();
   $GadgetID = $_POST['GadgetID'];
+  $VisitDate=$_POST['VisitDate'];
 
-  $query ="SELECT * FROM `approval` where EmployeeID='$EmployeeUID' and posted='0' and JobCardNo='$JOBCARD'";
+  $query ="SELECT * FROM `approval` where Vremark!='REJECTED' and JobCardNo='$JOBCARD'";
   $results = mysqli_query($con2, $query);
   $dataName=mysqli_fetch_assoc($results);
+  $name="";
   if (empty($dataName)==false) {
-      // code...
-   
     $name = $dataName['JobCardNo']; 
   } 
   
@@ -98,6 +100,8 @@ if(isset($_FILES['image'])){
     $errors = '<script>alert("Please select Technician Option")</script>';
   }elseif($name==$JOBCARD){
     $errors = '<script>alert("JOBCARD already exists")</script>';
+  }elseif($VisitDate<$PostedDate){
+    $errors = '<script>alert("Visit Date must be greater than Posted Date")</script>';
   }
 
 
@@ -116,7 +120,7 @@ if(isset($_FILES['image'])){
     /* Insert Data into Approval database */
     if ($Upload==1) {
         // code...
-      $queryAdd="INSERT INTO `approval`( `BranchCode`, `ComplaintID`, `OrderID`, `JobCardNo`, `Status`, `EmployeeID`, `VisitDate`, `GadgetID`) VALUES ('$BranchCode','$complaintID','$OID', '$JOBCARD', '$Status', '$EmployeeUID', '$Date', '$GadgetID')";
+      $queryAdd="INSERT INTO `approval`( `BranchCode`, `ComplaintID`, `OrderID`, `JobCardNo`, `Status`, `EmployeeID`, `VisitDate`, `GadgetID`) VALUES ('$BranchCode','$complaintID','$OID', '$JOBCARD', '$Status', '$EmployeeUID', '$VisitDate', '$GadgetID')";
       mysqli_query($con2,$queryAdd);
     }
     $AddTech = tech();
@@ -178,7 +182,7 @@ $con4 -> close();
 
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
     <div class="container-fluid" align="center">
-      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
+      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="40">Cyrus Electronics</a>
       <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -230,6 +234,11 @@ $con4 -> close();
               </select>
             </div>
             <br>
+            <label for="Gadget"><h5>Visit Date</h5></label>
+            <div class="col-lg-8">
+              <input type="date" name="VisitDate" id="VisitDate" class="form-control my-select" required>
+            </div>
+            <br>
             <h5>Site Status:&nbsp;&nbsp;
               <input type="radio" name="site" id="site" value="OK">
               <label for="OK">OK</label>
@@ -260,6 +269,17 @@ $con4 -> close();
       function preventBack() { window.history.forward(); }  
       setTimeout("preventBack()", 0);  
       window.onunload = function () { null };  
+
+      $(document).on('change','#VisitDate', function(){
+        var VisitDate = $(this).val();
+        console.log(VisitDate);
+        var dedline = "<?php echo $dedline ?>"
+        console.log(dedline);
+        if(VisitDate<="<?php echo $dedline ?>"){
+          alert("यह जॉबकार्ड 2 दिन से ज्यादा पुराना है, अतः इस पर पेनल्टी लग सकती है ।");
+        }
+      });
+
     </script> 
   </fieldset>
 </body>

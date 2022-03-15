@@ -61,7 +61,7 @@ if(isset($_POST['submit'])){
 
   $Remark=$_POST['Remark'];
 
-  $queryAdd="INSERT INTO `production`( `OrderID`, `IssueDate`, `Remark`) VALUES ('$ID', '$Date', 'Remark')" ;
+  $queryAdd="INSERT INTO `production`( `OrderID`, `IssueDate`, `Remark`) VALUES ('$ID', '$Date', '$Remark')" ;
   $resultAdd = mysqli_query($con,$queryAdd);
   if ($resultAdd) {
     echo '<script>alert("Your response recorded successfully")</script>';

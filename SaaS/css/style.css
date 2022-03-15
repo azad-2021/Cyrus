@@ -67,9 +67,6 @@ body {
 }
 
 .my-select3 {
-  background-color: $light-brown;
-  color: $dark-grey;
-  border: 0 none;
   border-radius: 20px;
   padding: 8px 20px;
   margin-top: 10px;

@@ -180,7 +180,7 @@ if (!empty($BrCode))
     print '<td style="min-width: 150px;">'
     ?>
 
-    <a href="" data-bs-toggle="modal" class="nav-link view_complaint" id="<?php print $row2["ComplaintID"]; ?>" data-bs-target="#exampleModal"><?php print $row2["ComplaintID"]; ?></a>
+    <a href="" data-bs-toggle="modal" data-bs-target="#dataModal2" class="nav-link view_complaint" id="<?php print $row2["ComplaintID"]; ?>"><?php print $row2["ComplaintID"]; ?></a>
     <?php
     "</td>";
             //print '<td>'.$row2["ComplaintID"]."</td>";
@@ -307,9 +307,9 @@ if (!empty($BCode))
        if (mysqli_num_rows($resultVAT)>0)
        {
            while($row = mysqli_fetch_array($resultVAT)){
-            $ReceivedVAT=$row['Sum(ReceivedAmount)'];
-            $TotalVAT=$row['SUM(BillAmount)'];
-            $BalanceVAT=$TotalVAT-$ReceivedVAT;
+            $ReceivedVAT=number_format((float)($row['Sum(ReceivedAmount)']), 2, '.', '');
+            $TotalVAT=number_format((float)($row['SUM(BillAmount)']), 2, '.', '');
+            $BalanceVAT=number_format((float)($TotalVAT-$ReceivedVAT), 2, '.', '');
 
         }
     }
@@ -319,9 +319,9 @@ if (!empty($BCode))
     if (mysqli_num_rows($resultGST)>0)
     {
        while($row = mysqli_fetch_array($resultGST)){
-        $ReceivedGST=$row['Sum(ReceivedAmount)'];
-        $TotalGST=$row['SUM(TotalBilledValue)'];
-        $BalanceGST=$TotalGST-$ReceivedGST;
+        $ReceivedGST=number_format((float)($row['Sum(ReceivedAmount)']), 2, '.', '');
+        $TotalGST=number_format((float)($row['SUM(TotalBilledValue)']), 2, '.', '');
+        $BalanceGST=number_format((float)($TotalGST-$ReceivedGST), 2, '.', '');;
 
     }
 }

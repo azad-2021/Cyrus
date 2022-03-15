@@ -1,0 +1,1 @@
+Duplicate entry '0' for key 'PRIMARY'

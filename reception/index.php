@@ -4,6 +4,15 @@
 include 'data.php';
 include 'connection.php';
 include 'session.php';
+
+date_default_timezone_set('Asia/Kolkata');
+$timestamp =date('y-m-d H:i:s');
+$Date =date('Y-m-d',strtotime($timestamp));
+
+$exdate=date('Y-m-d', strtotime($Date. ' + 2 days'));
+$exdate2=date('Y-m-d', strtotime($Date. ' + 7 days'));
+
+//echo $exdate;
 ?>
 
 
@@ -24,7 +33,7 @@ include 'session.php';
   <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <link rel="stylesheet" type="text/css" href="css/style.css">
-
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <style type="text/css">
   .table{
     font-size: 14px;
@@ -83,7 +92,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Order details</h5>
+            <h5 class="modal-title">Order details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="OrdersData">
@@ -100,7 +109,7 @@ include 'session.php';
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">VAT Bill details</h5>
+            <h5 class="modal-title">VAT Bill details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="VATData">
@@ -118,7 +127,7 @@ include 'session.php';
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">GST Bill Details</h5>
+            <h5 class="modal-title">GST Bill Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="GSTData">
@@ -136,7 +145,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Jobcard details</h5>
+            <h5 class="modal-title">Jobcard details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="JobcardData">
@@ -153,7 +162,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Complaint details</h5>
+            <h5 class="modal-title">Complaint details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ComplaintsData">
@@ -172,7 +181,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update Phone Number</h5>
+            <h5 class="modal-title">Update Phone Number</h5>
           </div>
           <div class="modal-body">
 
@@ -210,7 +219,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Find Order</h5>
+            <h5 class="modal-title">Find Order</h5>
           </div>
           <div class="modal-body">
 
@@ -238,7 +247,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
+            <h5 class="modal-title">Order Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ViewOrderData">
@@ -256,7 +265,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Find Complaint</h5>
+            <h5 class="modal-title">Find Complaint</h5>
           </div>
           <div class="modal-body">
 
@@ -282,7 +291,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Complaint Details</h5>
+            <h5 class="modal-title">Complaint Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ViewComplaintData">
@@ -300,7 +309,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Find Jobcard</h5>
+            <h5 class="modal-title">Find Jobcard</h5>
           </div>
           <div class="modal-body">
 
@@ -326,7 +335,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Job Card Details</h5>
+            <h5 class="modal-title">Job Card Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ViewJobcardData">
@@ -343,7 +352,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Find Jobcard</h5>
+            <h5 class="modal-title">Find Jobcard</h5>
           </div>
           <div class="modal-body">
 
@@ -428,6 +437,73 @@ include 'session.php';
         </div>
       </div>
     </div>
+
+
+    <div class="modal fade" id="ExpDateUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="$modal-content-border-color:        rgba($black, .6);">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-title2"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row g-3 needs-validation" novalidate id="formInfodate" name="form">
+              <div class="col-md-12 Info">
+                <label for="validationCustom01" class="form-label ">Update Expeted Completion Date</label>
+                <input type="date" class="form-control my-select3" id="expeDate" name="expDate" required>
+              </div>
+              <div class="col-md-12 OrderID2 d-none">
+                <label for="validationCustom01" class="form-label "></label>
+                <input type="text" class="form-control my-select2 " id="expOID" name="discription" required>
+              </div>
+              <div class="col-md-12 BranchCode2 d-none">
+                <label for="validationCustom01" class="form-label "></label>
+                <input type="text" class="form-control my-select2 " id="expbrcd" name="brcd" required>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <input data-bs-dismiss="modal" class="btn btn-primary update_ExpectedDate" value="Update">
+              <input class="btn btn-secondary" type="reset"  data-bs-dismiss="modal" value="Close">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="ExpDateUpdateC" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" style="$modal-content-border-color:        rgba($black, .6);">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title modal-title2"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form class="row g-3 needs-validation" novalidate id="formInfodate" name="form">
+              <div class="col-md-12 Info">
+                <label for="validationCustom01" class="form-label ">Update Expeted Completion Date</label>
+                <input type="date" class="form-control my-select3" id="expeDateC" name="expDate" required>
+              </div>
+              <div class="col-md-12 OrderID2 d-none">
+                <label for="validationCustom01" class="form-label "></label>
+                <input type="text" class="form-control my-select2 " id="expCID" name="discription" required>
+              </div>
+              <div class="col-md-12 BranchCode2 d-none">
+                <label for="validationCustom01" class="form-label "></label>
+                <input type="text" class="form-control my-select2 " id="expbrcdC" name="brcd" required>
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <input data-bs-dismiss="modal" class="btn btn-primary update_ExpectedDateC" value="Update">
+              <input class="btn btn-secondary" type="reset"  data-bs-dismiss="modal" value="Close">
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
 
     <div class="modal fade" id="ReceivedByUpdate" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" style="$modal-content-border-color:        rgba($black, .6);">
@@ -628,7 +704,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Job Card Details</h5>
+            <h5 class="modal-title">Job Card Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ViewJobcardData">
@@ -645,7 +721,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Find Branch</h5>
+            <h5 class="modal-title">Find Branch</h5>
           </div>
           <div class="modal-body">
 
@@ -677,7 +753,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Branchs</h5>
+            <h5 class="modal-title">Branchs</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" id="ViewBranchData">
@@ -694,7 +770,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-titleM" id="exampleModalLabel">Update Mobile</h5>
+            <h5 class="modal-titleM">Update Mobile</h5>
           </div>
           <div class="modal-bodyM">
 
@@ -729,7 +805,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-titleE" id="exampleModalLabel">Update Email</h5>
+            <h5 class="modal-titleE">Update Email</h5>
           </div>
           <div class="modal-body">
 
@@ -764,7 +840,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update GST No.</h5>
+            <h5 class="modal-title">Update GST No.</h5>
           </div>
           <div class="modal-body">
 
@@ -894,7 +970,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Update Branch Code</h5>
+            <h5 class="modal-title">Update Branch Code</h5>
           </div>
           <div class="modal-body">
 
@@ -930,7 +1006,7 @@ include 'session.php';
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Order / Complaints</h5>
+            <h5 class="modal-title">Add Order / Complaints</h5>
           </div>
           <div class="modal-body">
 
@@ -951,6 +1027,7 @@ include 'session.php';
                   <option value="">Select</option>
                   <option value="Order">Order</option>
                   <option value="Complaint">Complaint</option>
+                  <option value="AMC">AMC</option>
                 </select>
                 <div class="invalid-feedback">
                   Please select a valid Type.
@@ -989,10 +1066,10 @@ include 'session.php';
               </div>
               <div class="col-md-4">
                 <label for="validationCustom01" class="form-label ">Date Of Information</label>
-                <input type="date" class="form-control my-select3" id="InfoDateAdd" name="InfoDate" required>
+                <input type="date" value="<?php echo $Date ?>" class="form-control my-select3" id="InfoDateAdd" name="InfoDate" required>
               </div>
               <div class="col-md-4">
-                <label for="validationCustom01" class="form-label ">Expected Completion</label>
+                <label for="validationCustom01"  class="form-label ">Expected Completion</label>
                 <input type="date" class="form-control my-select3" id="ExpectedAdd" name="ExpDate" required>
               </div>
 
@@ -1441,6 +1518,26 @@ exampleModalEmail.addEventListener('show.bs.modal', function (event) {
   modalTitlep.textContent = 'Update Email '
   modalBodyInputp.value = recipientp
 })
+
+
+ $(document).on('change','#Type', function(){
+  var Type = $(this).val();
+  console.log(Type);
+  if(Type=='Complaint'){
+    document.getElementById("ExpectedAdd").value = "<?php echo $exdate; ?>";
+  }else{
+    document.getElementById("ExpectedAdd").value = "<?php echo $exdate2; ?>";
+  }
+
+  if (Type=='AMC') {
+     document.getElementById("ReceivedBy").value = "Auto";
+     document.getElementById("MadeBy").value = "System";
+  }else{
+    document.getElementById("ReceivedBy").value = "";
+     document.getElementById("MadeBy").value = "";
+  }
+});
+
 
 </script>
 </body>

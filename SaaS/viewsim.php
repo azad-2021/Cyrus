@@ -3,8 +3,36 @@
 include('connection.php'); 
 include 'session.php';
 $username = $_SESSION['user'];
-$query ="SELECT * FROM `orders` WHERE Installed='1' and `SimProvider`='Cyrus' ORDER BY OrderID DESC";
+$query ="SELECT BankName, ZoneRegionName, BranchName, Gadget, orders.OrderID, simprovider.SimProvider, simprovider.SimType, MobileNumber, SimNo, Operator, ReleaseDate as SimReleaseDate, production.IssueDate as InuseDate, ActivationDate, ExpDate, simprovider.ID as SimID, ProductionID, DATEDIFF(ExpDate,ActivationDate) as leftDays FROM saas.simprovider
+join production on simprovider.ID=production.SimID
+join orders on production.OrderID=orders.OrderID
+join gadget on orders.GadgetID=gadget.GadgetID
+join operators on orders.OperatorID=operators.OperatorID
+join cyrusbackend.branchdetails on SaaS.orders.BranchCode=branchdetails.BranchCode
+WHERE Installed=1 and orders.SimProvider='Cyrus' ORDER BY orders.OrderID DESC";
 $results = mysqli_query($con, $query); 
+
+
+if (isset($_POST['submit'])) {
+  $RDate=$_POST['RDate'];
+  $ExpDate=$_POST['ExpDate'];
+  $SimID=$_POST['SimID'];
+  echo "<meta http-equiv='refresh' content='0'>";
+}
+
+
+if (isset($_POST['suspend'])) {
+  $SDate=$_POST['SDate'];
+  $Remark=$_POST['SuspensionRemark'];
+  $SimID=$_POST['SimID'];
+  echo "<meta http-equiv='refresh' content='0'>";
+}
+
+if (isset($_POST['changesim'])) {
+  $SimNo=$_POST['SimNo'];
+  $SimID=$_POST['SimID'];
+  echo "<meta http-equiv='refresh' content='0'>";
+}
 ?>
 
 <!DOCTYPE html>  
@@ -64,6 +92,103 @@ $results = mysqli_query($con, $query);
   </nav>
   <br><br> 
   <div class="container">  
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Recharge Details</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="">
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">Rcharge Date</label>
+                <input type="date" name="RDate" class="form-control my-select3" required>
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">Plan Expiry Date</label>
+                <input type="date" name="ExpDate" class="form-control my-select3" required>
+              </div>
+              <div class="mb-3 d-none">
+                <label for="message-text" class="col-form-label">SimID</label>
+                <input type="text" name="SimID" id="Sim" class="form-control my-select3" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class=" btn btn-primary my-button" value="submit" name="submit">Save changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="suspension" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Mobile Number Suspension</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="">
+              <div class="mb-3 d-none">
+                <label for="recipient-name" class="col-form-label">Sim ID</label>
+                <input type="text" name="SimID" id="SimS" class="form-control my-select3">
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">Suspension Date</label>
+                <input type="date" name="SDate" class="form-control my-select3" required>
+              </div>
+              <div class="mb-3 ">
+                <label for="message-text" class="col-form-label">Suspension Remark</label>
+                <textarea class="form-control my-select3" name="SuspensionRemark" required></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class=" btn btn-primary my-button" value="suspend" name="suspend">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="SimNoChange" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Change SimNo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="">
+              <div class="mb-3 d-none">
+                <label for="recipient-name" class="col-form-label">Sim ID</label>
+                <input type="text" name="SimID" id="SimNo" class="form-control my-select3">
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">New Sim Number</label>
+                <input type="number" name="SimNo" maxlength="20" class="form-control my-select3" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class=" btn btn-primary my-button" value="changesim" name="changesim">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <h3 align="center">Completed Orders</h3>  
     <br />  
     <div class="table-responsive">  
@@ -85,129 +210,144 @@ $results = mysqli_query($con, $query);
           <th>Activation Date</th>
           <th>Expiry Date</th>
           <th>Validity Days Left</th>
+          <th>Action</th>
         </tr>                     
       </thead>                 
       <tbody> 
         <?php  
+
         while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){ 
+          if ($row["leftDays"]<0) {
+            $Action='<a id="'.$row["SimID"].'" data-toggle="modal" data-target="#exampleModal" class="Recharge">Recharge Now</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="'.$row["SimID"].'" data-toggle="modal" data-target="#suspension" class="Suspend">Suspend Number</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="'.$row["SimID"].'" data-toggle="modal" data-target="#SimNoChange" class="SimNoChange">Change Sim Number</a>';
 
-          $BranchCode=$row["BranchCode"];
-          $GadgetID=$row["GadgetID"];
-          $Status=$row["Status"];
-          $PlanLimit=$row["ValidityRecharge"];
-          $OperatorID=$row["OperatorID"];
-          $OrderID=$row["OrderID"];
-          $SimType=$row["SimType"];
-          $PlanLimit=$row["ValidityRecharge"];
-
-          $queryP ="SELECT * FROM `production` WHERE OrderID=$OrderID";
-          $resultsP = mysqli_query($con, $queryP);
-          $row8=mysqli_fetch_array($resultsP,MYSQLI_ASSOC);
-          $SimID=$row8["SimID"];
-
-          $querySim ="SELECT * FROM `simprovider` WHERE ID=$SimID";
-          $resultsSim = mysqli_query($con, $querySim);
-          $row6=mysqli_fetch_array($resultsSim,MYSQLI_ASSOC);
-          $Mobile=$row6["MobileNumber"];
-          $SimNo=$row6["SimNo"];
-          $ReleaseDate=$row6["ReleaseDate"];
-          $IssueDate=$row6["IssueDate"];
-          $Activation=$row6["ActivationDate"];
-          $ExpDate=$row6["ExpDate"];
-
-          $queryBranch ="SELECT * FROM `branchs` WHERE BranchCode=$BranchCode";
-          $resultBranch = mysqli_query($con2, $queryBranch);
-          $row4=mysqli_fetch_array($resultBranch,MYSQLI_ASSOC);
-          $Branch=$row4["BranchName"];
-                                //$BranchCode=$row4["BranchCode"];
-          $ZoneCode= $row4["ZoneRegionCode"];
-
-          $queryZone ="SELECT * FROM `zoneregions` WHERE ZoneRegionCode=$ZoneCode";
-          $resultZone = mysqli_query($con2, $queryZone);
-          $row2=mysqli_fetch_array($resultZone,MYSQLI_ASSOC);             
-          $Zone=$row2["ZoneRegionName"];
-          $BankCode=$row2["BankCode"];
-
-          $queryBank ="SELECT * FROM `bank` WHERE BankCode=$BankCode";
-          $resultBank = mysqli_query($con2, $queryBank);
-          $row3=mysqli_fetch_array($resultBank,MYSQLI_ASSOC);
-          $Bank=$row3["BankName"];
+            $Bank='<span style="color: red;">'.$row["BankName"].'</span>';
+          }elseif ($row["leftDays"]<=30) {
+            $Bank='<span style="color: blue;">'.$row["BankName"].'</span>';
+            $Action='<a id="'.$row["SimID"].'" data-toggle="modal" data-target="#exampleModal" class="Recharge">Recharge Now</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="'.$row["SimID"].'" data-toggle="modal" data-target="#suspension" class="Suspend">Suspend Number</a>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <a id="'.$row["SimID"].'" data-toggle="modal" data-target="#SimNoChange" class="SimNoChange">Change Sim Number</a>';
+          }else{
+           $Bank=$row["BankName"]; 
+           $Action='<a id="'.$row["SimID"].'" data-toggle="modal" data-target="#suspension" class="Suspend">Suspend Number</a> 
+           &nbsp;&nbsp;&nbsp;&nbsp;
+           <a id="'.$row["SimID"].'" data-toggle="modal" data-target="#SimNoChange" class="SimNoChange">Change Sim Number</a>';
+         }
 
 
-          $queryGadget ="SELECT Gadget FROM `gadget` WHERE GadgetID=$GadgetID";
-          $resultGadget = mysqli_query($con, $queryGadget);
-          $row5=mysqli_fetch_array($resultGadget,MYSQLI_ASSOC);
-          $Gadget=$row5["Gadget"];
 
-          $dedline = date('Y-m-d', strtotime($Activation. ' + '.$PlanLimit.' months'));
-          $date = str_replace('-"', '/', $dedline);  
-          $dedline = date("d/m/Y", strtotime($date));
-
-          $date = str_replace('-"', '/', $row["Date"]);  
-          $Date = date("d/m/Y", strtotime($date));
-
-          $queryO ="SELECT * FROM `operators` WHERE OperatorID=$OperatorID";
-          $resultsO = mysqli_query($con, $queryO);
-          $row7=mysqli_fetch_array($resultsO,MYSQLI_ASSOC);
-          $Operator=$row7["Operator"];
-
-          date_default_timezone_set('Asia/Kolkata');
-          $timestamp =date('y-m-d H:i:s');
-          $newtimestamp = date('Y-m-d',strtotime($timestamp));
-
-          $datetime1 = date_create($newtimestamp);
-          $datetime2 = date_create($ExpDate);
-
-          $days = date_diff($datetime1, $datetime2);
-          $d= $days->format('%R%a');
-                               // echo $d;
-          $Days = (int)$d;
-
-          echo '  
-          <tr>
-          <td>'.$Bank.'</td> 
-          <td>'.$Zone.'</td>  
-          <td>'.$Branch.'</td>  
-          <td>'.$Gadget.'</td>
-          <td>'.$row["OrderID"].'</td>
-          <td>'.$row["SimProvider"].'</td>
-          <td>'.$row["SimType"].'</td>
-          <td>'.$Mobile.'</td>
-          <td>'.$SimNo.'</td>
-          <td>'.$Operator.'</td>
-          <td>'.$ReleaseDate.'</td>
-          <td>'.$IssueDate.'</td>
-          <td>'.$Activation.'</td> 
-          <td>'.$ExpDate.'</td>
-          <td>'.$Days.'</td>    
-          </tr>  
-          ';  
-        }
-        ?> 
-      </table>  
-    </div>  
+         echo '  
+         <tr>
+         <td>'.$Bank.'</td> 
+         <td>'.$row["ZoneRegionName"].'</td>  
+         <td>'.$row["BranchName"].'</td>  
+         <td>'.$row["Gadget"].'</td>
+         <td>'.$row["OrderID"].'</td>
+         <td>'.$row["SimProvider"].'</td>
+         <td>'.$row["SimType"].'</td>
+         <td>'.$row["MobileNumber"].'</td>
+         <td>'.$row["SimNo"].'</td>
+         <td>'.$row["Operator"].'</td>
+         <td>'.$row["SimReleaseDate"].'</td>
+         <td>'.$row["InuseDate"].'</td>
+         <td>'.$row["ActivationDate"].'</td> 
+         <td>'.$row["ExpDate"].'</td>
+         <td>'.$row["leftDays"].'</td> 
+         <td>'.$Action.'</td>     
+         </tr>  
+         ';  
+       }
+       ?> 
+       <tfoot>
+        <tr>
+          <th>Bank</th> 
+          <th>Zone</th> 
+          <th>Branch</th> 
+          <th>Gadget</th>
+          <th>Order Id</th>
+          <th>Sim Provider</th>
+          <th>Sim Type</th>
+          <th>Mobile No</th> 
+          <th>Sim No</th>
+          <th>Operator</th> 
+          <th>Sim Release Date</th>
+          <th>In Use Date</th>
+          <th>Activation Date</th>
+          <th>Expiry Date</th>
+          <th>Validity Days Left</th>
+          <th>Action</th>
+        </tr>
+      </tfoot>
+    </table>  
   </div>  
+</div>  
 
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/popper.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
-  "></script>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/popper.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
+"></script>
 
-  <script>
+<script>
 
     $(document).ready(function() {
-      var table = $('#example').DataTable( {
-        rowReorder: {
-          selector: 'td:nth-child(2)'
-        },
-        responsive: true
-      } );
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+      var title = $(this).text();
+      $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+      responsive :true;
     } );
 
-  </script>
+    // DataTable
+    var table = $('#example').DataTable({
+      initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+              var that = this;
+
+              $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                if ( that.search() !== this.value ) {
+                  that
+                  .search( this.value )
+                  .draw();
+                }
+              } );
+            } );
+        },
+        responsive: false
+    });
+
+} );
+    $('#myTable').DataTable( {
+    responsive: true
+} );
+
+
+  $(document).on('click','.Recharge', function(){
+    var SimID =  $(this).attr("id");
+    console.log(SimID); 
+    document.getElementById("Sim").value=SimID;
+  });
+
+  $(document).on('click','.Suspend', function(){
+    var SimID =  $(this).attr("id");
+    console.log(SimID); 
+    document.getElementById("SimS").value=SimID;
+  });
+
+  $(document).on('click','.SimNoChange', function(){
+    var SimID =  $(this).attr("id");
+    console.log(SimID); 
+    document.getElementById("SimNo").value=SimID;
+  });
+</script>
 </body>
 </html>
 

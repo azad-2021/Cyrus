@@ -58,7 +58,7 @@ if(isset($_POST["EmployeeID"]))
           $result3=mysqli_query($con,$query3);
           $row3 = mysqli_fetch_array($result3);
 
-          $ded = date('Y-m-d', strtotime($AssignDate. ' + 6 days'));
+          $ded = date('Y-m-d', strtotime($AssignDate. ' + 7 days'));
 
           $datetime1 = date_create($newtimestamp);
           $datetime2 = date_create($ded);
@@ -88,8 +88,8 @@ if(isset($_POST["EmployeeID"]))
             <td><?php echo $row['BranchName']; ?></td>
             <td><?php echo $row['OrderID']; ?></td>
             <td><?php echo $row['Discription']; ?></td>
-            <td><?php echo date("d-m-Y", strtotime($row['DateOfInformation'])); ?></td>
-            <td><?php echo date("d-m-Y", strtotime($row['AssignDate'])); ?></td>
+            <td><?php echo date("d-M-Y", strtotime($row['DateOfInformation'])); ?></td>
+            <td><?php echo date("d-M-Y", strtotime($row['AssignDate'])); ?></td>
             <td><?php echo $row3['count(ID)']; ?></td> 
             
             <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['OrderID'];?>" name="Date" class="form-control my-select3" align="center"></td>

@@ -15,8 +15,7 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 <!DOCTYPE html>  
 <html>  
 <head>   
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+	<meta name="viewport" content="width=device-width, initial-scale=1">  
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="description" content="">
@@ -38,7 +37,26 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 	label{
 		margin: 5px;
 	}
-</style>
+/*
+	input[type=text] {
+		width: 200px;
+		-webkit-transition: width 0.6s ease-in-out;
+		transition: width 0.6s ease-in-out;
+	}
+
+	input[type=text]:focus {
+		width: 30%;
+		border-bottom: 2px solid #d3d3d3;
+		box-shadow: none;
+		color: #111;
+		}*/
+		tfoot input {
+			width: 100%;
+			padding: 3px;
+			box-sizing: border-box;
+		}
+
+	</style>
 
 </head>  
 <body> 
@@ -49,9 +67,10 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 	?>
 	
 	<div class="container">
+
 		<div class="table-responsive"> 
 			<h5 align="center">All Pending GST Bills</h5>
-			<table class="table table-hover table-bordered border-primary table-responsive display"> 
+			<table id="example" class="display" style="width:100%">
 				<thead> 
 					<tr> 
 						<th style="min-width:160px">Bank</th>
@@ -61,7 +80,7 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 						<th style="min-width:80px">Bill Date</th>        
 						<th style="min-width: 100px;">Total Billed Value</th> 
 						<th style="min-width: 100px;">Received Amount</th> 
-						<th style="min-width: 100px;">Pending Payment</th>             
+						<th style="min-width: 100px;">Pending Payment</th>           
 					</tr>                     
 				</thead>                 
 				<tbody>
@@ -70,10 +89,11 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 					$query="SELECT * FROM cyrusbilling.billbook
 					join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
 					join cyrusbackend.zoneregions on branchdetails.ZoneRegionCode=zoneregions.ZoneRegionCode 
-					WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and billbook.BillDate <'$Date' and zoneregions.BankCode not in (17,29,30,33,43,46,49,50,52) order by billbook.BillDate";
+					WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and billbook.BillDate <'$Date' and zoneregions.BankCode not in (17,29,30,33,43,46,49,50,52)  order by billbook.BillDate";
 
 					$result=mysqli_query($con2,$query);
 					while($row = mysqli_fetch_array($result)){
+						/*
 						print "<tr>";
 						print "<td>".$row['BankName']."</td>";             
 						print "<td>".$row['ZoneRegionName']."</td>";
@@ -85,27 +105,74 @@ $Date = date('Y-m-d', strtotime($orgDate. ' -1 days'));
 						print "<td>".$row['TotalBilledValue']."</td>";
 						print "<td>".$row['ReceivedAmount']."</td>";
 						print "<td>".sprintf('%0.2f', ($row['TotalBilledValue']-$row['ReceivedAmount']))."</td>";
-						print "</tr>";
-					}
+						print "</tr>";*/
 
-					?>
+						?>
+						<tr>
+							<td><?php echo $row['BankName'] ?></td>
+							<td><?php echo $row['ZoneRegionName'] ?></td>
+							<td><?php echo $row['BranchName'] ?></td>
+							<td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
+							<td><?php echo $row['BillDate'] ?></td>
+							<td><?php echo $row['TotalBilledValue'] ?></td>
+							<td><?php echo $row['ReceivedAmount'] ?></td>
+							<td><?php echo sprintf('%0.2f', ($row['TotalBilledValue']-$row['ReceivedAmount'])) ?></td>
+						</tr>
+					<?php } ?>
 				</tbody>
+				<tfoot>
+					<tr>
+						<th style="min-width:160px">Bank</th>
+						<th style="min-width:80px">Zone</th>           
+						<th style="min-width:150px">Branch</th>
+						<th style="min-width:100px">Bill No</th>
+						<th style="min-width:80px">Bill Date</th>        
+						<th style="min-width: 100px;">Total Billed Value</th> 
+						<th style="min-width: 100px;">Received Amount</th> 
+						<th style="min-width: 100px;">Pending Payment</th> 
+					</tr>
+				</tfoot>
 			</table>
 
 		</div>
-		<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-		<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-		<script src="ajax-script.js"></script>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('table.display').DataTable( {
-					responsive: false
-				} );
-			} );
-		</script>
-	</body>
-	</html>
-	<?php 
-	$con->close();
-	$con2->close();
+	</div>
+	<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+	<script src="ajax-script.js"></script>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    $('#example tfoot th').each( function () {
+    	var title = $(this).text();
+    	$(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+    	responsive :true;
+    } );
+
+    // DataTable
+    var table = $('#example').DataTable({
+    	initComplete: function () {
+            // Apply the search
+            this.api().columns().every( function () {
+            	var that = this;
+
+            	$( 'input', this.footer() ).on( 'keyup change clear', function () {
+            		if ( that.search() !== this.value ) {
+            			that
+            			.search( this.value )
+            			.draw();
+            		}
+            	} );
+            } );
+        },
+        responsive: true
+    });
+
+} );
+</script>
+</body>
+</html>
+<?php 
+$con->close();
+$con2->close();
 ?>

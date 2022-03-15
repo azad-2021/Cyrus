@@ -57,7 +57,7 @@ if(isset($_POST['submit'])){
       </div>
       <div class="form-group mx-sm-3 mb-2">
         <label for="inputPassword2" class="sr-only">New Password</label>
-        <input type="password" class="form-control" id="inputPassword2" placeholder="Enter New Password" name="Password" maxlength="16">
+        <input type="password" class="form-control" id="inputPassword2" placeholder="Enter New Password" name="Password" maxlength="16" required>
       </div>
       <button type="submit" class="btn btn-primary mb-2" value="submit" name="submit">Submit</button>
       <p class="mt-5 mb-3 text-muted">&copy; Cyrus Electronics Pvt. Ltd.</p>

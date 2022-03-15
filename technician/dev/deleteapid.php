@@ -26,7 +26,7 @@ echo $tech;
      }else{
       $sql3 = "UPDATE  `orders` SET Attended='0' WHERE OrderID=$OrderID";
       $queryV3=mysqli_query($con2,$sql3);
-      $sql = "DELETE FROM approval WHERE OrderID=$OrderID";
+      $sql = "DELETE FROM approval WHERE OrderID=$OrderID and ApprovalID=$approvalID";
      }
 
     }

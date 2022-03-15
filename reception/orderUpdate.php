@@ -14,8 +14,14 @@ if(isset($_POST['Data'])){
 	$OrderID= $obj->OrderID;
 	$Discription= $obj->discription;
 
+	if (strpos($Discription, "'") !== FALSE){
+
+		$Discription= str_replace("'","\'",$Discription);
+
+	}
+
 	$myfile = fopen("discription.json", "w") or die("Unable to open file!");
-	fwrite($myfile, $_POST['Data']);
+	fwrite($myfile, $Discription);
 	fclose($myfile);
 
 	$sql = "UPDATE orders SET `Discription`= '$Discription' WHERE OrderID=$OrderID";
@@ -50,6 +56,15 @@ if(isset($_POST['Data'])){
 	$GadgetID=$_POST['gadget'];
 	$OrderID = $_POST['OrderID'];
 	$sql = "UPDATE orders SET `GadgetID`= $GadgetID WHERE OrderID=$OrderID";
+
+}elseif(isset($_POST['Data2'])){
+
+	$Data=$_POST['Data2'];
+	$obj = json_decode($Data);
+
+	$OrderID= $obj->OrderID;
+	$ExpDate= $obj->ExpectedDate;
+	$sql = "UPDATE orders SET `ExpectedCompletion`= '$ExpDate' WHERE OrderID=$OrderID";
 
 }
 

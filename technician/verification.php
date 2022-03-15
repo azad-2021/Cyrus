@@ -5,10 +5,13 @@ if($con === false){
     die("ERROR: Could not connect. " . mysqli_connect_error());
 }
  
-// Print host information
-// echo "Connect Successfully. Host info: " . mysqli_get_host_info($con);
-$password = filter_input(INPUT_POST,"UPassword");
-$name = filter_input(INPUT_POST, "UName");
+if (isset($_GET['UPassword']) and isset($_GET['UName'])){
+    $name=$_GET['UName'];
+    $password=$_GET['UPassword'];
+}else{
+    $password = filter_input(INPUT_POST,"UPassword");
+    $name = filter_input(INPUT_POST, "UName");
+}
 $sql = "SELECT * FROM Employees WHERE `Employee Name` = '$name' and Inservice=1";
 $results = $con->query($sql);
 $row=$results->fetch_assoc();

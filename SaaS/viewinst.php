@@ -3,7 +3,23 @@
 include('connection.php'); 
 include 'session.php';
 $username = $_SESSION['user'];
-$query ="SELECT * FROM `orders` WHERE Installed='1'";
+
+$query ="SELECT BankName, ZoneRegionName, BranchName, Gadget, orders.OrderID, simprovider.SimProvider,
+simprovider.SimType, MobileNumber, SimNo, Operator, simprovider.ReleaseDate as SimReleaseDate,
+production.IssueDate as InuseDate, ActivationDate, ExpDate, simprovider.ID as SimID,
+ProductionID, DATEDIFF(ExpDate,ActivationDate) as leftDays, `Employee Name` as InstalledBY, InstallationDate, store.ReleaseDate as StoreDate, store.EmployeeCode as StoreReleaseTo,
+Executive, orders.Remark as RemarkOrders, simprovider.Remark as RemarkSim, installation.Remark as RemarkInst
+FROM saas.orders
+join cyrusbackend.branchdetails on orders.BranchCode=branchdetails.BranchCode
+join production on orders.OrderID=production.OrderID
+join simprovider on production.SimID=simprovider.ID
+join gadget on orders.GadgetID=gadget.GadgetID
+join operators on orders.OperatorID=operators.OperatorID
+join installation on orders.OrderID=installation.OrderID
+join store on orders.OrderID=store.OrderID
+join cyrusbackend.employees on installation.InstalledBy=employees.EmployeeCode
+where orders.Status=3 and Installed=1 order by orders.OrderID";
+
 $results = mysqli_query($con, $query);
 
 if(isset($_POST['submit'])){
@@ -132,96 +148,63 @@ if(isset($_POST['submit'])){
           <th>Executive</th>
           <th>Remark Orders</th>
           <th>Remark Sim Provider</th>
-          <th>Panel Issue Date</th>
-          <th>Panel Issue To</th>
+          <th>Production Date</th>       
+          <th>Released To</th>
+          <th>Store Release Date</th>
           <th>Installed By</th>
           <th>Installation Date</th>
-          <th>Action</th>
+          <th>Validity days</th>
+          <th>Remark Installation</th>
         </tr>                     
       </thead>                 
       <tbody> 
         <?php  
         while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){ 
+          $EmployeeID=$row["StoreReleaseTo"];
+          $query="SELECT `Employee Name` from cyrusbackend.employees WHERE EmployeeCode=$EmployeeID";
+          $results2 = mysqli_query($con, $query);
+          $row2=mysqli_fetch_array($results2,MYSQLI_ASSOC);
+          if ($row["leftDays"]<0) {
+            $Bank='<span style="color: red;">'.$row["BankName"].'</span>';
+          }elseif ($row["leftDays"]<=30) {
+            $Bank='<span style="color: blue;">'.$row["BankName"].'</span>';
+          }else{
+           $Bank=$row["BankName"]; 
+         }
 
-          $BranchCode=$row["BranchCode"];
-          $GadgetID=$row["GadgetID"];
-          $OrderID=$row["OrderID"];
-
-          $queryP ="SELECT * FROM `production` WHERE OrderID=$OrderID";
-          $resultsP = mysqli_query($con, $queryP);
-          $row8=mysqli_fetch_array($resultsP,MYSQLI_ASSOC);
-          $SimID=$row8["SimID"];
-
-          $queryBranch ="SELECT * FROM branchdetails WHERE `BranchCode`='$BranchCode'";
-          $resultBranch = mysqli_query($con2, $queryBranch);
-          $row4=mysqli_fetch_array($resultBranch,MYSQLI_ASSOC);
-          $Branch=$row4["BranchName"];
-          
-          $Zone=$row4["ZoneRegionName"];
-          $Bank=$row4["BankName"];
-
-          $queryGadget ="SELECT Gadget FROM `gadget` WHERE GadgetID=$GadgetID";
-          $resultGadget = mysqli_query($con, $queryGadget);
-          $row5=mysqli_fetch_array($resultGadget,MYSQLI_ASSOC);
-          $Gadget=$row5["Gadget"];
-
-          $querySim ="SELECT * FROM `simprovider` WHERE ID=$SimID";
-          $resultsSim = mysqli_query($con, $querySim);
-          $row6=mysqli_fetch_array($resultsSim,MYSQLI_ASSOC);
-          $OperatorID=$row6["OperatorID"];
-
-          $queryO ="SELECT * FROM `operators` WHERE OperatorID=$OperatorID";
-          $resultsO = mysqli_query($con, $queryO);
-          $row7=mysqli_fetch_array($resultsO,MYSQLI_ASSOC);
-
-          $queryS ="SELECT * FROM `store` WHERE OrderID=$OrderID";
-          $resultsS = mysqli_query($con, $queryS);
-          $row9=mysqli_fetch_array($resultsS,MYSQLI_ASSOC);
-          $EmployeeID=$row9["EmployeeCode"];
-          $queryE ="SELECT * FROM `employees` WHERE `EmployeeCode`=$EmployeeID";
-          $resultsE = mysqli_query($con2, $queryE);
-          $row10=mysqli_fetch_array($resultsE,MYSQLI_ASSOC);
-
-          $queryIS ="SELECT * FROM `installation` WHERE OrderID=$OrderID";
-          $resultsIS = mysqli_query($con, $queryIS);
-          $rowIS=mysqli_fetch_array($resultsIS,MYSQLI_ASSOC);
-          $InstalledByID=$rowIS["InstalledBy"];
-          $InstallationDate=$rowIS["InstallationDate"];
-          $queryI ="SELECT * FROM `employees` WHERE `EmployeeCode`=$InstalledByID";
-          $resultsI = mysqli_query($con2, $queryI);
-          $rowI=mysqli_fetch_array($resultsI,MYSQLI_ASSOC);
 
 
           echo '  
           <tr> 
-          <td>'.$Bank.'</td>
-          <td>'.$Zone.'</td>  
-          <td>'.$Branch.'</td>
-          <td>'.$row["OrderID"].'</td>  
-          <td>'.$Gadget.'</td>  
-          <td>'.$row6["MobileNumber"].'</td>
-          <td>'.$row6["SimNo"].'</td> 
-          <td>'.$row6["SimType"].'</td>   
-          <td>'.$row7["Operator"].'</td>  
-          <td>'.$row6["SimProvider"].'</td>  
+          <td>'.$Bank.'</td> 
+          <td>'.$row["ZoneRegionName"].'</td>  
+          <td>'.$row["BranchName"].'</td>  
+          <td>'.$row["OrderID"].'</td>
+          <td>'.$row["Gadget"].'</td>           
+          <td>'.$row["MobileNumber"].'</td>
+          <td>'.$row["SimNo"].'</td> 
+          <td>'.$row["SimType"].'</td>   
+          <td>'.$row["Operator"].'</td>  
+          <td>'.$row["SimProvider"].'</td>  
           <td>'.$row["Executive"].'</td>
-          <td>'.$row["Remark"].'</td>
-          <td>'.$row6["Remark"].'</td>
-          <td>'.$row9["ReleaseDate"].'</td>
-          <td>'.$row10["Employee Name"].'</td>
-          <td>'.$rowI["Employee Name"].'</td> 
-          <td>'.$InstallationDate.'</td>
+          <td>'.$row["RemarkOrders"].'</td>
+          <td>'.$row["RemarkSim"].'</td>
+          <td>'.$row["InuseDate"].'</td>
+          <td>'.$row2["Employee Name"].'</td>
+          <td>'.$row["StoreDate"].'</td>
+          <td>'.$row["InstalledBY"].'</td>
+          <td>'.$row["InstallationDate"].'</td> 
+          <td>'.$row["leftDays"].'</td>
           <td>'
           ?>
 
-          <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="<?php print $row["OrderID"]; ?>"><?php print $rowIS["Remark"].' : Update'; ?></a>
+          <a href="" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="<?php print $row["OrderID"]; ?>"><?php print $row["RemarkInst"].' : Update'; ?></a>
           <?php
           print '<a target="blank" href=update.php?id='.$row["OrderID"].'&Type=Ins> Update Number</a>';
           "</td>"
           ;  
         }
-
-        ?> 
+          ?> 
 
       </table>  
     </div>  
@@ -239,23 +222,23 @@ if(isset($_POST['submit'])){
   <script>
 
     $(document).ready(function() {
-        $('#example').DataTable( {
-            responsive: {
-                details: {
-                    display: $.fn.dataTable.Responsive.display.modal( {
-                        header: function ( row ) {
-                            var data = row.data();
-                            return 'Details for '+data[0]+' '+data[1];
-                        }
-                    } ),
-                    renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                        tableClass: 'table'
-                    } )
-                }
-            },
-            stateSave: true,
+      $('#example').DataTable( {
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.modal( {
+              header: function ( row ) {
+                var data = row.data();
+                return 'Details for '+data[0]+' '+data[1];
+              }
+            } ),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+              tableClass: 'table'
+            } )
+          }
+        },
+        stateSave: true,
 
-        } );
+      } );
     } );
 
     var exampleModal = document.getElementById('exampleModal')

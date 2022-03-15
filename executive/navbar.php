@@ -12,6 +12,11 @@
         <li class="nav-item">
           <a class="nav-link" href="inventorydata.php" target="_blank">Pending Materials</a>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="multiorders.php" target="blank">Multi-Orders Confirmation</a>
+        </li>
+
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Find
@@ -34,6 +39,7 @@
             <li><a style="padding-right: 10px;" data-bs-toggle="modal" data-bs-target="#FindJobcard" class="dropdown-item" href="">Jobcard Details</a></li>
           </ul>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" href="/cyrus/reporting/reporting.php" target="blank">Reporting</a>
         </li>

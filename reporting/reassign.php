@@ -64,7 +64,7 @@ if (!empty($Data))
 			} else {
 				echo "Error: " . $sql2 . "<br>" . $con->error;
 				$myfile = fopen("newfile.txt", "w") or die("Unable to open file!");
-				fwrite($myfile, $con2->error);
+				fwrite($myfile, $con->error);
 				fclose($myfile);
 			}
 

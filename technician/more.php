@@ -6,6 +6,8 @@
 
 
 <?php 
+include "session.php";
+$Rej=$_SESSION['Rej'];
 
   $OID = $_GET['oid'];
   $complaintID = $_GET['cid'];
@@ -18,8 +20,9 @@
       if(empty($_POST['more'])==true){
         echo '<script>alert("Please select more status")</script>';
       }elseif($_POST['more']=='YES') {
-        header("location:card.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oid=$OID&gid=&zcode=$ZoneCode&amcid=");
+        header("location:card.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oid=$OID&gid=&zcode=$ZoneCode&amcid=&Rej=$Rej");
       }elseif($_POST['more']=='NO'){
+        unset($_SESSION['Rej']);
         header("location:redirect.php?eid=$EmployeeUID");
       }
     }

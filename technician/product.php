@@ -23,7 +23,7 @@
      $queryProduct="SELECT * FROM rates"; 
    }else{
      $ZoneCode = $_GET['zcode'];
-     $queryProduct="SELECT * FROM rates WHERE Zone=$ZoneCode"; 
+     $queryProduct="SELECT * FROM rates WHERE Zone=$ZoneCode and ItemID!=1654"; 
    }
   $Sub=0;
   

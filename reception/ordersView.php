@@ -108,11 +108,11 @@ if ($Attended=='No') {
     <td width="70%">'.$row["Discription"].'</td>  
     </tr>
     <tr>  
-    <td width="30%"><label style="color:blue;" data-bs-toggle="modal" data-bs-info="'.$row["DateOfInformation"].'" data-bs-OrderID2="'.$row["OrderID"].'" data-bs-BranchCode2="'.$row["BranchCode"].'" data-bs-target="#InfoDateUpdate">Date Of Information</label></td>  
+    <td width="30%"><label style="color:blue;"  data-bs-toggle="modal" data-bs-info="'.$row["DateOfInformation"].'" data-bs-OrderID2="'.$row["OrderID"].'" data-bs-BranchCode2="'.$row["BranchCode"].'" data-bs-target="#InfoDateUpdate">Date Of Information</label></td>  
     <td width="70%">'.$InfoDate.'</td>  
     </tr>
     <tr>  
-    <td width="30%"><label>Expected Completion</label></td>  
+    <td width="30%"><label style="color:blue;" class="exp" data-bs-toggle="modal" expdate="'.$row["ExpectedCompletion"].'" oid="'.$row["OrderID"].'" bcc="'.$row["BranchCode"].'" data-bs-target="#ExpDateUpdate">Expected Completion</label></td>  
     <td width="70%">'.date("d-m-Y", strtotime($row["ExpectedCompletion"])).'</td>  
     </tr>
     <tr>  

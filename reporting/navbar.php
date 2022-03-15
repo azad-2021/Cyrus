@@ -33,7 +33,7 @@ if ($Type!="Executive") {
             <a class="nav-link" href="estimate_edit.php">Find Estimates</a>
           </li>
         -->
-        <li class="nav-item dropdown">
+        <li class="nav-item dropdown dropbtn">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Find
           </a>

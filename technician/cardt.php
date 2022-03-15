@@ -8,12 +8,26 @@ $EmployeeUID = $_GET['eid'];
 $BranchCode = $_GET['brcode'];
 $ZoneCode = $_GET['zcode'];
 $GadgetID = $_GET['gid'];
-$AMCID = $_GET['amcid'];
+$AMCID = $_GET['amcid']; 
+$PostedDate=$_GET['PostedDate']; 
+
+
+if (isset($_GET['Rej'])) {
+ $Rej= $_GET['Rej'];
+ $_SESSION['Rej']=$Rej;
+}else{
+  $Rej=0;
+  $_SESSION['Rej']=0;
+}
+
+
 
 date_default_timezone_set('Asia/Kolkata');
 $timestamp =date('y-m-d H:i:s');
-$Date =date('Y-m-d',strtotime($timestamp));
-
+//echo $timestamp;
+$LDate =date('Y-m-d',strtotime($timestamp));
+$dedline = date('Y-m-d', strtotime($LDate. ' -2 days'));
+//echo $dedline;
 if(empty($GadgetID)==true){
 
   $querygadget="SELECT * FROM gadget";
@@ -60,13 +74,13 @@ if(isset($_FILES['image'])){
   $errors='';
   $JOBCARD = getjobcard();
   $GadgetID = $_POST['GadgetID'];
+  $VisitDate=$_POST['VisitDate'];
 
-  $query ="SELECT * FROM `approval` where EmployeeID='$EmployeeUID' and posted='0' and JobCardNo='$JOBCARD'";
+  $query ="SELECT * FROM `approval` where Vremark!='REJECTED' and JobCardNo='$JOBCARD'";
   $results = mysqli_query($con2, $query);
   $dataName=mysqli_fetch_assoc($results);
+  $name="";
   if (empty($dataName)==false) {
-      // code...
-   
     $name = $dataName['JobCardNo']; 
   } 
   
@@ -84,10 +98,6 @@ if(isset($_FILES['image'])){
   $extensions= array("jpeg","jpg","pdf");
 
 
-
-
-
-
   if(in_array($file_ext,$extensions)=== false){
     $errors ='<script>alert("File must be JPG, JPEG or pdf")</script>';
   }elseif($file_size > 2097152){
@@ -102,12 +112,21 @@ if(isset($_FILES['image'])){
     $errors = '<script>alert("Please select Technician Option")</script>';
   }elseif($name==$JOBCARD){
     $errors = '<script>alert("JOBCARD already exists")</script>';
+  }elseif($VisitDate<$PostedDate){
+    $errors = '<script>alert("Visit Date must be greater than Posted Date")</script>';
   }
 
 
   
   if(empty($errors)==true){
     $JOBCARD = getjobcard();
+
+
+    if (isset($_POST['VisitDate'])) {
+      $Date = $_POST['VisitDate'];
+      $_SESSION['VisitDate']=$Date;
+    }
+
 
     if ($Site == 'OK') {
       $Status = 1;
@@ -120,30 +139,55 @@ if(isset($_FILES['image'])){
     /* Insert Data into Approval database */
     if ($Upload==1) {
         // code...
-      $queryAdd="INSERT INTO `approval`( `BranchCode`, `ComplaintID`, `OrderID`, `JobCardNo`, `Status`, `EmployeeID`, `VisitDate`, `GadgetID`) VALUES ('$BranchCode','$complaintID','$OID', '$JOBCARD', '$Status', '$EmployeeUID', '$Date', '$GadgetID')";
+      $queryAdd="INSERT INTO `approval`( `BranchCode`, `ComplaintID`, `OrderID`, `JobCardNo`, `Status`, `EmployeeID`, `VisitDate`, `GadgetID`) VALUES ('$BranchCode','$complaintID','$OID', '$JOBCARD', '$Status', '$EmployeeUID', '$VisitDate', '$GadgetID')";
       mysqli_query($con2,$queryAdd);
     }
     $AddTech = tech();
     
     if(empty($AMCID)==false){
-      $sql2 = "UPDATE  `orders` SET Attended='1' WHERE OrderID=$AMCID";
+
+      $sqlTS = "SELECT `TimeStamp` from orders WHERE OrderID=$AMCID and `TimeStamp` is not null";
+      $resultTS=mysqli_query($con2,$sqlTS);
+
+      if (mysqli_num_rows($resultTS)>0) {
+        $sql2 = "UPDATE  `orders` SET Attended='1' WHERE OrderID=$AMCID";
+      }else{
+        $sql2 = "UPDATE  `orders` SET Attended='1', `TimeStamp`='$timestamp' WHERE OrderID=$AMCID";
+      }
       $queryV2=mysqli_query($con2,$sql2);
+
     }elseif(empty($OID)==false){
-      $sql3 = "UPDATE  `orders` SET Attended='1' WHERE OrderID=$OID";
+
+      $sqlTS = "SELECT `TimeStamp` from orders WHERE OrderID=$AMCID and `TimeStamp` is not null";
+      $resultTS=mysqli_query($con2,$sqlTS);
+
+      if (mysqli_num_rows($resultTS)>0) {
+
+        $sql3 = "UPDATE  `orders` SET Attended='1' WHERE OrderID=$OID";
+        
+      }else{
+        $sql2 = "UPDATE  `orders` SET Attended='1', `TimeStamp`='$timestamp' WHERE OrderID=$OID";
+      }
       $queryV3=mysqli_query($con2,$sql3);
     }elseif(empty($complaintID)==false){
-      $sql4 = "UPDATE  `complaints` SET Attended='1' WHERE ComplaintID=$complaintID";
-      $queryV3=mysqli_query($con2,$sql4);
-    }
+      $sqlTS = "SELECT `TimeStamp` from complaints WHERE ComplaintID=$complaintID and `TimeStamp` is not null";
+      $resultTS=mysqli_query($con2,$sqlTS);
 
-    if ($AddTech=='YES') {
-     header("location:technician.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&cardno=$JOBCARD&oid=$OID&site=$Status&zcode=$ZoneCode&gid=$GadgetID");
+      if (mysqli_num_rows($resultTS)>0) {
+        $sql4 = "UPDATE  `complaints` SET Attended='1' WHERE ComplaintID=$complaintID";
+        
+      }else{
+        $sql4 = "UPDATE  `complaints` SET Attended='1', `TimeStamp`='$timestamp' WHERE ComplaintID=$complaintID";
+      }
+      $queryV3=mysqli_query($con2,$sql4);
+      if ($AddTech=='YES') {
+       header("location:technician.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&cardno=$JOBCARD&oid=$OID&site=$Status&zcode=$ZoneCode&gid=$GadgetID");
+     }else{
+       header("location:pro.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oid=$OID&cardno=$JOBCARD&zcode=$ZoneCode");
+     }
    }else{
-     header("location:pro.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oid=$OID&cardno=$JOBCARD&zcode=$ZoneCode");
-   }
- }else{
-  print($errors);
-}
+    print($errors);
+  }
 
 
 
@@ -175,14 +219,14 @@ $con4 -> close();
   <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
-  
+  <script src="sweetalert.min.js"></script>
 </head>
 
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
     <div class="container-fluid" align="center">
-      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
+      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="40">Cyrus Electronics</a>
       <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -234,6 +278,11 @@ $con4 -> close();
               </select>
             </div>
             <br>
+            <label for="Gadget"><h5>Visit Date</h5></label>
+            <div class="col-lg-8">
+              <input type="date" name="VisitDate" id="VisitDate" class="form-control my-select" required>
+            </div>
+            <br>
             <h5>Site Status:&nbsp;&nbsp;
               <input type="radio" name="site" id="site" value="OK">
               <label for="OK">OK</label>
@@ -264,6 +313,17 @@ $con4 -> close();
       function preventBack() { window.history.forward(); }  
       setTimeout("preventBack()", 0);  
       window.onunload = function () { null };  
+
+      $(document).on('change','#VisitDate', function(){
+        var VisitDate = $(this).val();
+        console.log(VisitDate);
+        var dedline = "<?php echo $dedline ?>"
+        console.log(dedline);
+        if(VisitDate<="<?php echo $dedline ?>"){
+          swal("यह जॉबकार्ड 2 दिन से ज्यादा पुराना है, अतः इस पर पेनल्टी लग सकती है ।", "warning");
+        }
+      });
+
     </script> 
   </fieldset>
 </body>

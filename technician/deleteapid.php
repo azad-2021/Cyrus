@@ -22,11 +22,11 @@ echo $tech;
       $ComplaintID=$dataName['ComplaintID'];
       $sql = "UPDATE  `complaints` SET Attended='0' WHERE ComplaintID=$ComplaintID";
       $result2=mysqli_query($con2,$sql);
-      $sql = "DELETE FROM approval WHERE ComplaintID=$ComplaintID";
+      $sql = "DELETE FROM approval WHERE ComplaintID=$ComplaintID and posted=0";
      }else{
       $sql3 = "UPDATE  `orders` SET Attended='0' WHERE OrderID=$OrderID";
       $queryV3=mysqli_query($con2,$sql3);
-      $sql = "DELETE FROM approval WHERE OrderID=$OrderID";
+      $sql = "DELETE FROM approval WHERE OrderID=$OrderID and posted=0";
      }
 
     }

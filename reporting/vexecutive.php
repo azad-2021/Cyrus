@@ -54,7 +54,8 @@ $EmployeeName = $row2["Employee Name"];
                   <th>Branch</th>
                   <th>Order ID</th>
                   <th>Complaint ID</th>
-                  <th>Date of Visit</th>  
+                  <th>Date of Visit</th>
+                  <th>First Upload Date</th>  
                   <th>Status</th> 
                   <th>Action</th>
               </tr>                     
@@ -64,13 +65,27 @@ $EmployeeName = $row2["Employee Name"];
               while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){ 
                   {  
                     $BranchCode=$row["BranchCode"];
+
+                    if ($row["ComplaintID"]>0) {
+                        $ComplaintID=$row["ComplaintID"];
+                    $query ="SELECT `TimeStamp` FROM `complaints` Where ComplaintID=$ComplaintID";
+                    }else{
+                        $OrderID=$row["OrderID"];
+                    $query ="SELECT `TimeStamp` FROM `orders` Where OrderID=$OrderID";
+
+                    }
+
+
+                    $result = mysqli_query($con, $query);
+                    $row3=mysqli_fetch_array($result);
+
                     $query ="SELECT * FROM `branchs` Where BranchCode='$BranchCode'";
                     $result = mysqli_query($con, $query);
                     $row1=mysqli_fetch_array($result);
 
-                    $orgDate = $row["VisitDate"];  
-                    $date = str_replace('-"', '/', $orgDate);  
-                    $Visit = date("d/m/Y", strtotime($date));
+                    $date = $row["VisitDate"];  
+                    //$date = str_replace('-"', '/', $orgDate);  
+                    $Visit = date("d-M-Y", strtotime($date));
 
                     $Status=$row["Status"];
                     if ($Status==1) {
@@ -83,7 +98,8 @@ $EmployeeName = $row2["Employee Name"];
                     <td>'.$row1["BranchName"].'</td>
                     <td>'.$row["OrderID"].'</td>
                     <td>'.$row["ComplaintID"].'</td>
-                    <td>'.$Visit.'</td> 
+                    <td>'.$Visit.'</td>
+                    <td>'.date("d-M-Y h:i:sa", strtotime($row3["TimeStamp"])).'</td> 
                     <td>'.$Status.'</td>                                
                     <td><a target="blank" href=verify.php?apid='.base64_encode($row["ApprovalID"]).'>Verify Details</a></td> 
                     </tr>  

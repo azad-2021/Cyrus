@@ -19,24 +19,15 @@ include 'connection.php';
   <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
   <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
   <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-
   <link rel="stylesheet" type="text/css" href="css/style.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/searchpanes/1.4.0/css/searchPanes.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.3/css/select.dataTables.min.css
   ">
-
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <script src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
-
-
-
-
-
-  
-
 </head>  
 <body> 
   <div class="container">
@@ -79,14 +70,11 @@ include 'connection.php';
         dom: 'Plfrtip'
       });
     });
-
   </script>
   <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/searchpanes/1.4.0/js/dataTables.searchPanes.min.js"></script>
   <script src="https://cdn.datatables.net/select/1.3.3/js/dataTables.select.min.js"></script>
-
-
 </body>
 </html>
 <?php 

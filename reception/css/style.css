@@ -17,8 +17,7 @@ body {
 .navbar {
   font-family: Georgia, serif;
   margin: 0px;
-  font-size: 17px;
-  font-weight: 350;
+  font-size: 13px;
 }
 
 .navbar-toggler {
@@ -44,8 +43,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  font-size: 18px;
-  font-weight: 300;
+  font-size: 15px;
   color: #E0E1DE;
   white-space: nowrap;
   transition: 0.9s;

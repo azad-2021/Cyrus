@@ -25,6 +25,12 @@
           <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#FindBranch">Find Branch</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" aria-current="page" target="_blank" href="multiorders.php?">Bulk Add</a>
+        </li> 
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" target="_blank" href="search.php?">View Jobcard</a>
+        </li>      
+        <li class="nav-item">
           <a class="nav-link" href="changepass.php">Change Password</a>
         </li>
         <li class="nav-item">

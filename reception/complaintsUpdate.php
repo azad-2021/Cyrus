@@ -12,9 +12,10 @@ $Email = $_POST['email'];
 $GST = $_POST['gst'];
 */
 
-if(isset($_POST['discription'])){
-	$ComplaintID = $_POST['ComplaintID'];
-	$Discription=$_POST['discription'];
+if(isset($_POST['Data'])){
+	$obj = json_decode($_POST["Data"]);
+	$ComplaintID = $obj->ComplaintID;
+	$Discription=$obj->discription;
 	$sql = "UPDATE complaints SET `Discription`= '$Discription' WHERE ComplaintID=$ComplaintID";
 }elseif (isset($_POST['infodate'])) {
 
@@ -52,6 +53,15 @@ if(isset($_POST['discription'])){
 	//fwrite($myfile, $OrderedBy);
 	//fclose($myfile);
 	$sql = "UPDATE complaints SET `GadgetID`= $GadgetID WHERE ComplaintID=$ComplaintID";
+
+}elseif(isset($_POST['Data2'])){
+
+	$Data=$_POST['Data2'];
+	$obj = json_decode($Data);
+
+	$ComplaintID= $obj->ComplaintID;
+	$ExpDate= $obj->ExpectedDate;
+	$sql = "UPDATE complaints SET `ExpectedCompletion`= '$ExpDate' WHERE ComplaintID=$ComplaintID";
 
 }
 

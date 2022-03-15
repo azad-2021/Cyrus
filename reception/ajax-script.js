@@ -150,6 +150,7 @@
  $(document).on('click', '.view_complaint', function(){
   //$('#dataModal').modal();
   var ComplaintID = $(this).attr("id");
+  console.log(ComplaintID);
   $.ajax({
    url:"complaintsView.php",
    method:"POST",
@@ -185,27 +186,31 @@
   var InfoDate = document.getElementById("InfoDateAdd").value;
   var Expected = document.getElementById("ExpectedAdd").value;
   var Discription = document.getElementById("DiscriptionAdd").value;
-  console.log(BranchCode);
-  console.log(Device);
-  console.log(Type);
-  console.log(ReceivedBy);
-  console.log(MadeBy);
-  console.log(Discription);
+
+ console.log(BranchCode);
+ console.log(Device);
+ console.log(Type);
+ console.log(ReceivedBy);
+ console.log(MadeBy);
+ console.log(Discription);
 // Returns successful data submission message when the entered information is stored in database.
-var dataString = 'branch=' + BranchCode + '&device=' + Device + '&type=' + Type + '&receivedby=' + ReceivedBy + '&madeby=' + MadeBy + '&infodate=' + InfoDate + '&expected=' + Expected + '&discription=' + Discription;
+//var dataString = 'branch=' + BranchCode + '&device=' + Device + '&type=' + Type + '&receivedby=' + ReceivedBy + '&madeby=' + MadeBy + '&infodate=' + InfoDate + '&expected=' + Expected + '&discription=' + Discription;
 if (BranchCode == '') {
-  alert("Please Select Branch");
+  swal("error", "Please Select Branch", "error");
 } else if(Device == '' || Type == '' || ReceivedBy == '' || MadeBy == '' || InfoDate == '' || Expected == '' || Discription == ''){
-  alert("Please enter all fields");
+  swal("error", "Please enter all fields", "error");
 } else{
+  const obj = {BranchCode: BranchCode, Device: Device, Type: Type, ReceivedBy: ReceivedBy, MadeBy: MadeBy, InfoDate: InfoDate, Expected: Expected, Discription: Discription };
+  const data = JSON.stringify(obj);
+  console.log(data);
   document.getElementById("form").reset();
   $.ajax({
     type: "POST",
     url: "post.php",
-    data: dataString,
+    data: {'Data':data},
     cache: false,
     success: function(html) {
-      alert("Your " + Type + " registered successfully");
+      swal("success", "Your " + Type + " registered successfully", "success");
     }
   });
 
@@ -276,60 +281,56 @@ return false;
 function UpdatePhone() {
   var BranchCode = document.getElementById("BranchC").value;
   var Phone = document.getElementById("Phone").value;
-  //var Mobile = document.getElementById("Mobile").value;
-  //var Email = document.getElementById("Email").value;
-  //var GST = document.getElementById("GST").value;
-// Returns successful data submission message when the entered information is stored in database.
-var dataString = 'branch=' + BranchCode + '&phone=' + Phone;
-if (Phone == '') {
-  alert("Please Enter Phone Number");
-}else{
-  document.getElementById("form3").reset();
-  $.ajax({
-    type: "POST",
-    url: "update.php",
-    data: dataString,
-    cache: false,
-    success: function(html) {
-      alert("Phone Number: " + Phone + " updated successfully");
+
+  var dataString = 'branch=' + BranchCode + '&phone=' + Phone;
+  if (Phone == '') {
+    swal("error", "Please Enter Phone Number", "error");
+  }else{
+    document.getElementById("form3").reset();
+    $.ajax({
+      type: "POST",
+      url: "update.php",
+      data: dataString,
+      cache: false,
+      success: function(html) {
+      //alert("Phone Number: " + Phone + " updated successfully");
+      swal("success", "Phone Number: " + Phone + " updated successfully", "success");
     }
   });
 
 
-  if(BranchCode){
-    let interval = setInterval(function(){
-      $.ajax({
-        type:'POST',
-        url:'dataget.php',
-        data:{'BCode':BranchCode},
-        success:function(result){
-          $('#BranchData').html(result);
-          
-        }
-      });
+    if(BranchCode){
+      let interval = setInterval(function(){
+        $.ajax({
+          type:'POST',
+          url:'dataget.php',
+          data:{'BCode':BranchCode},
+          success:function(result){
+            $('#BranchData').html(result);
 
-      clearInterval(interval); 
-    }, 1000);
+          }
+        });
+
+        clearInterval(interval); 
+      }, 1000);
+
+    }
 
   }
 
-}
 
-
-return false;
+  return false;
 }
 
 
 function UpdateMobile() {
   var BranchCode = document.getElementById("BranchC").value;
   var Mobile = document.getElementById("Mobile").value;
-  //var Mobile = document.getElementById("Mobile").value;
-  //var Email = document.getElementById("Email").value;
-  //var GST = document.getElementById("GST").value;
+
 // Returns successful data submission message when the entered information is stored in database.
 var dataString = 'branch=' + BranchCode + '&mobile=' + Mobile;
 if (Mobile == '') {
-  alert("Please Enter Mobile Number");
+  swal("error", "Please Enter Mobile Number", "error");
 }else{
   document.getElementById("form3").reset();
   $.ajax({
@@ -338,7 +339,8 @@ if (Mobile == '') {
     data: dataString,
     cache: false,
     success: function(html) {
-      alert("Mobile Number: " + Mobile + " updated successfully");
+      //alert("Mobile Number: " + Mobile + " updated successfully");
+      swal("success", "Mobile Number: " + Mobile + " updated successfully", "success");
     }
   });
 
@@ -376,7 +378,7 @@ function UpdateEmail() {
 // Returns successful data submission message when the entered information is stored in database.
 var dataString = 'branch=' + BranchCode + '&email=' + Email;
 if (Email == '') {
-  alert("Please Enter Email");
+  swal("error", "Please Enter Email", "error");
 }else{
   document.getElementById("form4").reset();
   $.ajax({
@@ -385,7 +387,7 @@ if (Email == '') {
     data: dataString,
     cache: false,
     success: function(html) {
-      alert("Email: " + Email + " updated successfully");
+      swal("success", "Email: " + Email + " updated successfully", "success");
     }
   });
 
@@ -417,13 +419,11 @@ return false;
 function UpdateGST() {
   var BranchCode = document.getElementById("BranchC").value;
   var GST = document.getElementById("GST").value;
-  //var Mobile = document.getElementById("Mobile").value;
-  //var Email = document.getElementById("Email").value;
-  //var GST = document.getElementById("GST").value;
+
 // Returns successful data submission message when the entered information is stored in database.
 var dataString = 'branch=' + BranchCode + '&gst=' + GST;
 if (GST == '') {
-  alert("Please Enter GST Number");
+  swal("error", "Please Enter GST Number", "error");
 }else{
   document.getElementById("form5").reset();
   $.ajax({
@@ -432,7 +432,7 @@ if (GST == '') {
     data: dataString,
     cache: false,
     success: function(html) {
-      alert("GST Number: " + GST + " updated successfully");
+      swal("success", "GST Number: " + GST + " updated successfully", "success");
     }
   });
 
@@ -471,7 +471,7 @@ function UpdateBranchCode() {
 // Returns successful data submission message when the entered information is stored in database.
 var dataString = 'branch=' + BranchCode + '&branch_code=' + Branch_code;
 if (Branch_code == '') {
-  alert("Please Enter Branch Code Number");
+  swal("error", "Please Enter Branch Code Number", "error");
 }else{
   document.getElementById("form5").reset();
   $.ajax({
@@ -480,7 +480,7 @@ if (Branch_code == '') {
     data: dataString,
     cache: false,
     success: function(html) {
-      alert("Branch Code : " + Branch_code + " updated successfully");
+      swal("success", "Branch Code : " + Branch_code + " updated successfully", "success");
     }
   });
 
@@ -592,7 +592,7 @@ $(document).on('click', '.search_branch', function(){
   var dataString = 'type=' + Type + '&Search=' + Search;
 
   if (Type == '') {
-    alert("Please Select Search Type");
+    swal("error","Please Select Search Type", "error");
   }else{
     $.ajax({
      url:"branchView.php",
@@ -612,62 +612,63 @@ $(document).on('click', '.update_disc', function(){
   var disc = document.getElementById("disc").value;
   //console.log(disc);
   var OrderID = document.getElementById("OrderID1").value;
-  var BranchCode = document.getElementById("brc").value;
+  var BranchCode = document.getElementById("Branch").value;
 
   const obj = {OrderID: OrderID, discription: disc};
   const Data = JSON.stringify(obj);
   console.log(Data);
  // var dataString = 'OrderID=' + OrderID + '&discription=' + disc;
-  if (disc == '') {
-    alert("Please Enter Discription");
-  }else{
-    $.ajax({
-     url:"orderUpdate.php",
-     method:"POST",
-     data:{Data:Data},
-     success:function(data){
-      alert("Discription: " + disc + " updated successfully");
-    }
-  });
+ if (disc == '') {
+  swal("error", "Please Enter Discription", "error");
+}else{
+  $.ajax({
+   url:"orderUpdate.php",
+   method:"POST",
+   data:{Data:Data},
+   success:function(data){
+    //alert("Discription: " + disc + " updated successfully");
+    swal("success", "Discription: " + disc + " updated successfully", "success");
+  }
+});
 
 
-    if(OrderID){
-      let interval = setInterval(function(){
-        $.ajax({
-         url:"ordersView.php",
-         method:"POST",
-         data:{OrderID:OrderID},
-         success:function(data){
-          $('#OrdersData').html(data);
-          $('#dataModal').modal('show');
-          
+  if(OrderID){
+    let interval = setInterval(function(){
+      $.ajax({
+       url:"ordersView.php",
+       method:"POST",
+       data:{OrderID:OrderID},
+       success:function(data){
+        $('#OrdersData').html(data);
+        $('#dataModal').modal('show');
+
+      }
+    });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BranchCode':BranchCode},
+        success:function(result){
+          $('#Order').html(result);        
+
+
         }
       });
 
-        clearInterval(interval); 
-      }, 1000);
-
-    }
-    if(BranchCode){
-      let interval = setInterval(function(){
-        $.ajax({
-          type:'POST',
-          url:'dataget.php',
-          data:{'BranchCode':BranchCode},
-          success:function(result){
-            $('#Order').html(result);        
-
-
-          }
-        });
-
-        clearInterval(interval); 
-      }, 1000);
-
-    }
-
+      clearInterval(interval); 
+    }, 1000);
 
   }
+
+
+}
 
 });
 
@@ -676,18 +677,18 @@ $(document).on('click', '.update_gadget', function(){
   //$('#dataModal').modal();
   var gadget = document.getElementById("gadget").value;
   var OrderID = document.getElementById("OrderID5").value;
-  var BranchCode = document.getElementById("BranchCode5").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'OrderID=' + OrderID + '&gadget=' + gadget;
   console.log(OrderID);
   if (gadget == '') {
-    alert("Please Select Device");
+    swal("error", "Please Select Device", "error");
   }else{
     $.ajax({
      url:"orderUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Gadget updated successfully");
+      swal("success", "Gadget updated successfully", "success");
     }
   });
 
@@ -738,18 +739,18 @@ $(document).on('click', '.update_gadgetC', function(){
   //$('#dataModal').modal();
   var gadget = document.getElementById("gadgetC").value;
   var ComplaintID = document.getElementById("ComplaintID5").value;
-  var BranchCode = document.getElementById("BranchCodeC5").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'ComplaintID=' + ComplaintID + '&gadget=' + gadget;
   //console.log(OrderID);
   if (gadget == '') {
-    alert("Please Select Device");
+    swal("error", "Please Select Device", "error");
   }else{
     $.ajax({
      url:"complaintsUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Gadget updated successfully");
+      swal("success", "Gadget updated successfully", "success");
     }
   });
 
@@ -799,17 +800,17 @@ $(document).on('click', '.update_infodate', function(){
   var date = document.getElementById("InfoDate").value;
   console.log(date);
   var OrderID = document.getElementById("OID").value;
-  var BranchCode = document.getElementById("brcd").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'OrderID=' + OrderID + '&infodate=' + date;
   if (date == '') {
-    alert("Please Enter Information Date");
+    swal("error", "Please Enter Information Date", "error");
   }else{
     $.ajax({
      url:"orderUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Information Date : " + date + " updated successfully");
+      swal("success", "Information Date : " + date + " updated successfully", "success");
     }
   });
 
@@ -860,17 +861,17 @@ $(document).on('click', '.update_receivedby', function(){
   var received = document.getElementById("Received").value;
   console.log(received);
   var OrderID = document.getElementById("ODID").value;
-  var BranchCode = document.getElementById("BRCD").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'OrderID=' + OrderID + '&ReceivedBy=' + received;
   if (received == '') {
-    alert("Please Enter Received By");
+    swal("error", "Please Enter Received By", "error");
   }else{
     $.ajax({
      url:"orderUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Received By : " + received + " updated successfully");
+      swal("success", "Received By : " + received + " updated successfully", "success");
     }
   });
 
@@ -921,17 +922,17 @@ $(document).on('click', '.update_orderby', function(){
   var orderby = document.getElementById("orderby").value;
   console.log(orderby);
   var OrderID = document.getElementById("odid").value;
-  var BranchCode = document.getElementById("Brcd").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'OrderID=' + OrderID + '&OrderBy=' + orderby;
   if (orderby == '') {
-    alert("Please Enter order By");
+    swal("error", "Please Enter order By", "error");
   }else{
     $.ajax({
      url:"orderUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Order By : " + orderby + " updated successfully");
+      swal("success", "Order By : " + orderby + " updated successfully", "success");
     }
   });
 
@@ -982,56 +983,63 @@ $(document).on('click', '.update_discC', function(){
   var desc= document.getElementById("discC").value;
   console.log(desc);
   var ComplaintID = document.getElementById("ComplaintID").value;
-  var BranchCode = document.getElementById("BranchCodeC").value;
-  var dataString = 'ComplaintID=' + ComplaintID + '&discription=' + desc;
+  var BranchCode = document.getElementById("Branch").value;
+  //var dataString = 'ComplaintID=' + ComplaintID + '&discription=' + desc;
   if (desc == '') {
-    alert("Please Enter Discription");
+    swal("error", "Please Enter Discription", "error");
   }else{
-    $.ajax({
+   var obj = {ComplaintID: ComplaintID, discription: desc}
+   const Data = JSON.stringify(obj);
+   console.log(Data);
+   $.ajax({
      url:"complaintsUpdate.php",
      method:"POST",
-     data:dataString,
+     data:{Data:Data},
      success:function(data){
-      alert("Discription : " + desc + " updated successfully");
+      swal("success", "Discription : " + desc + " updated successfully", "success");
+
     }
   });
 
 
-    if(ComplaintID){
-      let interval = setInterval(function(){
-        $.ajax({
-         url:"complaintsView.php",
-         method:"POST",
-         data:{ComplaintID:ComplaintID},
-         success:function(data){
-          $('#ComplaintsData').html(data);
-          $('#dataModal2').modal('show');
-          
+
+   if(ComplaintID){
+    let interval = setInterval(function(){
+
+      $.ajax({
+       url:"complaintsView.php",
+       method:"POST",
+       data:{ComplaintID:ComplaintID},
+       success:function(data){
+        $('#ComplaintsData').html(data);
+        $('#dataModal2').modal('hide');
+        $('#dataModal2').modal('show');
+
+      }
+    });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BrCode':BranchCode},
+        success:function(result){
+          $('#Complaints').html(result);            
         }
       });
 
-        clearInterval(interval); 
-      }, 1000);
-
-    }
-    if(BranchCode){
-      let interval = setInterval(function(){
-        $.ajax({
-          type:'POST',
-          url:'dataget.php',
-          data:{'BrCode':BranchCode},
-          success:function(result){
-            $('#Complaints').html(result);            
-          }
-        });
-
-        clearInterval(interval); 
-      }, 1000);
-
-    }
-
+      clearInterval(interval); 
+    }, 1000);
 
   }
+
+
+}
 
 });
 
@@ -1041,17 +1049,17 @@ $(document).on('click', '.update_infodateC', function(){
   var infodate= document.getElementById("InfoDateC").value;
   //console.log(onfodate);
   var ComplaintID = document.getElementById("ComplaintID2").value;
-  var BranchCode = document.getElementById("BranchCodeC2").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'ComplaintID=' + ComplaintID + '&infodate=' + infodate;
   if (infodate == '') {
-    alert("Please Enter Date of Information");
+    swal("error", "Please Enter Date of Information", "error");
   }else{
     $.ajax({
      url:"complaintsUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Date of Information : " + infodate + " updated successfully");
+      swal("success", "Date of Information : " + infodate + " updated successfully", "success");
     }
   });
 
@@ -1100,17 +1108,17 @@ $(document).on('click', '.update_receivedbyC', function(){
   var Received= document.getElementById("ReceivedC").value;
   //console.log(onfodate);
   var ComplaintID = document.getElementById("ComplaintID3").value;
-  var BranchCode = document.getElementById("BranchCodeC3").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'ComplaintID=' + ComplaintID + '&ReceivedBy=' + Received;
   if (Received == '') {
-    alert("Please Enter Received By");
+    swal("error", "Please Enter Received By", "error");
   }else{
     $.ajax({
      url:"complaintsUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Received By : " + Received + " updated successfully");
+      swal("success", "Received By : " + Received + " updated successfully", "success");
     }
   });
 
@@ -1160,17 +1168,17 @@ $(document).on('click', '.update_madebyC', function(){
   var madeby= document.getElementById("madebyC").value;
   //console.log(onfodate);
   var ComplaintID = document.getElementById("ComplaintID4").value;
-  var BranchCode = document.getElementById("BranchCodeC4").value;
+  var BranchCode = document.getElementById("Branch").value;
   var dataString = 'ComplaintID=' + ComplaintID + '&MadeBy=' + madeby;
   if (madeby == '') {
-    alert("Please Enter Made By");
+    swal("error", "Please Enter Made By", "error");
   }else{
     $.ajax({
      url:"complaintsUpdate.php",
      method:"POST",
      data:dataString,
      success:function(data){
-      alert("Received By : " + madeby + " updated successfully");
+      swal("success", "Received By : " + madeby + " updated successfully", "success");
     }
   });
 
@@ -1213,3 +1221,157 @@ $(document).on('click', '.update_madebyC', function(){
 
 });
 
+
+ $(document).on('click','.exp', function(){
+  var BCode = $(this).attr("bcc");
+  var OID = $(this).attr("oid");
+  var ExDate = $(this).attr("expdate");
+  console.log(ExDate);
+  document.getElementById("expbrcd").value=BCode;
+  document.getElementById("expeDate").value=ExDate;
+  document.getElementById("expOID").value=OID;
+});
+
+
+ $(document).on('click','.expC', function(){
+  var BCode = $(this).attr("bccC");
+  var CID = $(this).attr("cid");
+  var ExDate = $(this).attr("expdateC");
+  console.log(ExDate);
+  document.getElementById("expbrcdC").value=BCode;
+  document.getElementById("expeDateC").value=ExDate;
+  document.getElementById("expCID").value=CID;
+});
+
+
+$(document).on('click', '.update_ExpectedDateC', function(){
+  //$('#dataModal').modal();
+  var ExpDate = document.getElementById("expeDateC").value;
+  //console.log(disc);
+  var ComplaintID = document.getElementById("expCID").value;
+  var BranchCode = document.getElementById("Branch").value;
+
+  const obj = {ComplaintID: ComplaintID, ExpectedDate: ExpDate};
+  const Data = JSON.stringify(obj);
+  console.log(Data);
+ // var dataString = 'OrderID=' + OrderID + '&discription=' + disc;
+ if (ExpDate == '') {
+  swal("error", "Please Enter Expected Date", "error");
+}else{
+  $.ajax({
+   url:"complaintsUpdate.php",
+   method:"POST",
+   data:{Data2:Data},
+   success:function(data){
+    //alert("Discription: " + disc + " updated successfully");
+    swal("success", "Expected Date: " + ExpDate + " updated successfully", "success");
+  }
+});
+
+
+  if(ComplaintID){
+    let interval = setInterval(function(){
+      $.ajax({
+       url:"complaintsView.php",
+       method:"POST",
+       data:{ComplaintID:ComplaintID},
+       success:function(data){
+        $('#ComplaintsData').html(data);
+        $('#dataModal2').modal('show');
+
+      }
+    });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BranchCode':BranchCode},
+        success:function(result){
+          $('#Complaints').html(result);        
+
+
+        }
+      });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+
+
+}
+
+});
+
+
+
+$(document).on('click', '.update_ExpectedDate', function(){
+  //$('#dataModal').modal();
+  var ExpDate = document.getElementById("expeDate").value;
+  //console.log(disc);
+  var OrderID = document.getElementById("expOID").value;
+  var BranchCode = document.getElementById("Branch").value;
+
+  const obj = {OrderID: OrderID, ExpectedDate: ExpDate};
+  const Data = JSON.stringify(obj);
+  console.log(Data);
+ // var dataString = 'OrderID=' + OrderID + '&discription=' + disc;
+ if (ExpDate == '') {
+  swal("error", "Please Enter Expected Date", "error");
+}else{
+  $.ajax({
+   url:"orderUpdate.php",
+   method:"POST",
+   data:{Data2:Data},
+   success:function(data){
+    //alert("Discription: " + disc + " updated successfully");
+    swal("success", "Expected Date: " + ExpDate + " updated successfully", "success");
+  }
+});
+
+
+  if(OrderID){
+    let interval = setInterval(function(){
+      $.ajax({
+       url:"ordersView.php",
+       method:"POST",
+       data:{OrderID:OrderID},
+       success:function(data){
+        $('#OrdersData').html(data);
+        $('#dataModal').modal('show');
+
+      }
+    });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BranchCode':BranchCode},
+        success:function(result){
+          $('#Order').html(result);        
+
+
+        }
+      });
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+
+
+}
+
+});
