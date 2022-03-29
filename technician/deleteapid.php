@@ -1,7 +1,7 @@
 <?php 
   include 'connection.php';
   include 'session.php';
-  $approvalID = $_GET['apid'];
+
   $EmployeeID = $_SESSION['empid'];
 
   if(isset($_GET['tech']))
@@ -11,6 +11,9 @@ $tech=$_GET['tech'];
 echo $tech;
 }
 
+if (isset($_SESSION['apid'])) {
+
+    $approvalID=$_SESSION['apid'];
 
     $query ="SELECT * FROM `approval` WHERE ApprovalID=$approvalID";
     $results = mysqli_query($con2, $query);
@@ -67,6 +70,10 @@ if ($con2->query($sql) === TRUE) {
   header("location:redirect.php?eid=$EmployeeID");
 } else {
   echo "Error deleting record: " . $con2->error;
+}
+
+unset($_SESSION['apid']);
+
 }
 
 ?>

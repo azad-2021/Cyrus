@@ -140,7 +140,10 @@ if(isset($_FILES['image'])){
     if ($Upload==1) {
         // code...
       $queryAdd="INSERT INTO `approval`( `BranchCode`, `ComplaintID`, `OrderID`, `JobCardNo`, `Status`, `EmployeeID`, `VisitDate`, `GadgetID`) VALUES ('$BranchCode','$complaintID','$OID', '$JOBCARD', '$Status', '$EmployeeUID', '$VisitDate', '$GadgetID')";
-      mysqli_query($con2,$queryAdd);
+      //mysqli_query($con2,$queryAdd);
+      if ($con2->query($queryAdd) === TRUE) {
+        $_SESSION['apid']=$con2->insert_id;
+      }
     }
     $AddTech = tech();
     

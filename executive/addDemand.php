@@ -59,8 +59,13 @@ if (!empty($OrderID)){
     }
     fclose($myfile);
   } else {
-    echo '<script>alert("No items selected")</script>';
+   $sql2 = "UPDATE demandbase SET StatusID=2, ConfirmationDate='$Date', ConfirmedByID=$User  WHERE OrderID=$OrderID";
+   if ($con->query($sql2) === TRUE) {
+    
+   } else {
+    echo "Error deleting record: " . $con->error;
   }
+}
 
 
 
@@ -68,8 +73,8 @@ if (!empty($OrderID)){
 
 
 
-  $con->close();
-  $con2->close();
+$con->close();
+$con2->close();
 
 }
 ?>

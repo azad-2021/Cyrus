@@ -119,7 +119,7 @@ if (($EXEID==12) or ($EXEID==32)) {
                </td>
                <td> <?php
                if (!empty($d['LastVerified'])) {
-                 echo $d['LastVerified'];
+                 echo date("d-M-Y", strtotime($d['LastVerified']));
                }else{
                 echo 'N/A';
               }

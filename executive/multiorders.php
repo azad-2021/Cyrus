@@ -282,9 +282,6 @@ $EXEID=$_SESSION['userid'];
       }
     });
 
-
-
-
     function limit(element)
     {
       var max_chars = 5;
