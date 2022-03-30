@@ -3,7 +3,7 @@ session_start();
 $_SESSION['user'];
 $_SESSION['userid'];
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['userid'])) {
 	header('location:/cyrus/index.php');
 }
 

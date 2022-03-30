@@ -158,7 +158,7 @@ if (!empty($Rows))
             <tr>
                 <td><?php echo $i1 ?></td>
                 <td>
-                    <select class="form-control my-select4 category" id="<?php echo $i ?>">
+                    <select class="form-control my-select4 category" id="<?php echo $i1 ?>">
                       <option value="">Select</option>
                       <?php
                       $Query="SELECT * FROM `item` order by ItemName";
@@ -235,10 +235,15 @@ if (!empty($Rows))
 
     $Query="SELECT ID FROM deliverychallan order by ID desc LIMIT 1";
     $result = mysqli_query($con3,$Query);
-    $arr=mysqli_fetch_assoc($result);
+    if(mysqli_num_rows($result)>0){ 
 
+        $arr=mysqli_fetch_assoc($result);
+        $arrID=$arr['ID'];
+    }else{
+        $arrID=0;
+    }
 
-    $CHID=$FY.'CEUP-'.$arr['ID']+1;
+    $CHID=$FY.'CEUP-'.$arrID+1;
     for ($k=0; $k < count($ItemID); $k++) { 
 
         //echo $Desc[$i];

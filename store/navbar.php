@@ -9,9 +9,11 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="index.php?">Home</a>
         </li>
-        
         <li class="nav-item">
-          <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#FindRates">Find Rates</a>
+          <a class="nav-link" href="delivery.php">Add New</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#Challan">Print Challan</a>
         </li>
         <!--
         <li class="nav-item">
@@ -25,7 +27,7 @@
         </li>
       -->
       <li class="nav-item">
-        <a class="nav-link" href="searchBill.php" target="_blank">Find Bill</a>
+        <a class="nav-link" href="" data-bs-toggle="modal" data-bs-target="#FindChallan">Find Challan</a>
       </li>     
       <li class="nav-item">
         <a class="nav-link" href="changepass.php">Change Password</a>

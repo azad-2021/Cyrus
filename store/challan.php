@@ -1,223 +1,238 @@
 <?php  
 include('connection.php');   
 
-$ID=$_GET['id'];
-$query = "SELECT ChallanNo FROM deliverychallan WHERE ID=$ID";
-$result = $con3->query($query);
-$data=mysqli_fetch_assoc($result);
-$ChallanNo=$data['ChallanNo'];
-//echo $ChallanNo;
 $Address2='';
 $Company='CYRUS ELECTRONICS PVT. LTD.';
 $PAN='AACCC6555F';
 $GSTIN='09AACCC6555F1ZM';
 
-$query2 = "SELECT * FROM billing.deliverychallan
-join backend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
-join billing.states on deliverychallan.StateCode=states.StateCode
-WHERE `ChallanNo`='$ChallanNo'";
+if (isset($_GET['ChallanNo'])) {
+  $ChallanNo=$_GET['ChallanNo'];
+ //echo $ChallanNo;
+  $query = "SELECT * FROM billing.deliverychallan
+  join backend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
+  join billing.states on deliverychallan.StateCode=states.StateCode
+  WHERE `ChallanNo`='$ChallanNo'";
+}else{
+  $EmployeeID=$_GET['EmployeeID'];
+  $SDate=$_GET['SDate'];
+  $query = "SELECT ChallanNo FROM deliverychallan WHERE EmployeeCode=$EmployeeID and DeliveryDate='$SDate'";
 
+  $result = $con3->query($query);
+  if (mysqli_num_rows($result)>0){
 
-$result2 = $con3->query($query2);
-$data2=mysqli_fetch_assoc($result2);
-$Date = $data2['DeliveryDate'];
-$Employee=$data2['Employee Name'];
-$State=$data2['State Name'];
-$StateCode=$data2['StateCode'];
-$Address=$data2['Address'];
+    $data=mysqli_fetch_assoc($result);
+    $ChallanNo=$data['ChallanNo'];
 
+    $query = "SELECT * FROM billing.deliverychallan
+    join backend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
+    join billing.states on deliverychallan.StateCode=states.StateCode
+    WHERE `ChallanNo`='$ChallanNo'";
 
-function numberTowords($num)
-{
-
-  $ones = array(
-    0 =>"ZERO",
-    1 => "ONE",
-    2 => "TWO",
-    3 => "THREE",
-    4 => "FOUR",
-    5 => "FIVE",
-    6 => "SIX",
-    7 => "SEVEN",
-    8 => "EIGHT",
-    9 => "NINE",
-    10 => "TEN",
-    11 => "ELEVEN",
-    12 => "TWELVE",
-    13 => "THIRTEEN",
-    14 => "FOURTEEN",
-    15 => "FIFTEEN",
-    16 => "SIXTEEN",
-    17 => "SEVENTEEN",
-    18 => "EIGHTEEN",
-    19 => "NINETEEN",
-    "014" => "FOURTEEN"
-  );
-  $tens = array( 
-    0 => "ZERO",
-    1 => "TEN",
-    2 => "TWENTY",
-    3 => "THIRTY", 
-    4 => "FORTY", 
-    5 => "FIFTY", 
-    6 => "SIXTY", 
-    7 => "SEVENTY", 
-    8 => "EIGHTY", 
-    9 => "NINETY" 
-  ); 
-  $hundreds = array( 
-    "HUNDRED", 
-    "THOUSAND", 
-    "MILLION", 
-    "BILLION", 
-    "TRILLION", 
-    "QUARDRILLION" 
-  ); /*limit t quadrillion */
-  $num = number_format($num,2,".",","); 
-  $num_arr = explode(".",$num); 
-  $wholenum = $num_arr[0]; 
-  $decnum = $num_arr[1]; 
-  $whole_arr = array_reverse(explode(",",$wholenum)); 
-  krsort($whole_arr,1); 
-  $rettxt = ""; 
-  foreach($whole_arr as $key => $i){
-
-    while(substr($i,0,1)=="0")
-      $i=substr($i,1,5);
-    if($i < 20){ 
-      /* echo "getting:".$i; */
-      $rettxt .= $ones[$i]; 
-    }elseif($i < 100){ 
-      if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
-      if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
-    }else{ 
-      if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
-      if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
-      if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
-    } 
-    if($key > 0){ 
-      $rettxt .= " ".$hundreds[$key]." "; 
-    }
-  } 
-  if($decnum > 0){
-    $rettxt .= " and ";
-    if($decnum < 20){
-      $rettxt .= $ones[$decnum].' Paise ';
-    }elseif($decnum < 100){
-      $rettxt .= $tens[substr($decnum,0,1)];
-      $rettxt .= " ".$ones[substr($decnum,1,1)].' Paise ';
-    }
   }
-  return $rettxt;
+
 }
-
-?>
-
-<!DOCTYPE html>  
-<html>  
-<head>   
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="">
-  <meta name="author" content="Anant Singh Suryavanshi">
-  <title>Challan</title>
-  <link rel="icon" href="cyrus logo.png" type="image/icon type">
-  <!-- Bootstrap core CSS -->
-  <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-  <script src="Bootstrap/js/bootstrap.bundle.min.js"></script>
-  <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+$result2 = $con3->query($query);
+if (mysqli_num_rows($result2)>0){
+  $data2=mysqli_fetch_assoc($result2);
+  $Date = $data2['DeliveryDate'];
+  $Employee=$data2['Employee Name'];
+  $State=$data2['State Name'];
+  $StateCode=$data2['StateCode'];
+  $Address=$data2['Address'];
 
 
+  function numberTowords($num)
+  {
 
-  <style type="text/css">
-  body{
-    color: black;
-    font-size: 10px;
+    $ones = array(
+      0 =>"ZERO",
+      1 => "ONE",
+      2 => "TWO",
+      3 => "THREE",
+      4 => "FOUR",
+      5 => "FIVE",
+      6 => "SIX",
+      7 => "SEVEN",
+      8 => "EIGHT",
+      9 => "NINE",
+      10 => "TEN",
+      11 => "ELEVEN",
+      12 => "TWELVE",
+      13 => "THIRTEEN",
+      14 => "FOURTEEN",
+      15 => "FIFTEEN",
+      16 => "SIXTEEN",
+      17 => "SEVENTEEN",
+      18 => "EIGHTEEN",
+      19 => "NINETEEN",
+      "014" => "FOURTEEN"
+    );
+    $tens = array( 
+      0 => "ZERO",
+      1 => "TEN",
+      2 => "TWENTY",
+      3 => "THIRTY", 
+      4 => "FORTY", 
+      5 => "FIFTY", 
+      6 => "SIXTY", 
+      7 => "SEVENTY", 
+      8 => "EIGHTY", 
+      9 => "NINETY" 
+    ); 
+    $hundreds = array( 
+      "HUNDRED", 
+      "THOUSAND", 
+      "MILLION", 
+      "BILLION", 
+      "TRILLION", 
+      "QUARDRILLION" 
+    ); /*limit t quadrillion */
+    $num = number_format($num,2,".",","); 
+    $num_arr = explode(".",$num); 
+    $wholenum = $num_arr[0]; 
+    $decnum = $num_arr[1]; 
+    $whole_arr = array_reverse(explode(",",$wholenum)); 
+    krsort($whole_arr,1); 
+    $rettxt = ""; 
+    foreach($whole_arr as $key => $i){
+
+      while(substr($i,0,1)=="0")
+        $i=substr($i,1,5);
+      if($i < 20){ 
+        /* echo "getting:".$i; */
+        $rettxt .= $ones[$i]; 
+      }elseif($i < 100){ 
+        if(substr($i,0,1)!="0")  $rettxt .= $tens[substr($i,0,1)]; 
+        if(substr($i,1,1)!="0") $rettxt .= " ".$ones[substr($i,1,1)]; 
+      }else{ 
+        if(substr($i,0,1)!="0") $rettxt .= $ones[substr($i,0,1)]." ".$hundreds[0]; 
+        if(substr($i,1,1)!="0")$rettxt .= " ".$tens[substr($i,1,1)]; 
+        if(substr($i,2,1)!="0")$rettxt .= " ".$ones[substr($i,2,1)]; 
+      } 
+      if($key > 0){ 
+        $rettxt .= " ".$hundreds[$key]." "; 
+      }
+    } 
+    if($decnum > 0){
+      $rettxt .= " and ";
+      if($decnum < 20){
+        $rettxt .= $ones[$decnum].' Paise ';
+      }elseif($decnum < 100){
+        $rettxt .= $tens[substr($decnum,0,1)];
+        $rettxt .= " ".$ones[substr($decnum,1,1)].' Paise ';
+      }
+    }
+    return $rettxt;
   }
 
-  .invoice {
-    /*border:1px solid Black;*/
-    padding:1px;
-    height:900pt;
-    width:700pt;
-  }
+  ?>
 
-
-  .displayNum {
-    /*border:1px solid Black;*/
-    border:2px solid #ccc;
-    padding:1px;
-    text-align: center;
-  }
-
-
-  .billed {
-    /*border:1px solid #ccc;*/
-    float:left;
-  }
-
-  .invoice-details {
-    border:2px solid #ccc;
-    padding: 3px;
-    /*width:200pt;*/
-
-  }
-
-  .tax-header{
-    border:2px solid black;
-    text-align: center;
-  }
-
-  .amount-display {
-    /*border:1px solid #ccc;*/
-    float:right;
-    width:200pt;
-  }
-
-  .customer-address {
-    border:1px solid #ccc;
-    float:right;
-    margin-bottom:50px;
-    margin-top:100px;
-    width:200pt;
-  }
-
-  .clear-fix {
-    clear:both;
-    float:none;
-  }
-
-  .tablet {
-    width:100%;
-  }
-
-  .th {
-    text-align: center;
-  }
-
-  .td {
-    text-align: center;
-    margin: 5px;
-  }
-
-  .text-left {
-    text-align:center;
-  }
-
-  .text-center {
-    text-align:center;
-  }
-
-  .text-right {
-    text-align:right;
-  }
+  <!DOCTYPE html>  
+  <html>  
+  <head>   
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="Anant Singh Suryavanshi">
+    <title>Challan</title>
+    <link rel="icon" href="cyrus logo.png" type="image/icon type">
+    <!-- Bootstrap core CSS -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <script src="Bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
 
 
-</style>
+    <style type="text/css">
+    body{
+      color: black;
+      font-size: 10px;
+    }
+
+    .invoice {
+      /*border:1px solid Black;*/
+      padding:1px;
+      height:900pt;
+      width:700pt;
+    }
+
+
+    .displayNum {
+      /*border:1px solid Black;*/
+      border:2px solid #ccc;
+      padding:1px;
+      text-align: center;
+    }
+
+
+    .billed {
+      /*border:1px solid #ccc;*/
+      float:left;
+    }
+
+    .invoice-details {
+      border:2px solid #ccc;
+      padding: 3px;
+      /*width:200pt;*/
+
+    }
+
+    .tax-header{
+      border:2px solid black;
+      text-align: center;
+    }
+
+    .amount-display {
+      /*border:1px solid #ccc;*/
+      float:right;
+      width:200pt;
+    }
+
+    .customer-address {
+      border:1px solid #ccc;
+      float:right;
+      margin-bottom:50px;
+      margin-top:100px;
+      width:200pt;
+    }
+
+    .clear-fix {
+      clear:both;
+      float:none;
+    }
+
+    .tablet {
+      width:100%;
+    }
+
+    .th {
+      text-align: center;
+    }
+
+    .td {
+      text-align: center;
+      margin: 5px;
+    }
+
+    .text-left {
+      text-align:center;
+    }
+
+    .text-center {
+      text-align:center;
+    }
+
+    .text-right {
+      text-align:right;
+    }
+
+
+
+  </style>
 </head>  
 <body> 
 
@@ -383,3 +398,10 @@ function numberTowords($num)
 </div>
 </body>
 </html>
+<?php 
+}else{
+  echo '<script>alert("No data found")</script>';
+}
+$con->close();
+$con2->close();
+?>
