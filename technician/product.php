@@ -18,16 +18,19 @@ $queryApprovalID="SELECT * FROM approval where ApprovalID=$approvalID";
 $resultApprovalID=mysqli_query($con2,$queryApprovalID);
 $dataApprovalID=mysqli_fetch_assoc($resultApprovalID);
 $JOBCARD= $dataApprovalID['JobCardNo'];
+$VisitDate=$dataApprovalID['VisitDate'];
   //echo $JOBCARD;
 if(empty($_GET['zcode'])==true){
  $queryProduct="SELECT * FROM rates"; 
 }else{
  $ZoneCode = $_GET['zcode'];
- $queryProduct="SELECT * FROM rates WHERE Zone=$ZoneCode and ItemID!=1654"; 
+ //$queryProduct="SELECT * FROM rates WHERE Zone=$ZoneCode and ItemID!=1654"; 
+ $queryProduct1="SELECT  DISTINCT ItemID FROM billing.deliverychallan
+ WHERE EmployeeCode=$EmployeeID and ConsumedDate is null";
 }
 $Sub=0;
 
-  $resultProduct=mysqli_query($con4,$queryProduct);  //select all products
+  $resultProduct1=mysqli_query($con1,$queryProduct1);  //select all products
   $queryProductList= "SELECT * FROM add_product where paEmployeeID=$EmployeeID";
   $resultProductList=mysqli_query($con3,$queryProductList);
 
@@ -49,16 +52,27 @@ $Sub=0;
 
   if(isset($_POST['Add']))
   {
-    $RateID=$_POST['RateID'];
+    $RateIDJ=$_POST['RateID'];
+    $obj = json_decode($RateIDJ);
+    $RateID= $obj->RateID;
+    $ItemID=$obj->ItemID;
     $qty=$_POST['qty'];
     $usedas = $_POST['as'];
+    $BarCode='';
+    if (isset($_POST['BarCode'])) {
+      $BarCode=$_POST['BarCode'];
+    }
+    
+    
 
     $query1="SELECT * FROM add_product where paRateID=$RateID and UsedAs='$usedas' and paEmployeeID=$EmployeeID"; 
     $result1=mysqli_query($con3,$query1);
     if(empty($usedas)==true){
       echo '<script>alert("Please select Used As option")</script>';
     }elseif(empty(mysqli_fetch_assoc($result1))==false){
-      echo '<script>alert("Product already in list")</script>';
+      echo '<script>alert("Item already in list")</script>';
+    }elseif($qty>$BarCode){
+      echo '<script>alert("Quantity exceed maximum limit")</script>';
     }else{
 
       $queryCheckStock="SELECT * From rates where RateID=$RateID";
@@ -73,7 +87,7 @@ $Sub=0;
         $paRate = '';
       }
     //echo $EmployeeID;
-      $queryAdd="INSERT INTO `add_product`( `paRateID`, `paEmployeeID`, `paDiscription`, `paRate`, `paqty`, `UsedAs`) VALUES ('$paRateID', '$EmployeeID', '$paDiscription', '$paRate', '$qty', '$usedas')";
+      $queryAdd="INSERT INTO `add_product`( `paRateID`, `paEmployeeID`, `paDiscription`, `paRate`, `paqty`, `UsedAs`, IttemID) VALUES ('$paRateID', '$EmployeeID', '$paDiscription', '$paRate', '$qty', '$usedas', $ItemID)";
       mysqli_query($con3,$queryAdd);
       if($queryAdd){
         echo "<meta http-equiv='refresh' content='0'>";
@@ -114,6 +128,7 @@ $Sub=0;
           $RateID = $dataBilling['paRateID'];
           $quantity = $dataBilling['paqty'];
           $UsedAs = $dataBilling['UsedAs'];
+          $ItemID=$dataBilling['IttemID'];
 
 
           /* Insert Data into Billing database */
@@ -121,7 +136,12 @@ $Sub=0;
           mysqli_query($con3,$queryAdd);
         }
 
+        while($quantity>0){
+          $query="UPDATE deliverychallan SET ConsumedDate='$VisitDate', ApprovalID=$approvalID WHERE EmployeeCode='$EmployeeID' and ItemID=$ItemID";
+          $result=mysqli_query($con1,$query);
+          $quantity--;
 
+        }
         $queryRemove="DELETE FROM `add_product` WHERE `paEmployeeID`='$EmployeeID'";
         $resultRemove=mysqli_query($con3,$queryRemove);
 
@@ -204,6 +224,16 @@ $Sub=0;
     }
 
   </script>
+
+  <style type="text/css">
+  .my-select2 {
+    color: $dark-grey;
+    border-radius: 20px;
+    padding: 2px 20px;
+    margin-top: 10px;
+
+  }
+</style>
 </head>
 <body>
 
@@ -215,119 +245,137 @@ $Sub=0;
     <fieldset >        
       <form method="post" action="">
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="form-group col-md-3">
             <label for="exampleFormControlSelect2">Item</label>
-            <select  required name="RateID" class="form-control select my-select" id="exampleFormControlSelect2" >
+            <select  required name="RateID" class="form-control select my-select" id="RateID" >
+              <option value="">select</option>
               <?php
-              while($data=mysqli_fetch_assoc($resultProduct)){
 
-                echo '<option value='.$data['RateID'].'>'.$data['Description'].'</option>'; 
-              }  
-              ?>
-            </select>
-          </div>
+              while($data1=mysqli_fetch_assoc($resultProduct1)){
+                $ItemID=$data1['ItemID'];
+                
+                $queryProductList= "SELECT * FROM rates where ItemID=$ItemID and Zone=$ZoneCode";
+                $resultProduct=mysqli_query($con4,$queryProductList);
+                while($data=mysqli_fetch_assoc($resultProduct)){
 
-          <div class="form-group col-md-4">
-            <label for="quantity">Quantity</label>
-            <input type="number" required class="form-control my-select" name="qty" id="qt" maxlength="5" id="txtInput" onkeypress="return checkSpcialChar(event)" onkeydown="limit(this);" onkeyup="limit(this);">
-            
-          </div>
-          <div class="form-group col-md-4">
-            <label for="as">As</label>
-            <select name="as" id="as" id="exampleFormControlSelect2" class="form-control my-select">
-              <option value="">Choose option</option>
-              <option value="Billing">Billing</option>
-              <option value="Waranty">Waranty</option>
-              <option value="CAMC">CAMC</option>
-              <option value="Standby">Standby</option>
-            </select>
-          </div>
+                 $d = array("RateID"=>$data['RateID'], "ItemID"=>$data['ItemID']);
+                 $dataJ = json_encode($d);
 
-        </div>
-        <center>
-          <input type="submit" style="margin-bottom: 20px;" class=" btn btn-success my-button" value="Add" name="Add"></input>
-        </center>            
+                 echo '<option value='.$dataJ.'>'.$data['Description'].'</option>'; 
+               }
+             }  
+             ?>
+           </select>
+         </div>
+         
+         <div class="form-group col-md-3">
+          <label for="exampleFormControlSelect2">Bar Code in stock</label>
+          <input type="text" name="BarCode" class="d-none" id="BarCode2" >
+          <input type="text" name="" class="form-control my-select2" id="BarCode" disabled>
+        </select>
+      </div>
+      
 
-      </form>
+      <div class="form-group col-md-3">
+        <label for="quantity">Quantity</label>
+        <input type="number" required class="form-control my-select" name="qty" id="qt" maxlength="5" id="txtInput" onkeypress="return checkSpcialChar(event)" onkeydown="limit(this);" onkeyup="limit(this);">
 
-      <div class="col-lg-12">
-        <table id="userTable2" class="display nowrap table-striped table-hover table-sm" id="exampleFormControlSelect2" class="form-control">
-          <thead>
-            <tr>
-              <th scope="col">Id</th>
-              <th scope="col"> Product</th>
-              <th scope="col">As</th>
-              <th scope="col">Unit Price</th>
-              <th scope="col">Quantity</th>
-              <th scope="col">Total Price</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php while($data=mysqli_fetch_assoc($resultProductList)){ ?>
-              <tr>
-                <td >
-                  <?php echo $rateid =$data['paRateID']; ?>
-                </td>
-                <td >
-                  <?php echo $data['paDiscription']; ?>
-                </td>
-                <td >
-                  <?php echo $data['UsedAs']; ?>
-                </td>
-                <td >
-                  <?php echo $data['paRate']; ?>
-                </td>
-                <td >
-                  <?php echo $data['paqty']; ?>
-                </td>
-                <td >
-                  <?php echo $SubTotal=$data['paqty']* $data['paRate']; ?>
-                </td>
-                <td >
-                  <form accept="" method="post">
-                    <input type="hidden" name="rateid" value=" <?php echo $rateid ?>">
-                    <input type="hidden" name="eid" value="<?php echo $EmployeeID ?>">
-                    <input type="hidden" name="us" value="<?php echo $data['UsedAs'] ?>">
-                    <input type="submit" name="removeProduct" value="Remove" class="btn btn-danger my-button">
-                  </form>
-                </td>
-              </tr>
-              <?php $Sub = $Sub + $SubTotal;} 
+      </div>
+      <div class="form-group col-md-3">
+        <label for="as">As</label>
+        <select name="as" id="as" id="exampleFormControlSelect2" class="form-control my-select">
+          <option value="">Choose option</option>
+          <option value="Billing">Billing</option>
+          <option value="Waranty">Waranty</option>
+          <option value="CAMC">CAMC</option>
+          <option value="Standby">Standby</option>
+        </select>
+      </div>
+
+    </div>
+    <center>
+      <input type="submit" style="margin-bottom: 20px;" class=" btn btn-success my-button" value="Add" name="Add"></input>
+    </center>            
+
+  </form>
+
+  <div class="col-lg-12">
+    <table id="userTable2" class="display nowrap table-striped table-hover table-sm" id="exampleFormControlSelect2" class="form-control">
+      <thead>
+        <tr>
+
+          <th>Material</th>
+          <th>As</th>
+          <th>Unit Price</th>
+          <th>Quantity</th>
+          <th>Total Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php while($data=mysqli_fetch_assoc($resultProductList)){ 
+          $rateid =$data['paRateID'];
+          ?>
+          <tr>
+            <td >
+              <?php echo $data['paDiscription']; ?>
+            </td>
+            <td >
+              <?php echo $data['UsedAs']; ?>
+            </td>
+            <td >
+              <?php echo $data['paRate']; ?>
+            </td>
+            <td >
+              <?php echo $data['paqty']; ?>
+            </td>
+            <td >
+              <?php echo $SubTotal=$data['paqty']* $data['paRate']; ?>
+            </td>
+            <td >
+              <form accept="" method="post">
+                <input type="hidden" name="rateid" value=" <?php echo $rateid ?>">
+                <input type="hidden" name="eid" value="<?php echo $EmployeeID ?>">
+                <input type="hidden" name="us" value="<?php echo $data['UsedAs'] ?>">
+                <input type="submit" name="removeProduct" value="Remove" class="btn btn-danger my-button">
+              </form>
+            </td>
+          </tr>
+          <?php $Sub = $Sub + $SubTotal;} 
 
 
-              ?>
-            </tbody>
-          </table>       
-          <br>
-          <div align="right"><strong>Total Price: <?php echo $Sub; ?></strong></div>
-          <br><br>
-        </div>        
-        <form method="post" action="" enctype = "multipart/form-data">
-          <center>
-            <h5>Upload Installation Paper:</h5>
+          ?>
+        </tbody>
+      </table>       
+      <br>
+      <div align="right"><strong>Total Price: <?php echo $Sub; ?></strong></div>
+      <br><br>
+    </div>        
+    <form method="post" action="" enctype = "multipart/form-data">
+      <center>
+        <h5>Upload Installation Paper:</h5>
 
-            <input type="file" class="upload my-select" type = "file" style="margin-left: 75px;" name = "InstPaper" />
-          </center>
-          <br> <br>
-          <h5 align="center">Estimate Given:<br><br>
-            <input type="radio" name="estimate" id="estimate" value="YES">
-            <label for="OK">Yes</label>
-            &nbsp;&nbsp;&nbsp;
-            <input type="radio" id="estimate" name="estimate" value="NO">
-            <label for="NOT OK">No</label>
-          </h5>
-          <br> <br>
-          <center>
-            <input type="submit"  class=" btn btn-success my-button" value="submit" name="submit"></input>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="submit"  class=" btn btn-danger my-button" value="Back" name="back"></input>
-          </center> 
+        <input type="file" class="upload my-select" type = "file" style="margin-left: 75px;" name = "InstPaper" />
+      </center>
+      <br> <br>
+      <h5 align="center">Estimate Given:<br><br>
+        <input type="radio" name="estimate" id="estimate" value="YES">
+        <label for="OK">Yes</label>
+        &nbsp;&nbsp;&nbsp;
+        <input type="radio" id="estimate" name="estimate" value="NO">
+        <label for="NOT OK">No</label>
+      </h5>
+      <br> <br>
+      <center>
+        <input type="submit"  class=" btn btn-success my-button" value="submit" name="submit"></input>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="submit"  class=" btn btn-danger my-button" value="Back" name="back"></input>
+      </center> 
 
-        </div>
-      </form>
-    </fieldset>
-  </div>
+    </div>
+  </form>
+</fieldset>
+</div>
 </div>
 <script src="assets/js/jquery.min.js"></script>
 <script src="assets/js/popper.js"></script>
@@ -347,6 +395,34 @@ $Sub=0;
     responsive: true
   } );
  } );
+
+  $(document).on('change','#RateID', function(){
+
+    var Jdata=document.getElementById("RateID").value;
+    const obj = JSON.parse(Jdata);
+    var ItemID = obj.ItemID;
+    var RateID=obj.RateID;
+    EmployeeCode= <?php echo $EmployeeID?>;
+    console.log(ItemID);
+    console.log(EmployeeCode);
+    if(EmployeeCode){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'EmployeeCode':EmployeeCode, 'ItemID':ItemID, 'RateID':RateID},
+        success:function(result){
+          console.log((result));
+          var n=(result);
+          document.getElementById("BarCode").value=n;
+          document.getElementById("BarCode2").value=n;
+
+
+        }
+      }); 
+    }
+
+  });
+
 </script>
 </body>
 </html>

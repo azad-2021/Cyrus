@@ -11,6 +11,7 @@
   $OID = $_GET['oid'];
   $complaintID = $_GET['cid'];
   $EmployeeUID = $_GET['eid'];
+  $EmployeeID=$EmployeeUID;
   $BranchCode = $_GET['brcode'];
   $approvalID = $_GET['apid'];
   $ZoneCode = $_GET['zcode'];

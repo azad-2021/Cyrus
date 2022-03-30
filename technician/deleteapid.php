@@ -23,11 +23,11 @@ if (isset($_SESSION['apid'])) {
     $OrderID = $dataName['OrderID'];
     if (empty($OrderID)==true) {
       $ComplaintID=$dataName['ComplaintID'];
-      $sql = "UPDATE  `complaints` SET Attended='0' WHERE ComplaintID=$ComplaintID";
+      $sql = "UPDATE  `complaints` SET Attended='0', `TimeStamp`=null WHERE ComplaintID=$ComplaintID";
       $result2=mysqli_query($con2,$sql);
       $sql = "DELETE FROM approval WHERE ComplaintID=$ComplaintID and posted=0";
      }else{
-      $sql3 = "UPDATE  `orders` SET Attended='0' WHERE OrderID=$OrderID";
+      $sql3 = "UPDATE  `orders` SET Attended='0', `TimeStamp`=null WHERE OrderID=$OrderID";
       $queryV3=mysqli_query($con2,$sql3);
       $sql = "DELETE FROM approval WHERE OrderID=$OrderID and posted=0";
      }
@@ -60,6 +60,13 @@ $sql5 = "DELETE FROM estimates WHERE ApprovalID=$approvalID";
 
 if ($con3->query($sql5) === TRUE) {
   echo "Record deleted successfully";
+
+}
+
+$sql6 = "UPDATE deliverychallan SET ConsumedDate=null, ApprovalID=0 WHERE ApprovalID=$approvalID";
+
+if ($con1->query($sql6) === TRUE) {
+  echo "Record updated successfully";
 
 }
 
