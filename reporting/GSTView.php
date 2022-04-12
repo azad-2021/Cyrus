@@ -7,7 +7,7 @@ $ReceivedGST='0';
 if(isset($_POST["BranchCode"]))
 {   
   $BranchCode=$_POST["BranchCode"];
-  $query = "SELECT * FROM billbook WHERE BranchCode=$BranchCode and Cancelled!=1";
+  $query = "SELECT * FROM billbook WHERE BranchCode=$BranchCode and Cancelled=0";
   $result = $con2->query($query);
 
   $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BranchCode and Cancelled!=1 GROUP BY BranchCode";

@@ -35,6 +35,7 @@ $EXEID=$_SESSION['userid'];
 
   ?>
   <div class="container">
+
     <div class="modal fade" data-bs-backdrop="static" id="AddMulti" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -151,9 +152,11 @@ $EXEID=$_SESSION['userid'];
 
     </tbody>
   </table>
+
   <center>
     <button class="btn-primary S" style="margin: 20px;" id="button">Submit</button>
   </center>
+
 </div>
 <script src="ajax.js"></script>
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -330,11 +333,13 @@ $EXEID=$_SESSION['userid'];
       }else if (!flag2) {
         swal("error", "Please select Items", "error");
       }else{
+        /*
         var delayInMilliseconds = 2000; 
         console.log(array);
         setTimeout(function() {
           location.reload();
         }, delayInMilliseconds);
+        */
 
       }
     });

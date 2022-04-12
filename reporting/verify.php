@@ -2,35 +2,37 @@
 
 include('connection.php'); 
 include 'session.php';
+$user=$_SESSION['user'];
+$Vby = $_SESSION['user'];
+date_default_timezone_set('Asia/Kolkata');
+$Date =date('Y-m-d');
+
 $ApprovalID = base64_decode($_GET['apid']);
 $enApprovalID=$_GET['apid'];
+
 $sql = "SELECT * from pbills where ApprovalID = '$ApprovalID'";  
-$resultB = mysqli_query($con2, $sql);  
-$rowB = mysqli_fetch_assoc($resultB);  
-
-
-if($rowB){
+$result = mysqli_query($con2, $sql);  
+if (mysqli_num_rows($result)>0)
+{
   $Material='YES';
 }else{
   $Material='NO';
 }
 
-
-$sql2 = "select * from estimates where ApprovalID = '$ApprovalID'";  
-$resultE = mysqli_query($con2, $sql2);  
-$rowE = mysqli_fetch_assoc($resultE);  
-
-if($rowE){
+$sql = "select * from estimates where ApprovalID = '$ApprovalID'";  
+$result = mysqli_query($con2, $sql);
+if (mysqli_num_rows($result)>0)
+{
   $Estimate='YES';
 }else{
   $Estimate='NO';
 }
 
-$user=$_SESSION['user'];
-$query ="SELECT * FROM `approval` Where ApprovalID='$ApprovalID'";
+$query ="SELECT * FROM `approval`
+join gadget on approval.GadgetID=gadget.GadgetID
+join branchdetails on approval.BranchCode = branchdetails.BranchCode WHERE ApprovalID=23625";
 $results = mysqli_query($con, $query);
 $row=mysqli_fetch_array($results);
-
 
 $VisitDate = $row["VisitDate"];
 $Status = $row["Status"];
@@ -38,71 +40,36 @@ $GadgetID = $row["GadgetID"];
 $Jobcard = $row["JobCardNo"]; 
 $enJobcard=base64_encode($Jobcard);
 $EmployeeID = $row["EmployeeID"];
-
-if(isset($_POST['OrderID'])){
-  $ID= $row["OrderID"];
-
-}else{
-  $ID= $row["ComplaintID"];
-}
-  //$orgDate = $VisitDate;  
-  //$date = str_replace('-"', '/', $orgDate);  
-  //$VisitDate = date("d/m/Y", strtotime($date));  
-
+$Gadget=$row["Gadget"];
+$OrderID=$row["OrderID"];
+$ComplaintID=$row["ComplaintID"];
 $BranchCode = $row["BranchCode"];
-$CID = $row["ComplaintID"];
-$OID = $row["OrderID"];   
-$Vby = $_SESSION['user'];
-date_default_timezone_set('Asia/Kolkata');
-$Date =date('Y-m-d');
+$BranchName= $row["BranchName"];
+$BranchPhone=$row["PhoneNo"];
+$BranchMobile=$row["Mobile Number"];
+$Zone= $row["ZoneRegionName"];
+$Bank= $row["BankName"];
 
-$query ="SELECT * FROM `branchs` Where BranchCode='$BranchCode'";
-$result = mysqli_query($con, $query);
-$row1=mysqli_fetch_array($result);
-
-
-$Zcode=$row1["ZoneRegionCode"];
-$BranchName= $row1["BranchName"];
-$BranchPhone=$row1["PhoneNo"];
-$BranchMobile=$row1["Mobile Number"];
-$District=$row1["Address3"];
-
-$query2 ="SELECT * FROM `zoneregions` Where ZoneRegionCode='$Zcode'";
-$result2 = mysqli_query($con, $query2);
-$row2=mysqli_fetch_array($result2);
-$BankCode= $row2["BankCode"];
-$Zone= $row2["ZoneRegionName"];
-
-$query1 ="SELECT * FROM `bank` Where BankCode='$BankCode'";
-$result1 = mysqli_query($con, $query1);
-$row11=mysqli_fetch_array($result1);
-$Bank= $row11["BankName"];
-
-
-
-if(empty($CID==false)){
+if($ComplaintID>0){
+  $ID=$ComplaintID;
   $refrence='Complaint';
-  $ID=$CID;
-  $query2 ="SELECT * FROM `complaints` Where ComplaintID='$CID'";
-  $results2 = mysqli_query($con, $query2);
-  $row2=mysqli_fetch_array($results2);
-  $Description = $row2["Discription"];
+  $query ="SELECT * FROM `complaints` Where ComplaintID=ComplaintID";
+  $results = mysqli_query($con, $query);
+  $row=mysqli_fetch_array($results);
+  $Description = $row["Discription"];
 }else{
-
+  $ID=$OrderID;
   $refrence='Order';
-  $ID=$OID;
-  $query2 ="SELECT * FROM `orders` Where OrderID='$OID'";
-  $results2 = mysqli_query($con, $query2);
-  $row2=mysqli_fetch_array($results2);
-  $Description = $row2["Discription"];
+  $query ="SELECT * FROM `orders` Where OrderID=$OrderID";
+  $results = mysqli_query($con, $query);
+  $row=mysqli_fetch_array($results);
+  $Description = $row["Discription"];
 }
 
 $sqlx = "SELECT * from `jobcardmain` where `Card Number` = '$Jobcard'";  
 $resultx = mysqli_query($con, $sqlx);  
-$rowx=mysqli_fetch_array($resultx);
-//$job=$rowx["Card Number"];
-
-if(empty($rowx==false)){
+if (mysqli_num_rows($resultx)>0)
+{
  echo '<script>alert("Jobcard alredy exist")</script>';
 
 }
@@ -113,20 +80,16 @@ if(isset($_POST['submit'])){
 
  $posted='1';
  $errors= '';
- if (empty($_POST['VRemark'])==true) {
-    // code...
-  $errors = '<script>alert("Please enter Verification Remark")</script>';
-}elseif(empty($_POST['Vok'])==true){
+
+ if(empty($_POST['Vok'])==true){
   $errors = '<script>alert("Please select Branch Status")</script>';
 }elseif(empty($_POST['call'])==true){
   $errors = '<script>alert("Please select Call Status")</script>';
 }elseif(empty($_POST['Vopen'])==true){
   $errors = '<script>alert("Please select Close ID")</script>';
-}elseif(empty($rowx==false) and $Vremark != 'REJECTED'){
+}elseif((mysqli_num_rows($resultx)>0) and $Vremark != 'REJECTED') {
  $errors= '<script>alert("Jobcard alredy exist Plese type REJECTED")</script>';
 }
-
-
 
 if(empty($errors)==true){
  $Vok=$_POST['Vok'];
@@ -141,13 +104,9 @@ if(empty($errors)==true){
 
 if ($call=='YES') {
   $call='1';
-  $Remark='OK';
 }else{
   $call='0';
-  $Remark='NOT OK';
 }
-
-
 
 if ($Vopen=='YES') {
   $Vopen='0';
@@ -164,11 +123,6 @@ if ($Vok=='1') {
 }
 
 
-
-$sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
-$resultupdate = mysqli_query($con,$sql);
-
-
 if ($Vremark=='REJECTED') {
 
 }else{
@@ -178,25 +132,20 @@ if ($Vremark=='REJECTED') {
   $sql3 = "INSERT INTO `jobcardmain` (`Card Number`, `BranchCode`, `VisitDate`, `WorkPending`, `Remark`, `GadgetID`, `EmployeeCode`) VALUES('$Jobcard', '$BranchCode', '$VisitDate', '$Vpending', '$Remark', '$GadgetID', '$EmployeeID')";
 
   $Result3 = mysqli_query($con,$sql3);
-/*
-  if ($con->query($sql3) === TRUE) {
-  }else{
-    echo $con->error;
-  }
-*/
+
 }
-if(empty($CID==false)){
-  $sql2 = "UPDATE `complaints` SET Attended='$Attended', AttendDate='$VisitDate', `Call verified`='$call', `Verification remark`='$Vremark' WHERE ComplaintID='$CID'";
+if($ComplaintID>0){
+  $sql2 = "UPDATE `complaints` SET Attended='$Attended', AttendDate='$VisitDate', `Call verified`='$call', `Verification remark`='$Vremark' WHERE ComplaintID=$ComplaintID";
 
   if ($con->query($sql2) === TRUE) {
-
-            //header("location:vexecutive.php?empid=$EmployeeID")
     if ($Vremark=='REJECTED') {
+
+      $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ComplaintID=$ComplaintID";
+      $resultupdate = mysqli_query($con,$sql);
 
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     }else{
-
-      $sql = "UPDATE `complaints` SET `Executive Remark`='$Vremark' WHERE ComplaintID=$ID";
+      $sql = "UPDATE `complaints` SET `Executive Remark`='$Vremark' WHERE ComplaintID=$ComplaintID";
       $resultupdate = mysqli_query($con,$sql);
       header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     }
@@ -206,17 +155,18 @@ if(empty($CID==false)){
 
 }else{
 
-  $sqlo = "UPDATE `orders` SET Attended='$Attended', AttendDate='$VisitDate', `Call verified`='$call', `Verification remark`='$Vremark' WHERE OrderID='$OID'";
+  $sqlo = "UPDATE `orders` SET Attended='$Attended', AttendDate='$VisitDate', `Call verified`='$call', `Verification remark`='$Vremark' WHERE OrderID=$OrderID";
 
   if ($con->query($sqlo) === TRUE) {
-          //echo "Record updated successfully";
-           // header("location:vexecutive.php?empid=$EmployeeID");
-          //header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     if ($Vremark=='REJECTED') {
+
+      $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE OrderID=$OrderID";
+      $resultupdate = mysqli_query($con,$sql);
+
       $enEmployeeID=base64_encode($EmployeeID);
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$enEmployeeID");
     }else{
-      $sql = "UPDATE `orders` SET `Executive Remark`='$Vremark' WHERE OrderID=$OID";
+      $sql = "UPDATE `orders` SET `Executive Remark`='$Vremark' WHERE OrderID=$OrderID";
       $resultupdate = mysqli_query($con,$sql);
       $enEmployeeID=base64_encode($EmployeeID);
       header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$enEmployeeID");
@@ -269,13 +219,17 @@ if(empty($CID==false)){
     .r {
       margin: 5px;
     }
+
+    table{
+      font-size: 14px;
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
     <div class="container-fluid" align="center">
-      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
+      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="25">Cyrus Electronics</a>
       <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -301,37 +255,57 @@ if(empty($CID==false)){
   <div class="container">
     <br><br>
     <div class="table-responsive">
-      <table class="table-hover table-sm border" id="example" class="display nowrap" id="example">
+      <table class="table table-hover table-sm table-bordered border-primary" id="example" class="display nowrap" id="example">
         <thead>
           <tr>
-            <th>Bank</th>
-            <th>Zone</th>
-            <th>Branch Name</th>
-            <th>ID</th>
-            <th>Phone No.</th>
-            <th>Mobile No.</th>
-            <th>Date of Visit</th>
-            <th>Description</th>
-            <th>Job Card No.</th>
-            <th>Material Consumed</th>
-            <th>Estimate</th>
+            <th style="min-width:120px">Bank</th>
+            <th style="min-width:120px">Zone</th>
+            <th style="min-width:280px">Branch Name</th>
+            <th style="min-width:50px">ID</th>
+            <th style="min-width:100px">Gadget</th>
+            <th style="min-width:150px">Phone No.</th>
+            <th style="min-width:150px">Mobile No.</th>
+            <th style="min-width:120px">Date of Visit</th>
+            
           </tr>
         </thead>
         <tbody>
-          <td><?php echo $Bank;?></td>
-          <td><?php echo $Zone;?></td>
-          <td><?php echo $BranchName;?></td>
-          <td><?php echo $ID;?></td>
-          <td><?php echo $BranchPhone;?></td>
-          <td><?php echo $BranchMobile;?></td>
-          <td><?php echo $VisitDate;?></td>
-          <td><?php echo $Description;?></td>
-          <td><a href="/technician/view.php?card=<?php echo base64_encode($Jobcard);?>" target="_blank"><?php echo $Jobcard;?></a></td>
-          <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
-          <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
+          <tr>
+            <td><?php echo $Bank;?></td>
+            <td><?php echo $Zone;?></td>
+            <td><?php echo $BranchName;?></td>
+            <td><?php echo $ID;?></td>
+            <td><?php echo $Gadget;?></td>
+            <td><?php echo $BranchPhone;?></td>
+            <td><?php echo $BranchMobile;?></td>
+            <td><?php echo $VisitDate;?></td>
+            
+          </tr>
         </tbody>
       </table>
     </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-sm table-bordered border-primary" id="example" class="display nowrap" id="example">
+        <thead>
+          <tr>
+            <th style="min-width:250px">Description</th>
+            <th style="min-width:100px">Job Card No.</th>
+            <th style="min-width:150px">Material Consumed</th>
+            <th style="min-width:150px">Estimate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><?php echo $Description;?></td>
+            <td><a href="/technician/view.php?card=<?php echo base64_encode($Jobcard);?>" target="_blank"><?php echo $Jobcard;?></a></td>
+            <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
+            <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <br>
 
     <legend style="text-align: center;" class="my-select">Verification Status</legend>
@@ -341,12 +315,12 @@ if(empty($CID==false)){
         <div class="row">
           <div class="form-group col-md-12">
             <label for="Branch">Verification Remark</label>
-            <textarea class="form-control my-select" id="exampleFormControlTextarea1" cols="4" rows="2" name="VRemark"></textarea>
+            <textarea class="form-control my-select" cols="4" rows="2" name="VRemark" required></textarea>
           </div>
           <div class="form-group col-md-12">
             <label for="Bank ID">Pending Work</label>
 
-            <textarea class="form-control my-select" id="exampleFormControlTextarea1" cols="4" rows="2" name="Vpending"></textarea>
+            <textarea class="form-control my-select" cols="4" rows="2" name="Vpending"></textarea>
           </div>
           <div class="form-group col-md-4">
             <h5><label for="Branch">Branch OK</label></h5>
@@ -396,16 +370,6 @@ if(empty($CID==false)){
   "></script>
 
   <script>
-
-    $(document).ready(function() {
-      var table = $('#example').DataTable( {
-        rowReorder: {
-          selector: 'td:nth-child(2)'
-        },
-        responsive: true
-      } );
-    } );
-
   </script>
 
 

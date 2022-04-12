@@ -8,7 +8,6 @@
 
 	include'connection.php';
 	ob_start();
-	unset($_SESSION['apid']);
   $OID = $_GET['oid'];
   $complaintID = $_GET['cid'];
   $EmployeeUID = $_GET['eid'];

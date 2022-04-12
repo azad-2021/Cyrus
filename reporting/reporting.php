@@ -10,8 +10,10 @@ if (($EXEID==12) or ($EXEID==32)) {
   $queryTechnicianList= "SELECT * FROM reporting";
   $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
 }elseif ($Type=="Executive") {
-   $queryTechnicianList= "SELECT * FROM reporting WHERE ExecutiveID!=0";
-  $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
+  $queryTechnicianList= "SELECT DISTINCT `Assign To` FROM cyrusbackend.`cyrus regions`
+ join districts on `cyrus regions`.RegionCode=districts.RegionCode
+ WHERE ControlerID=$EXEID and `Assign To`!=0";
+ $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
 }else{
   $queryTechnicianList= "SELECT * FROM reporting WHERE ExecutiveID=$EXEID";
   $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
@@ -72,14 +74,18 @@ if (($EXEID==12) or ($EXEID==32)) {
               <th scope="col">Name</th>
               <th scope="col">Contact Number</th>
               <th scope="col">Total Jobcards</th>
-              <th scope="col">Last Verified Date</th>
+              <th scope="col">Visit Date</th>
               <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
             <?php 
             while($data=mysqli_fetch_assoc($resultTechnicianList)){
-              $ID =$data['EmployeeID'];
+              if ($Type=='Executive') {
+                $ID =$data['Assign To'];
+              }else{
+                $ID =$data['EmployeeID'];
+              }
               $query= "SELECT * FROM employees WHERE EmployeeCode=$ID";
               $result=mysqli_query($con,$query);
               $data1=mysqli_fetch_assoc($result);  
@@ -123,7 +129,7 @@ if (($EXEID==12) or ($EXEID==32)) {
                }else{
                 echo 'N/A';
               }
-              ?></td>
+            ?></td>
             <td>
               <?php echo $Action ?>
             </td>

@@ -76,14 +76,21 @@ if(isset($_FILES['image'])){
   $GadgetID = $_POST['GadgetID'];
   $VisitDate=$_POST['VisitDate'];
 
-  $query ="SELECT * FROM `approval` where Vremark!='REJECTED' and JobCardNo='$JOBCARD'";
-  $results = mysqli_query($con2, $query);
-  $dataName=mysqli_fetch_assoc($results);
-  $name="";
-  if (empty($dataName)==false) {
+  $query ="SELECT * FROM `approval` where JobCardNo='$JOBCARD' and posted=0";
+  $result = mysqli_query($con2, $query);
+
+  $query2 ="SELECT * FROM `jobcardmain` where `Card Number`='$JOBCARD'";
+  $result2 = mysqli_query($con2, $query2);
+
+  if (mysqli_num_rows($result)>0){
+    $dataName=mysqli_fetch_assoc($result);
     $name = $dataName['JobCardNo']; 
-  } 
-  
+  }elseif (mysqli_num_rows($result2)>0){
+    $dataName=mysqli_fetch_assoc($result2);
+    $name = $dataName['Card Number']; 
+  }
+
+
 
   $AddTech = tech();
     //echo $JOBCARD;
@@ -114,10 +121,12 @@ if(isset($_FILES['image'])){
     $errors = '<script>alert("JOBCARD already exists")</script>';
   }elseif($VisitDate<$PostedDate){
     $errors = '<script>alert("Visit Date must be greater than Posted Date")</script>';
+  }elseif($VisitDate>$LDate){
+    $errors = '<script>alert("Visit Date must be less than or equal to current Date")</script>';
   }
 
 
-  
+
   if(empty($errors)==true){
     $JOBCARD = getjobcard();
 
@@ -146,7 +155,7 @@ if(isset($_FILES['image'])){
       }
     }
     $AddTech = tech();
-    
+
     if(empty($AMCID)==false){
 
       $sqlTS = "SELECT `TimeStamp` from orders WHERE OrderID=$AMCID and `TimeStamp` is not null";
@@ -158,17 +167,17 @@ if(isset($_FILES['image'])){
         $sql2 = "UPDATE  `orders` SET Attended='1', `TimeStamp`='$timestamp' WHERE OrderID=$AMCID";
       }
 
-      
+
       $queryV2=mysqli_query($con2,$sql2);
     }elseif(empty($OID)==false){
 
-      $sqlTS = "SELECT `TimeStamp` from orders WHERE OrderID=$AMCID and `TimeStamp` is not null";
+      $sqlTS = "SELECT `TimeStamp` from orders WHERE OrderID=$OID and `TimeStamp` is not null";
       $resultTS=mysqli_query($con2,$sqlTS);
 
       if (mysqli_num_rows($resultTS)>0) {
 
         $sql3 = "UPDATE  `orders` SET Attended='1' WHERE OrderID=$OID";
-        
+
 
       }else{
         $sql3 = "UPDATE  `orders` SET Attended='1', `TimeStamp`='$timestamp' WHERE OrderID=$OID";
@@ -181,7 +190,7 @@ if(isset($_FILES['image'])){
       $resultTS=mysqli_query($con2,$sqlTS);
       if (mysqli_num_rows($resultTS)>0) {
         $sql4 = "UPDATE  `complaints` SET Attended='1' WHERE ComplaintID=$complaintID";
-        
+
       }else{
         $sql4 = "UPDATE  `complaints` SET Attended='1', `TimeStamp`='$timestamp' WHERE ComplaintID=$complaintID";
       }
@@ -277,8 +286,11 @@ $con4 -> close();
             
             <label for="Gadget"><h5>Gadget: </h5></label>
             <div class="col-lg-8">
-              <select class="form-control my-select" id="exampleFormControlSelect2" name="GadgetID">
+              <select class="form-control my-select" id="exampleFormControlSelect2" name="GadgetID" required>
                 <?php
+                if (empty($GadgetID)==true) {
+                  echo '<option value="">Select</option>'; 
+                }
                 while($data=mysqli_fetch_assoc($resultGadget)){
 
                   echo '<option value='.$data['GadgetID'].'>'.$data['Gadget'].'</option>'; 

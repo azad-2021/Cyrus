@@ -2,6 +2,7 @@
 <?php 
 include 'connection.php';
 include 'session.php';
+$EXEID=$_SESSION['userid'];
 ?>
 
 
@@ -108,10 +109,12 @@ include 'session.php';
       </thead>
       <tbody >
         <?php 
-        $query="SELECT orders.OrderID, StatusID, Discription, DateOfInformation, orders.BranchCode, DemandGenDate, BankName, ZoneRegionName, ZoneRegionCode, BranchName
+        $query="SELECT orders.OrderID, demandbase.StatusID, Discription, DateOfInformation, orders.BranchCode, DemandGenDate, BankName, ZoneRegionName, ZoneRegionCode, BranchName
         FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
         join branchdetails on orders.BranchCode=branchdetails.BranchCode
-        WHERE demandbase.StatusID=1 order by DateOfInformation";
+        join districts on branchdetails.Address3=districts.district
+        join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+        WHERE demandbase.StatusID=1 and ControlerID=$EXEID order by DateOfInformation";
 
         $result=mysqli_query($con,$query);
         while($row = mysqli_fetch_array($result)){

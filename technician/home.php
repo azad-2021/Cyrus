@@ -62,7 +62,7 @@ include 'sheet.php';
 
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
       <div class="container-fluid" align="center">
-        <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="25" height="25">Cyrus Electronics</a>
+        <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
         <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
       </button>
@@ -266,7 +266,7 @@ include 'sheet.php';
             $row3=mysqli_fetch_assoc($results3);
             $ZoneCode=$row3["ZoneRegionCode"];
 
-            $dedline = date('Y-m-d', strtotime($orgDate. ' + 6 days'));
+            $dedline = date('Y-m-d', strtotime($orgDate. ' + 7 days'));
 
             $datetime1 = date_create($newtimestamp);
             $datetime2 = date_create($dedline);

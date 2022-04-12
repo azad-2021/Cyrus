@@ -51,124 +51,88 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
     <div class="table-responsive">
 
       <table id="unassigned" class="table table-hover table-bordered border-primary display  nowrap" style="width:100%">
-        <h5 align="center" style="margin:20px;">Unassigned Orders/Complaints/AMC</h5>
+        <h5 align="center" style="margin:20px;">Pending Orders/Complaints/AMC</h5>
         <thead id="unhead">
           <tr>
             <th>Service Engineer</th>
-            <th>Unassigned Orders </th>
-            <th>Unassigned Complaints</th>                
-            <th>Unassigned AMC</th>           
+            <th>Pending Orders </th>
+            <th>Pending Complaints</th>                
+            <th>Pending AMC</th>           
           </tr>
         </thead>
         <tbody >
           <?php 
           
-          $query="SELECT `Employee Name`, employees.EmployeeCode FROM cyrusbackend.employees
-          join districts on employees.EmployeeCode=districts.`Assign To`
+          $query="SELECT sum(`Pending Order`) as PendingOrders, sum(`Pending Complaints`) as PendingComplaints, sum(`Pending AMC`) as PendingAMC, `Employee Name`, EmployeeCode FROM cyrusbackend.pendingwork
+          join districts on pendingwork.Address3=districts.District
           join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-          where ControlerID=$EXEID
-          group by employees.EmployeeCode
-          order by `Employee Name`;";
+          WHERE ControlerID=$EXEID and (`pending Order` is not null OR `Pending Complaints` is not null OR `pending AMC` is not null) group by districts.`Assign To`;";
           
-          $resultTech=mysqli_query($con,$query);
-          while($rowE=mysqli_fetch_assoc($resultTech)){
-            $Employee=$rowE["Employee Name"];
-            $EmployeeID=$rowE["EmployeeCode"];
+          $result=mysqli_query($con,$query);
+          while($row=mysqli_fetch_assoc($result)){
+            $Employee=$row["Employee Name"];
 
-            $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
-            $result=mysqli_query($con,$query);
-            $row = mysqli_fetch_array($result);
 
-            $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
-            $result2=mysqli_query($con,$query2);
-            $row2 = mysqli_fetch_array($result2);
-
-            $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
-            $result3 = mysqli_query($con, $query3);
-            $row3 = mysqli_fetch_array($result3);
-            if ($row3["count(OrderID)"]!=0 or $row["count(ComplaintID)"]!=0 or $row2["count(OrderID)"]!=0 ) {
-              ?>
-              <tr>
-                <th><?php echo $Employee; ?></th>
-
-                <td><?php echo $row3["count(OrderID)"]; ?></a></td>
-
-                <td ><?php echo $row["count(ComplaintID)"]; ?></a></td>
-
-                <td><?php echo $row2["count(OrderID)"];; ?></a></td>              
-              </tr>
-            <?php }} ?>
-          </tbody>
-        </table>    
-      </div>
-
-      <div class="table-responsive">
-        <table id="unassigned" class="table table-hover table-bordered border-primary display  nowrap" style="width:100%">
-          <h5 align="center" style="margin:20px;">Unassigned Orders/Complaints/AMC Group By Bank, Zone</h5>
-          <thead id="unhead">
+            ?>
             <tr>
-              <th>Bank</th>
-              <th>Zone</th>
-              <th>Unassigned Orders </th>
-              <th>Unassigned Complaints</th>                
-              <th>Unassigned AMC</th>           
+              <th><?php echo $Employee; ?></th>
+
+              <td><?php echo $row["PendingOrders"]; ?></a></td>
+
+              <td ><?php echo $row["PendingComplaints"]; ?></a></td>
+
+              <td><?php echo $row["PendingAMC"];; ?></a></td>              
             </tr>
-          </thead>
-          <tbody >
-            <?php 
-
-            $query="SELECT * FROM cyrusbackend.branchdetails 
-            join districts on branchdetails.Address3=districts.District
-            join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-            WHERE ControlerID=$EXEID
-            Group by BankName, ZoneRegionName;";
-
-            $resultB=mysqli_query($con,$query);
-            while($rowB=mysqli_fetch_assoc($resultB)){
-              $ZoneRegionName=$rowB["ZoneRegionName"];
-              $BankName=$rowB["BankName"];
-
-              $query="SELECT BankName, Zoneregionname, count(ComplaintID) FROM cyrusbackend.allcomplaint
-              join districts on allcomplaint.EmployeeCode=districts.`Assign To`
-              join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-              WHERE AssignDate is not null and Attended=0 and ControlerID=$EXEID and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
-              $result=mysqli_query($con,$query);
-              $row = mysqli_fetch_array($result);
-
-              $query2="SELECT BankName, Zoneregionname, count(OrderID) FROM cyrusbackend.allorders
-              join districts on allorders.EmployeeCode=districts.`Assign To`
-              join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-              WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and  ControlerID=$EXEID and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
-              $result2=mysqli_query($con,$query2);
-              $row2 = mysqli_fetch_array($result2);
-
-              $query3 = "SELECT BankName, Zoneregionname, count(OrderID) FROM cyrusbackend.allorders
-              join districts on allorders.EmployeeCode=districts.`Assign To`
-              join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-              WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%' and  ControlerID=$EXEID and BankName='$BankName' and ZoneRegionName='$ZoneRegionName';";
-              $result3 = mysqli_query($con, $query3);
-              $row3 = mysqli_fetch_array($result3);
-              if ($row3["count(OrderID)"]!=0 or $row["count(ComplaintID)"]!=0 or $row2["count(OrderID)"]!=0 ) {
-               ?>
-               <tr>
-                <th><?php echo $BankName; ?></th>
-                <th><?php echo $ZoneRegionName; ?></th>
-                <td><?php echo $row3["count(OrderID)"]; ?></a></td>
-
-                <td ><?php echo $row["count(ComplaintID)"]; ?></a></td>
-
-                <td><?php echo $row2["count(OrderID)"];; ?></a></td>              
-              </tr>
-            <?php }} ?>
-          </tbody>
-        </table> 
-
-      </div>
+          <?php } ?>
+        </tbody>
+      </table>    
     </div>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $('table.display').DataTable( {
-          responsive: false,
+
+    <div class="table-responsive">
+      <table id="unassigned" class="table table-hover table-bordered border-primary display  nowrap" style="width:100%">
+        <h5 align="center" style="margin:20px;">Pending Orders/Complaints/AMC Group By Bank, Zone</h5>
+        <thead id="unhead">
+          <tr>
+            <th>Bank</th>
+            <th>Zone</th>
+            <th>Pending Orders </th>
+            <th>Pending Complaints</th>                
+            <th>Pending AMC</th>           
+          </tr>
+        </thead>
+        <tbody >
+          <?php 
+
+          $query="SELECT BankName, ZoneRegionName, sum(`Pending Order`) as PendingOrders, sum(`Pending Complaints`) as PendingComplaints, sum(`Pending AMC`) as PendingAMC FROM cyrusbackend.pendingwork
+          join districts on pendingwork.Address3=districts.District
+          join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+          WHERE ControlerID=8 and (`pending Order` is not null OR `Pending Complaints` is not null OR `pending AMC` is not null) group by BankName, ZoneRegionName";
+
+          $result=mysqli_query($con,$query);
+          while($row=mysqli_fetch_assoc($result)){
+            $ZoneRegionName=$row["ZoneRegionName"];
+            $BankName=$row["BankName"];
+
+            ?>
+            <tr>
+              <th><?php echo $BankName; ?></th>
+              <th><?php echo $ZoneRegionName; ?></th>
+              <td><?php echo $row["PendingOrders"]; ?></a></td>
+
+              <td ><?php echo $row["PendingComplaints"]; ?></a></td>
+
+              <td><?php echo $row["PendingAMC"];; ?></a></td>          
+            </tr>
+          <?php }?>
+        </tbody>
+      </table> 
+
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $('table.display').DataTable( {
+        responsive: false,
         /*
         responsive: {
           details: {
@@ -185,16 +149,16 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
         },*/
         stateSave: true,
       } );
-      } );
+    } );
 
-    </script>
-    <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
-    <script src="ajax.js"></script>
-  </body>
-  </html>
-  <?php 
-  $con->close();
-  $con2->close();
-  ?>
+  </script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
+  <script src="ajax.js"></script>
+</body>
+</html>
+<?php 
+$con->close();
+$con2->close();
+?>

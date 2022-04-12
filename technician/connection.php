@@ -1,7 +1,12 @@
 <?php      
-$host = "192.168.1.1:9916";  
-$user = "Ashok";  
-$password = 'cyrus@123';  
+    //$host = "192.168.1.1:9916";  
+    //$user = "Ashok";  
+    //$password = 'cyrus@123';
+
+$host = "localhost";  
+$user = "root";
+$password="";
+
 $db_2 = "cyrusbackend";
 $db_3 = "cyrusbilling";
 
@@ -19,10 +24,5 @@ if(mysqli_connect_errno()) {
 $con4 = mysqli_connect('192.168.1.1:9916', "Ashok", "cyrus@123", "cyrusbilling");  
 if(mysqli_connect_errno()) {  
    die("Failed to connect with MySQL: ". mysqli_connect_error());  
-} 
-
-$con1 = mysqli_connect('localhost', "root", "", "billing");  
-if(mysqli_connect_errno()) {  
-   die("Failed to connect with MySQL: ". mysqli_connect_error());  
-}   
+}  
 ?>  

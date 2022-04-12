@@ -2,37 +2,39 @@
 include('connection.php');   
 
 $Address2='';
+
 $Company='CYRUS ELECTRONICS PVT. LTD.';
 $PAN='AACCC6555F';
 $GSTIN='09AACCC6555F1ZM';
 
+
 if (isset($_GET['ChallanNo'])) {
   $ChallanNo=$_GET['ChallanNo'];
  //echo $ChallanNo;
-  $query = "SELECT * FROM billing.deliverychallan
-  join backend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
-  join billing.states on deliverychallan.StateCode=states.StateCode
-  WHERE `ChallanNo`='$ChallanNo'";
+  $query = "SELECT * FROM cyrusbilling.deliverychallan
+  join cyrusbackend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
+  join cyrusbilling.states on deliverychallan.StateCode=states.StateCode
+  WHERE `ChallanNo`='$ChallanNo' and Cancelled=0";
 }else{
   $EmployeeID=$_GET['EmployeeID'];
   $SDate=$_GET['SDate'];
-  $query = "SELECT ChallanNo FROM deliverychallan WHERE EmployeeCode=$EmployeeID and DeliveryDate='$SDate'";
+  $query = "SELECT ChallanNo FROM deliverychallan WHERE EmployeeCode=$EmployeeID and DeliveryDate='$SDate' and Cancelled=0";
 
-  $result = $con3->query($query);
+  $result = $con2->query($query);
   if (mysqli_num_rows($result)>0){
 
     $data=mysqli_fetch_assoc($result);
     $ChallanNo=$data['ChallanNo'];
 
-    $query = "SELECT * FROM billing.deliverychallan
-    join backend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
-    join billing.states on deliverychallan.StateCode=states.StateCode
+    $query = "SELECT * FROM cyrusbilling.deliverychallan
+    join cyrusbackend.employees on deliverychallan.EmployeeCode=employees.EmployeeCode
+    join cyrusbilling.states on deliverychallan.StateCode=states.StateCode
     WHERE `ChallanNo`='$ChallanNo'";
 
   }
 
 }
-$result2 = $con3->query($query);
+$result2 = $con2->query($query);
 if (mysqli_num_rows($result2)>0){
   $data2=mysqli_fetch_assoc($result2);
   $Date = $data2['DeliveryDate'];
@@ -40,6 +42,8 @@ if (mysqli_num_rows($result2)>0){
   $State=$data2['State Name'];
   $StateCode=$data2['StateCode'];
   $Address=$data2['Address'];
+  $Type=$data2['Type'];
+  $ReleaseTo=$data2['ReleaseTo'];
 
 
   function numberTowords($num)
@@ -138,10 +142,10 @@ if (mysqli_num_rows($result2)>0){
     <meta name="description" content="">
     <meta name="author" content="Anant Singh Suryavanshi">
     <title>Challan</title>
-    <link rel="icon" href="cyrus logo.png" type="image/icon type">
+    <link rel="icon" href="assets/img/cyrus logo.png" type="image/icon type">
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <script src="Bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="Challanbootstrap/css/bootstrap.css" rel="stylesheet">
+    <script src="Challanbootstrap/js/bootstrap.bundle.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 
@@ -205,15 +209,14 @@ if (mysqli_num_rows($result2)>0){
       float:none;
     }
 
-    .tablet {
-      width:100%;
-    }
 
-    .th {
+
+    th {
       text-align: center;
+      font-size: 12px;
     }
 
-    .td {
+    tr,td {
       text-align: center;
       margin: 5px;
     }
@@ -240,7 +243,7 @@ if (mysqli_num_rows($result2)>0){
     <div class="row">
 
       <div class="col-9">
-        <h3><img src="cyrus logo.png" alt="Cyrus Electronics Pvt. Ltd." style="width:40px;height:70px; margin-top: 15px;"><span style="color: red; margin-top: -50px; margin-left: 5px;"><strong><?php echo $Company; ?></strong></span></h3>
+        <h3><img src="assets/img/cyrus logo.png" alt="Cyrus Electronics Pvt. Ltd." style="width:40px;height:70px; margin-top: 15px;"><span style="color: red; margin-top: -50px; margin-left: 5px;"><strong><?php echo $Company; ?></strong></span></h3>
         <p style="font-size:10px; margin-left: 50px; margin-top: -40px;">
          <strong>Registered Off: Cyrus House, B44/69 Sector Q, Aliganj, Lucknow-24</strong> <br>
          Phone (0522) 4026916, 2746916 Fax (0522) 4075916 E-mail-admin@cyruselectronics.co.in
@@ -256,6 +259,9 @@ if (mysqli_num_rows($result2)>0){
       <p style="font-size:10px; color: black; margin-top: -12px;">
         Date: <strong><?php echo ' '.date('d-M-Y',strtotime($Date)); ?></strong>
       </p>
+      <p style="font-size:10px; color: black; margin-top: -12px;">
+        <strong>Released for : <?php echo $Type; ?></strong>
+      </p>
     </div>
     <center>
       <strong>DUPLICATE FOR TRANSPORTER</strong>
@@ -269,7 +275,7 @@ if (mysqli_num_rows($result2)>0){
       <h3 class="tax-header">Delivery Challan</h3>
       <div class="row">
         <div class="col-6">
-          <p style="margin-bottom:-5px; font-size: 13px;">To:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <strong><?php echo $Employee; ?></strong></p>
+          <p style="margin-bottom:-5px; font-size: 13px;">To:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; <strong><?php echo $ReleaseTo; ?></strong></p>
           <p style="margin-bottom:-5px; margin-top: 5px; font-size: 13px;">Address: &nbsp;&nbsp;&nbsp;&nbsp; <strong><?php echo $Address; ?></strong></p>
           <p style="margin-bottom:-3px; margin-top: 5px; font-size: 13px;">GSTIN: &nbsp;&nbsp;&nbsp;&nbsp; <strong>&nbsp;&nbsp;<?php echo 'NA'; ?></strong></p>
         </div>
@@ -296,60 +302,91 @@ if (mysqli_num_rows($result2)>0){
       <tbody>
         <?php
         $count=0;
-        $sql = "SELECT count(deliverychallan.ItemID) as Qty, ItemName, HSNCode, GST, Amount, Rate, StateCode, BarCode, deliverychallan.ItemID FROM billing.deliverychallan
-        join backend.item on deliverychallan.ItemID=item.ItemID
-        WHERE ChallanNo='$ChallanNo' group by deliverychallan.ItemID";
-        $resultsql = $con3->query($sql);
+        if($Type=='Railways'){
+
+          $sql = "SELECT count(deliverychallan.ItemName) as Qty, deliverychallan.ItemName, HSNCode, GST, Amount, Rate, StateCode, BarCode, Discount FROM cyrusbilling.deliverychallan
+          WHERE ChallanNo='$ChallanNo' and Type='$Type' group by deliverychallan.ItemName 
+          ORDER BY ItemName";
+
+        }elseif($Type=='Service'){
+
+          $sql = "SELECT count(deliverychallan.ItemID) as Qty, item.ItemName, HSNCode, GST, Amount, Rate, StateCode, BarCode, Discount, deliverychallan.ItemID FROM cyrusbilling.deliverychallan
+          join cyrusbackend.item on deliverychallan.ItemID=item.ItemID
+          WHERE ChallanNo='$ChallanNo' and Type='$Type' group by deliverychallan.ItemID 
+          ORDER BY ItemName";
+        }else{          
+          $sql = "SELECT count(deliverychallan.ItemID) as Qty, item.ItemName, HSNCode, GST, Amount, Rate, StateCode, BarCode, Discount, deliverychallan.ItemID FROM cyrusbilling.deliverychallan
+          join cyrusbackend.item on deliverychallan.ItemID=item.ItemID
+          WHERE ChallanNo='$ChallanNo' group by deliverychallan.ItemID 
+          ORDER BY ItemName";
+        }
+        $resultsql = $con2->query($sql);
+
         $Am=array();
         $SA=array();
-        while($data3=mysqli_fetch_assoc($resultsql)){
-          $count++;
-          $ItemID=$data3['ItemID'];
-
-          if ($data3['Qty']>1) {
-            $Barcode='';
-            $sql = "SELECT BarCode FROM billing.deliverychallan WHERE ItemID=$ItemID and ChallanNo='$ChallanNo'";
-            $result2 = $con3->query($sql);
-            while($data2=mysqli_fetch_assoc($result2)){
-              $Barcode .=$data2['BarCode'].' &nbsp;&nbsp';
-
+        $DA=array();
+        if (mysqli_num_rows($resultsql)>0){
+          while($data3=mysqli_fetch_assoc($resultsql)){
+            $count++;
+            if ($Type!='Railways') {
+              $ItemID=$data3['ItemID'];
             }
-          }else{
-            $Barcode=$data3['BarCode'];
-          }
+
+
+            if ($data3['Qty']>1) {
+              $Barcode='';
+              $sql = "SELECT BarCode FROM cyrusbilling.deliverychallan WHERE ItemID=$ItemID and ChallanNo='$ChallanNo'";
+              $result2 = $con2->query($sql);
+              while($data2=mysqli_fetch_assoc($result2)){
+                $Barcode .=$data2['BarCode'].' &nbsp;&nbsp';
+
+              }
+            }else{
+              $Barcode=$data3['BarCode'];
+            }
 
           //echo $Barcode;
-          
-          
-          ?>
-          <tr>
-            <th scope="row"><?php print $count; ?></th>
-            <td style="min-width: 200px;" scope="row"><?php print $data3['ItemName'];  ?></td>
-            <td scope="row"><?php print $data3['HSNCode'];  ?></td>
-            <td scope="row"><?php print $data3['GST'];  ?></td>
-            <td scope="row"><?php print $data3['Qty'];  ?></td>
-            <td scope="row"><?php print $Barcode;  ?></td>
-          </tr>
-          <?php 
-          
-          $SA[]=$data3['Rate'];
-          $Am[]=$data3['Amount'];
-          $sg=$data3['GST'];
-          $StateCode=$data3['StateCode'];
-          $ItemID2=$data3['ItemID'];
-        } 
-        $SubAmount=sprintf('%0.2f', (array_sum($SA)));
-        $Total=sprintf('%0.2f', (array_sum($Am)));
-        if ($StateCode==9) {
-          $SGST=$SubAmount*(($sg/2)/100);
-          $CGST=$SubAmount*(($sg/2)/100);
-          $IGST=0;
+
+
+            ?>
+            <tr>
+              <th scope="row"><?php print $count; ?></th>
+              <td style="min-width: 200px;" scope="row"><?php print $data3['ItemName'];  ?></td>
+              <td scope="row"><?php print $data3['HSNCode'];  ?></td>
+              <td scope="row"><?php print $data3['GST'];  ?></td>
+              <td scope="row"><?php print $data3['Qty'];  ?></td>
+              <td scope="row"><?php print $Barcode;  ?></td>
+            </tr>
+            <?php 
+
+            $SA[]=$data3['Rate'];
+            $DA[]=$data3['Discount'];
+            $Am[]=$data3['Amount'];
+            $sg=$data3['GST'];
+            $StateCode=$data3['StateCode'];
+            if ($Type!='Railways') {
+              $ItemID2=$data3['ItemID'];
+            }
+          } 
+          $SubAmount=sprintf('%0.2f', (array_sum($SA)-array_sum($DA)));
+          $Total=sprintf('%0.2f', (array_sum($Am)));
+          if ($StateCode==9) {
+            $SGST=$SubAmount*(($sg/2)/100);
+            $CGST=$SubAmount*(($sg/2)/100);
+            $IGST=0;
+          }else{
+            $SGST=0;
+            $CGST=0;
+            $IGST=$SubAmount*($sg/100);
+          }
         }else{
+          $SubAmount=0;
           $SGST=0;
           $CGST=0;
-          $IGST=$SubAmount*($sg/100);
+          $IGST=0;
+          $Total=0;
+          $Am[]=0;
         }
-
         
 
         ?>

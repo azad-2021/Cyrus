@@ -4,6 +4,7 @@ include 'connection.php';
 include 'session.php';
 $EXEID=$_SESSION['userid'];
 $Type=$_SESSION['usertype'];
+//echo $EXEID;
 ?>
 
 
@@ -158,7 +159,10 @@ $Type=$_SESSION['usertype'];
             <tbody >
               <?php 
               if ($Type=="Executive") {
-                $query="SELECT EmployeeCode, `Employee Name` FROM employees WHERE Inservice=1 Order By `Employee Name`";
+                $query="SELECT DISTINCT EmployeeCode, `Employee Name` FROM employees
+                join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
+                join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
               }else{              
                 $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode WHERE ExecutiveID=$EXEID order by `Employee Name`";
               }
@@ -193,57 +197,60 @@ $Type=$_SESSION['usertype'];
           </table>
 
           <div class="table-responsive">
-          <table id="assigned" class="table table-hover table-bordered border-primary display responsive nowrap" style="width:100%">
-            <h5 align="center">Assigned Orders/Complaints/AMC</h5>
-            <thead id="ahead">
-              <tr>
-                <th>Service Engineer</th>
-                <th>Assigned Orders</th>  
-                <th>Assigned Complaints</th> 
-                <th>Assigned AMC</th>               
-              </tr>
-            </thead>
-            <tbody>
-              <?php 
-              $row3='';
-              if ($Type=="Executive") {
-                $query="SELECT * FROM employees WHERE Inservice=1 Order By `Employee Name`";
-              }else{
-                $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode WHERE ExecutiveID=$EXEID order by `Employee Name`";
-              }
-              $resultTech=mysqli_query($con,$query);
-              while($rowE=mysqli_fetch_assoc($resultTech)){
-               $Employee=$rowE["Employee Name"];
-               $EmployeeID=$rowE["EmployeeCode"];
+            <table id="assigned" class="table table-hover table-bordered border-primary display responsive nowrap" style="width:100%">
+              <h5 align="center">Assigned Orders/Complaints/AMC</h5>
+              <thead id="ahead">
+                <tr>
+                  <th>Service Engineer</th>
+                  <th>Assigned Orders</th>  
+                  <th>Assigned Complaints</th> 
+                  <th>Assigned AMC</th>               
+                </tr>
+              </thead>
+              <tbody>
+                <?php 
+                $row3='';
+                if ($Type=="Executive") {
+                  $query="SELECT DISTINCT EmployeeCode, `Employee Name` FROM employees
+                  join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
+                  join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
+                }else{
+                  $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode WHERE ExecutiveID=$EXEID order by `Employee Name`";
+                }
+                $resultTech=mysqli_query($con,$query);
+                while($rowE=mysqli_fetch_assoc($resultTech)){
+                 $Employee=$rowE["Employee Name"];
+                 $EmployeeID=$rowE["EmployeeCode"];
 
-               $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
-               $result=mysqli_query($con,$query);
-               $row = mysqli_fetch_array($result);
+                 $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
+                 $result=mysqli_query($con,$query);
+                 $row = mysqli_fetch_array($result);
 
-               $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
-               $result2=mysqli_query($con,$query2);
-               $row2 = mysqli_fetch_array($result2);
-               $AMC=$row2["count(OrderID)"];
+                 $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
+                 $result2=mysqli_query($con,$query2);
+                 $row2 = mysqli_fetch_array($result2);
+                 $AMC=$row2["count(OrderID)"];
 
-               $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
-               $result3 = mysqli_query($con, $query3);
-               $row3 = mysqli_fetch_array($result3);
-               $AO=$row3["count(OrderID)"]
-               ?>
-               <tr>
-                <th><?php echo $Employee; ?></th>
-                <td><a class="view_AO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAO"><?php echo $AO; ?></a></td>
+                 $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
+                 $result3 = mysqli_query($con, $query3);
+                 $row3 = mysqli_fetch_array($result3);
+                 $AO=$row3["count(OrderID)"]
+                 ?>
+                 <tr>
+                  <th><?php echo $Employee; ?></th>
+                  <td><a class="view_AO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAO"><?php echo $AO; ?></a></td>
 
-                <td><a class="view_AC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
+                  <td><a class="view_AC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
 
 
-                <td><a class="view_AMC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAMC"><?php echo $AMC; ?></a></td>              
-              </tr>
+                  <td><a class="view_AMC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAMC"><?php echo $AMC; ?></a></td>              
+                </tr>
 
-            <?php } ?>
-          </tbody>
-        </table>
-      </div>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

@@ -131,7 +131,12 @@ $EXEID=$_SESSION['userid'];
   <tbody>
    <?php 
      //$query2="SELECT * FROM cyrusbackend.demandbase join demandextended on demandbase.OrderID=demandextended.OrderID join cyrusbilling.rates on demandextended.ItemID=rates.ItemID where StatusID=2 and rates.ItemID !=1654 Order By demandbase.OrderID";
-   $query2="SELECT * FROM demandbase join orders on demandbase.OrderID=orders.OrderID join branchdetails on orders.BranchCode=branchdetails.BranchCode where demandbase.StatusID=2 Order By demandbase.OrderID desc";
+   $query2="SELECT * FROM demandbase 
+   join orders on demandbase.OrderID=orders.OrderID
+   join branchdetails on orders.BranchCode=branchdetails.BranchCode 
+   join districts on branchdetails.Address3=districts.district
+   join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+   where demandbase.StatusID=2 and ControlerID=$EXEID Order By demandbase.OrderID desc";
    $result2=mysqli_query($con,$query2);
 
    if (mysqli_num_rows($result2)>0)

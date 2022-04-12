@@ -14,15 +14,17 @@ if (!empty($ItemID))
     //$RateID=60;
     //$EmployeeID=70;
 
-    $Data="SELECT Count(BarCode) from deliverychallan WHERE EmployeeCode=$EmployeeID and ItemID=$ItemID and ConsumedDate is null";
+    $Data="SELECT BarCode from deliverychallan WHERE EmployeeCode=$EmployeeID and ItemID=$ItemID and ConsumedDate is null and ApprovalID=0";
     $result = mysqli_query($con1,$Data);
     if(mysqli_num_rows($result)>0)
-        {   $arr=mysqli_fetch_assoc($result);
-            echo $arr['Count(BarCode)'];
-        }else{
-            echo '';
+    {
+        echo "<option value=''>Select BarCode</option>";
+        while ($arr=mysqli_fetch_assoc($result))
+        {
+            echo "<option value='".$arr['BarCode']."'>".$arr['BarCode']."</option><br>";
         }
-
     }
+
+}
 
 ?>

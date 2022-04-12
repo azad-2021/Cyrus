@@ -56,8 +56,7 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
             <th style="min-width: 100px">30 Days</th>
             <th style="min-width: 100px">90 Days</th> 
             <th style="min-width: 100px">More than 90 Days</th>
-            <th style="min-width: 100px">Total Amount</th>
-            <th style="min-width: 100px">Total Received Amount</th>      
+            <th style="min-width: 100px">Total Pending Amount</th>   
           </tr>
         </thead>
         <tbody >
@@ -133,8 +132,8 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
               <td><?php echo (sprintf('%0.2f', $PendingPaymentThirtyDays)); ?></td> 
               <td><?php echo (sprintf('%0.2f', $PendingPaymentNintyDays)); ?></td> 
               <td><?php echo (sprintf('%0.2f', $PendingPaymentMoreNintyDays)); ?></td>
-              <td><?php echo $row["TotalAmount"]; ?></td> 
-              <td><?php echo $row["ReceiveAMOUNT"]; ?></td>            
+              <td><?php echo (sprintf('%0.2f', ($PendingPaymentThirtyDays+$PendingPaymentNintyDays+$PendingPaymentMoreNintyDays))); ?></td> 
+                         
             </tr>
           <?php } ?>
         </tbody>
