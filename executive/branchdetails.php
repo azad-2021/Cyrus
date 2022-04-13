@@ -123,7 +123,6 @@ $EXEID=$_SESSION['userid'];
       </div>
     </div>
 
-
     <div class="modal fade" id="ViewGST" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -141,7 +140,6 @@ $EXEID=$_SESSION['userid'];
       </div>
     </div>
 
-
     <div class="col-lg-12" >
       <br>
       <h4 align="center" style="margin-bottom: 20px">Branch Details</h4>
@@ -149,25 +147,21 @@ $EXEID=$_SESSION['userid'];
       </div>
     </div>
 
-
     <div class="col-lg-12" style="margin: 12px; overflow: auto;">
       <table class="table table-hover table-bordered border-primary scrolldown table-responsive"> 
         <h5 style="margin: 2px; text-align: center;">Orders</h5>
         <thead> 
           <tr> 
             <th>Order ID</th>
-            <th>Information Date</th>
-            
+            <th>Information Date</th>          
             <th >Attended</th>
             <th >Visit Date</th>
-            
             <th >Gadget</th>                        
             <th >Assign Date</th>                            
             <th >Call Verified</th>   
             <th >Employee</th>
             <th style="min-width:500px">Discription</th> 
             <th style="min-width:500px">Executive Remark</th>
-                     
           </tr>                     
         </thead>               
         <tbody id="Order">
@@ -190,7 +184,7 @@ $EXEID=$_SESSION['userid'];
             <th>Employee</th>
             <th style="min-width: 500px;">Discription</th> 
             <th style="min-width: 500px;">Executive Remark</th>
-                        
+
           </tr>                     
         </thead>                 
         <tbody id="Complaints" > 
@@ -218,44 +212,25 @@ $EXEID=$_SESSION['userid'];
     </div>
     <script src="ajax.js"></script>
     <script type="text/javascript">
-      /*
-      $(document).ready(function() {
-        $('table.display').DataTable( {
-          responsive: false,
-          "scrollY":        "200px",
-          "scrollCollapse": true,
-          "ordering": false,
-          "searching": false,
-          "paging":         false
-        } );
-      } );*/
 
       var exampleModal = document.getElementById('editQty')
       exampleModal.addEventListener('show.bs.modal', function (event) {
-  // Button that triggered the modal
-  var button = event.relatedTarget
-  // Extract info from data-bs-* attributes
-  var recipient = button.getAttribute('data-bs-Qty')
-  var Est = button.getAttribute('data-bs-estid')
-  var Ap = button.getAttribute('data-bs-ap')
-  console.log(Est)
-  document.getElementById("es").value = Est;
-  document.getElementById("ap").value = Ap;
-  // If necessary, you could initiate an AJAX request here
-  // and then do the updating in a callback.
-  //
+        var button = event.relatedTarget
+        var recipient = button.getAttribute('data-bs-Qty')
+        var Est = button.getAttribute('data-bs-estid')
+        var Ap = button.getAttribute('data-bs-ap')
+        console.log(Est)
+        document.getElementById("es").value = Est;
+        document.getElementById("ap").value = Ap;
+        var modalTitle = exampleModal.querySelector('.modal-title')
+        var modalBodyInput = exampleModal.querySelector('.modal-body input')
+        modalBodyInput.value = recipient
+      })
 
-  // Update the modal's content.
-  var modalTitle = exampleModal.querySelector('.modal-title')
-  var modalBodyInput = exampleModal.querySelector('.modal-body input')
-  //modalTitle.textContent = 'New message to ' + recipient
-  modalBodyInput.value = recipient
-})
-
-</script>
-</body>
-</html>
-<?php 
-$con->close();
-$con2->close();
+    </script>
+  </body>
+  </html>
+  <?php 
+  $con->close();
+  $con2->close();
 ?>
