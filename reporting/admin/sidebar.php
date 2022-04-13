@@ -97,7 +97,7 @@
   <!-- End Forms Nav -->
 
   <li class="nav-item">
-    <a class="nav-link collapsed" target="_blank" href="/cyrus/reporting/reporting.php">
+    <a class="nav-link collapsed" href="reporting.php">
       <i class="bi bi-grid"></i>
       <span>Reporting</span>
     </a>

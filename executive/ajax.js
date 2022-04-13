@@ -271,6 +271,7 @@
  $(document).on('click', '.search_order', function(){
   //$('#dataModal').modal();
   var OrderID = document.getElementById("forder").value;
+  console.log(OrderID);
   $.ajax({
    url:"/cyrus/reporting/ordersView.php",
    method:"POST",

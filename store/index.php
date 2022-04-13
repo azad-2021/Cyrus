@@ -631,6 +631,42 @@ function showResult(str) {
   xmlhttp.open("GET","dataget.php?bar="+str,true);
   xmlhttp.send();
 }
+
+
+$(document).on('click','.SaveReturned', function(){
+  var ExendedID==document.getElementById("RREmployeeCode").value;
+  var ItemID=document.getElementById("RRItemID").value;
+  var BarCode=document.getElementById("RRBarCode").value;
+  var Address=document.getElementById("RRAddress").value;
+  console.log(NewSr);
+  if (NewSr=='New') {
+    var NewSrNo=document.getElementById("NewSr").value;
+  }else{
+    NewSrNo='NA';
+  }
+  console.log(NewSrNo);
+
+  if(ItemID!='' && OldSrNo!='' && ReturnDate!='' && ((NewSr=='NA' && NewSrNo=='NA') || (NewSr=='New' && NewSr!='NA'))){
+
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'ReturnedItemID':ItemID, 'OldSrNo':OldSrNo, 'ReturnDate':ReturnDate, 'NewSrNo':NewSrNo},
+      success:function(result){
+        swal("success","Update Success","success");
+        document.getElementById("Freturn").reset();
+        var delayInMilliseconds = 2000; 
+
+        setTimeout(function() {
+          location.reload();
+        }, delayInMilliseconds);
+      }
+    });
+  }else{
+    swal("error","Please enter all fields","error");
+  }
+
+});
 </script>
 </body>
 

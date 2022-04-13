@@ -22,6 +22,7 @@
       $OrderID=$obj->OrderID;
       $ZoneCode=$obj->ZoneCode;
       //echo $ZoneCode;
+      $ItemID=0;
       $query3="SELECT * FROM cyrusbackend.demandextended WHERE OrderID=$OrderID and demandextended.ItemQty!=0";
       $result3=mysqli_query($con,$query3);
       while($row3 = mysqli_fetch_array($result3)){

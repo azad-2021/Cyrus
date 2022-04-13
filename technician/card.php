@@ -244,7 +244,7 @@ $con4 -> close();
 
   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
     <div class="container-fluid" align="center">
-      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="40">Cyrus Electronics</a>
+      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="25">Cyrus Electronics</a>
       <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>

@@ -29,10 +29,10 @@ if (!empty($OrderID))
 		for ($j=0; $j < count($Rate); $j++) { 
 
 			echo count($Order).' '.$Rate[$j].' '.$qty[$j].'<br>';
-/*
+
 			$sql = "INSERT INTO demandextended (OrderID, ItemID, RateID, ItemQty)
 			VALUES ($Order[$i], $Item[$j], $Rate[$j], $qty[$j])";
-
+/*
 			if ($con->query($sql) === TRUE) {
 
 

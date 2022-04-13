@@ -1,7 +1,7 @@
 <?php 
 include 'connection.php';
 include 'session.php';
-
+$Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
@@ -13,6 +13,7 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 $Hour = date('G');
 //echo $_SESSION['user'];
 
+$user=$_SESSION['user'];
 
 if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Morning ".$_SESSION['user'];
@@ -22,84 +23,85 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
+if ($Type=='Executive') {
 
-$query="SELECT count(orders.OrderID) as PendingMaterials
-FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
-join branchdetails on orders.BranchCode=branchdetails.BranchCode
-join districts on branchdetails.Address3=districts.district
-join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE demandbase.StatusID=1 and ControlerID=$EXEID order by DateOfInformation";
+  $query="SELECT count(orders.OrderID) as PendingMaterials
+  FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
+  join branchdetails on orders.BranchCode=branchdetails.BranchCode
+  join districts on branchdetails.Address3=districts.district
+  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE demandbase.StatusID=1 and ControlerID=$EXEID order by DateOfInformation";
 
-$result=mysqli_query($con,$query);
-$row = mysqli_fetch_array($result);
-$PendingMaterials=$row["PendingMaterials"];
-
-
-$query="SELECT  sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.billbook
-join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
-join cyrusbackend.districts on branchdetails.Address3=districts.District
-join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE (TotalBilledValue-ReceivedAmount)>1 and Cancelled=0 and ControlerID=$EXEID and BankName!='Cyrus'";
-
-$result=mysqli_query($con,$query);
-$row = mysqli_fetch_array($result);
-$PendingPayment=$row["TotalAmount"]-$row["ReceiveAMOUNT"];
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $PendingMaterials=$row["PendingMaterials"];
 
 
-$query="SELECT sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.allgstbills
-WHERE Address3 like '%Reserved%' and (TotalBilledValue-ReceivedAmount)>1";
+  $query="SELECT  sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.billbook
+  join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
+  join cyrusbackend.districts on branchdetails.Address3=districts.District
+  join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE (TotalBilledValue-ReceivedAmount)>1 and Cancelled=0 and ControlerID=$EXEID and BankName!='Cyrus'";
 
-$result=mysqli_query($con2,$query);
-$row = mysqli_fetch_array($result);
-$PendingPaymentReserved=$row["TotalAmount"]-$row["ReceiveAMOUNT"];
-
-
-$query="SELECT DISTINCT EmployeeCode, `Employee Name` FROM employees
-join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
-join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
-$resultTech=mysqli_query($con,$query);
-$TotalPendingWork=0;
-while($rowE=mysqli_fetch_assoc($resultTech)){
- $Employee=$rowE["Employee Name"];
- $EmployeeID=$rowE["EmployeeCode"];
-
- $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
- $result=mysqli_query($con,$query);
- $row = mysqli_fetch_array($result);
-
- $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
- $result2=mysqli_query($con,$query2);
- $row2 = mysqli_fetch_array($result2);
- $AMC=$row2["count(OrderID)"];
-
- $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
- $result3 = mysqli_query($con, $query3);
- $row3 = mysqli_fetch_array($result3);
- $AO=$row3["count(OrderID)"];
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $PendingPayment=$row["TotalAmount"]-$row["ReceiveAMOUNT"];
 
 
- $PendingWork  = $AO+$row['count(ComplaintID)']+$AMC;
- $Employee = $rowE['Employee Name'];
- $data[]=array("Work"=>$PendingWork, "Employee"=>$Employee);
+  $query="SELECT sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.allgstbills
+  WHERE Address3 like '%Reserved%' and (TotalBilledValue-ReceivedAmount)>1";
 
- $TotalPendingWork=$TotalPendingWork+$PendingWork;
-}
-
-rsort($data);
+  $result=mysqli_query($con2,$query);
+  $row = mysqli_fetch_array($result);
+  $PendingPaymentReserved=$row["TotalAmount"]-$row["ReceiveAMOUNT"];
 
 
-//unassigned work
+  $query="SELECT DISTINCT EmployeeCode, `Employee Name` FROM employees
+  join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
+  join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
+  $resultTech=mysqli_query($con,$query);
+  $TotalPendingWork=0;
+  while($rowE=mysqli_fetch_assoc($resultTech)){
+   $Employee=$rowE["Employee Name"];
+   $EmployeeID=$rowE["EmployeeCode"];
 
-$query="SELECT `Employee Name`, employees.EmployeeCode FROM cyrusbackend.employees
-join districts on employees.EmployeeCode=districts.`Assign To`
-join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-where ControlerID=$EXEID
-group by employees.EmployeeCode
-order by `Employee Name`";
+   $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
+   $result=mysqli_query($con,$query);
+   $row = mysqli_fetch_array($result);
 
-$resultTech=mysqli_query($con,$query);
-while($rowE=mysqli_fetch_assoc($resultTech)){
+   $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
+   $result2=mysqli_query($con,$query2);
+   $row2 = mysqli_fetch_array($result2);
+   $AMC=$row2["count(OrderID)"];
+
+   $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
+   $result3 = mysqli_query($con, $query3);
+   $row3 = mysqli_fetch_array($result3);
+   $AO=$row3["count(OrderID)"];
+
+
+   $PendingWork  = $AO+$row['count(ComplaintID)']+$AMC;
+   $Employee = $rowE['Employee Name'];
+   $data[]=array("Work"=>$PendingWork, "Employee"=>$Employee);
+
+   $TotalPendingWork=$TotalPendingWork+$PendingWork;
+ }
+
+ rsort($data);
+
+
+  //unassigned work
+
+ $query="SELECT `Employee Name`, employees.EmployeeCode FROM cyrusbackend.employees
+ join districts on employees.EmployeeCode=districts.`Assign To`
+ join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+ where ControlerID=$EXEID
+ group by employees.EmployeeCode
+ order by `Employee Name`";
+
+ $resultTech=mysqli_query($con,$query);
+ while($rowE=mysqli_fetch_assoc($resultTech)){
   $Employee=$rowE["Employee Name"];
   $EmployeeID=$rowE["EmployeeCode"];
   $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.vallcomplaintsd WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
@@ -114,13 +116,11 @@ while($rowE=mysqli_fetch_assoc($resultTech)){
   $result3 = mysqli_query($con, $query3);
   $row3 = mysqli_fetch_array($result3);
 
-
-
   $PendingWorkE= $row3["count(vallordersd.OrderID)"] + $row["count(ComplaintID)"] + $row2["count(vallordersd.OrderID)"];            
   $data2[]=array("Unassigned"=>$PendingWorkE, "Employee"=>$Employee);
 }
 rsort($data2);
-//print_r($data2);
+  //print_r($data2);
 
 $sql ="SELECT BankName, ZoneRegionName, EmployeeCode,  BranchName, BookNo, BankCode, ZoneRegionCode, BillDate, sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.billbook
 join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
@@ -139,6 +139,123 @@ while ($row = mysqli_fetch_array($result)) {
   $data3[]=array("Payment"=>sprintf('%0.2f', $PendingBill), "Bank"=>$Bankarr);
 }
 rsort($data3);
+}elseif($Type=='Reporting'){
+
+  $query="SELECT count(ApprovalID) FROM cyrusbackend.reporting 
+  join approval on reporting.EmployeeID=approval.EmployeeID
+  WHERE ExecutiveID=$EXEID and posted=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $PendingReporting=$row["count(ApprovalID)"];
+
+
+  $query="SELECT count(OrderID) FROM cyrusbackend.reporting
+  join vallordersd on reporting.EmployeeID=vallordersd.EmployeeCode
+  WHERE ExecutiveID=$EXEID and AssignDate is null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $UnassignedOrder=$row["count(OrderID)"];
+
+  $query="SELECT count(ComplaintID) FROM cyrusbackend.reporting 
+  join vallcomplaintsd on reporting.EmployeeID=vallcomplaintsd.EmployeeCode
+  WHERE ExecutiveID=$EXEID and AssignDate is null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $UnassignedComplaints=$row["count(ComplaintID)"];
+
+  $UnassignedWork=$UnassignedOrder+$UnassignedComplaints;
+
+  $query="SELECT count(OrderID), `Employee Name` FROM cyrusbackend.reporting
+  join allorders on reporting.EmployeeID=allorders.EmployeeCode
+  WHERE ExecutiveID=$EXEID and AssignDate is not null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $AssignedOrder=$row["count(OrderID)"];
+
+  $query="SELECT count(ComplaintID), `Employee Name` FROM cyrusbackend.reporting 
+  join allcomplaint on reporting.EmployeeID=allcomplaint.EmployeeCode
+  WHERE ExecutiveID=$EXEID and AssignDate is not null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $AssignedComplaints=$row["count(ComplaintID)"];
+
+  $PendingWork=$AssignedOrder+$AssignedComplaints;
+
+  $queryTech= "SELECT * FROM reporting WHERE ExecutiveID=$EXEID";
+  $resultTech=mysqli_query($con,$queryTech);
+
+  while($rowE= mysqli_fetch_array($resultTech)){
+    $EmployeeID=$rowE['EmployeeID'];
+    
+    $query="SELECT count(OrderID) , `Employee Name` as Employee FROM vallordersd
+    WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
+
+    $result=mysqli_query($con,$query);
+    $row1= mysqli_fetch_array($result);
+
+    $query="SELECT count(ComplaintID) FROM vallcomplaintsd
+    WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
+
+    $result=mysqli_query($con,$query);
+    $row2= mysqli_fetch_array($result);
+
+    $data1[]=array("unassigned"=>($row1['count(OrderID)']+$row2['count(ComplaintID)']), "Employee"=>$row1['Employee']);
+
+
+    $query="SELECT count(OrderID), `Employee Name` as Employee FROM allorders
+    WHERE EmployeeCode=$EmployeeID and AssignDate is not null and Attended=0";
+    $result=mysqli_query($con,$query);
+    $row3 = mysqli_fetch_array($result);
+
+    $query="SELECT count(ComplaintID) FROM allcomplaint
+    WHERE EmployeeCode=$EmployeeID and AssignDate is not null and Attended=0";
+    $result=mysqli_query($con,$query);
+    $row4 = mysqli_fetch_array($result);    
+    $data2[]=array("assigned"=>($row3['count(OrderID)']+$row4['count(ComplaintID)']), "Employee"=>$row3['Employee']);
+  }
+
+  rsort($data1);
+  rsort($data2);
+
+  $query="SELECT Count(ApprovalID) as Accepted, VDate FROM cyrusbackend.approval WHERE Vby like '%$user%'
+  and Vremark!='REJECTED' and year(VDate)=year(current_date()) and month(Vdate)=month(current_date())
+  group by VDate Order By Vdate";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data3[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Rejected, VDate FROM cyrusbackend.approval WHERE Vby like '%$user%'
+  and Vremark='REJECTED' and year(VDate)=year(current_date()) and month(Vdate)=month(current_date())
+  group by VDate Order By Vdate";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data4[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Accepted, month(VDate) as VDateA FROM cyrusbackend.approval WHERE Vby like '%$user%'
+  and Vremark!='REJECTED' and year(VDate)=year(current_date())
+  group by month(VDate) Order By month(Vdate)";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data5[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Rejected, month(VDate) as VDateR FROM cyrusbackend.approval WHERE Vby like '%$user%'
+  and Vremark='REJECTED' and year(VDate)=year(current_date())
+  group by month(VDate) Order By month(Vdate)";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data6[]=$row;
+  }
+
+
+
+
+
+}
+
+
 
 ?>
 
@@ -227,11 +344,11 @@ rsort($data3);
             <div class="col-xxl-4 col-md-4">
               <div class="card info-card sales-card">
                 <div class="card-body">
-                  <h5 class="card-title" style="margin-bottom: 30px;">Total <span>| Pending Material <br><center>Confirmation</center> </span></h5>
+                  <h5 class="card-title">Total <span>| Pending Verification</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="ps-3">
-                      <h6><?php echo $PendingMaterials; ?></h6>
+                      <h6><?php echo $PendingReporting; ?></h6>
                     </div>
                   </div>
                 </div>
@@ -247,11 +364,11 @@ rsort($data3);
               <div class="card info-card revenue-card">
 
                 <div class="card-body">
-                  <h5 class="card-title">Total <span>| Pending Payment + Reserved</span><br></h5>
+                  <h5 class="card-title">Total <span>| Pending Unassigned Work</span><br></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="ps-3">
-                      <h6>&#x20B9 <?php echo number_format($PendingPayment,2).'&nbsp; + '.number_format($PendingPaymentReserved,2); ?></h6>
+                      <h6><?php echo $UnassignedWork ?></h6>
                     </div>
                   </div>
                 </div>
@@ -268,7 +385,7 @@ rsort($data3);
               <div class="card info-card customers-card">
 
                 <div class="card-body">
-                  <h5 class="card-title" style="margin-bottom: 40px;">Total <span>| Pending Work</span></h5>
+                  <h5 class="card-title">Total <span>| Pending Work</span></h5>
 
                   <div class="d-flex align-items-center">
                     <!--
@@ -277,7 +394,7 @@ rsort($data3);
                     </div>
                   -->
                   <div class="ps-3">
-                    <h6><?php echo $TotalPendingWork; ?></h6>
+                    <h6><?php echo $PendingWork; ?></h6>
                   </div>
                 </div>
 
@@ -294,7 +411,7 @@ rsort($data3);
             <div class="card">
 
               <div class="card-body">
-                <h5 class="card-title">Pending <span> Work <a style="float:right" href="PendingWork.php" target="_blank">Show All</a></span></h5>
+                <h5 class="card-title">Pending <span> Work <a style="float:right" href="assigned.php" target="_blank">Show All</a></span></h5>
 
                 <div id="PendingWork"></div>
 
@@ -305,7 +422,7 @@ rsort($data3);
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Unassigned <span> Work <a style="float:right" href="UnassignedWork.php" target="_blank">Show All</a></span></h5>
+                <h5 class="card-title">Unassigned <span> Work <a style="float:right" href="assign.php" target="_blank">Show All</a></span></h5>
 
                 <div id="unassigned"></div>
 
@@ -318,99 +435,18 @@ rsort($data3);
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Pending <span> Payment <a style="float:right" href="PendingBills.php" target="_blank">Show All</a></span></h5>
-
-                <div id="PendingPayment"></div>
-
+                <h5 class="card-title">Verification<span> This Month</span></h5>
+                <div id="Reporting"></div>
               </div>
             </div>
           </div>
 
-          <!-- Recent Sales -->
           <div class="col-12">
-            <div class="card recent-sales overflow-auto">
-
+            <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Recent  Received <span>| Orders</span></h5>
-
-                <div class="table-responsive container">
-                  <table class="table text-start align-middle table-bordered table-hover mb-0">
-                    <thead>
-                      <tr class="text-dark">
-                        <th scope="col" style="min-width:200px">Bank</th>
-                        <th scope="col" style="min-width:200px">Zone</th>
-                        <th scope="col" style="min-width:200px">Branch</th>
-                        <th scope="col" style="min-width:100px">Order ID</th>
-                        <th scope="col" style="min-width:300px">Description</th>
-                        <th scope="col" style="min-width:150px">Order Date</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php 
-                      $sql ="SELECT BankName, ZoneRegionName, BranchName, OrderID, Discription, DateOfInformation FROM cyrusbackend.orders
-                      join branchdetails on orders.BranchCode=branchdetails.BranchCode
-                      join districts on branchdetails.Address3=districts.District
-                      join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                      WHERE ControlerID=$EXEID and AssignDate is null
-                      Order by DateOfInformation desc limit 10";
-
-                      $result = mysqli_query($con,$sql);
-                      while ($row = mysqli_fetch_array($result)) { 
-                       ?>
-                       <tr>
-
-                        <td><?php echo $row["BankName"]; ?></td>
-                        <td><?php echo $row["ZoneRegionName"]; ?></td>
-                        <td><?php echo $row["BranchName"]; ?></td>
-                        <td><?php echo $row["OrderID"]; ?></td>
-                        <td><?php echo $row["Discription"]; ?></td>
-                        <td><?php echo $row["DateOfInformation"]; ?></td>
-                      </tr>
-                    <?php } ?>
-                  </tbody>
-                </table>
+                <h5 class="card-title">Verification<span> This Year</span></h5>
+                <div id="ReportingYear"></div>
               </div>
-            </div>
-
-            <div class="card-body">
-              <h5 class="card-title">Recent  Received <span>| Complaints</span></h5>
-
-              <div class="table-responsive container">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
-                  <thead>
-                    <tr class="text-dark">
-                      <th scope="col" style="min-width:200px">Bank</th>
-                      <th scope="col" style="min-width:200px">Zone</th>
-                      <th scope="col" style="min-width:200px">Branch</th>
-                      <th scope="col" style="min-width:120px">Complaint ID</th>
-                      <th scope="col" style="min-width:300px">Description</th>
-                      <th scope="col" style="min-width:150px">Complaint Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php 
-                    $sql ="SELECT BankName, ZoneRegionName, BranchName, ComplaintID, Discription, DateOfInformation FROM cyrusbackend.complaints
-                    join branchdetails on complaints.BranchCode=branchdetails.BranchCode
-                    join districts on branchdetails.Address3=districts.District
-                    join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                    WHERE ControlerID=$EXEID and AssignDate is null
-                    Order by DateOfInformation desc limit 10";
-
-                    $result = mysqli_query($con,$sql);
-                    while ($row = mysqli_fetch_array($result)) { 
-                     ?>
-                     <tr>
-
-                      <td><?php echo $row["BankName"]; ?></td>
-                      <td><?php echo $row["ZoneRegionName"]; ?></td>
-                      <td><?php echo $row["BranchName"]; ?></td>
-                      <td><?php echo $row["ComplaintID"]; ?></td>
-                      <td><?php echo $row["Discription"]; ?></td>
-                      <td><?php echo $row["DateOfInformation"]; ?></td>
-                    </tr>
-                  <?php } ?>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -457,15 +493,19 @@ rsort($data3);
   var hoverBorder='rgba(200, 200, 200, 1)';
   var xcolor=["#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1", "#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1","#4154f1"];
 
-  var data= <?php print_r(json_encode($data)); ?>;
+  var months = [ " ", "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December" ];
+
+
+  var data2= <?php print_r(json_encode($data2)); ?>;
 
   var Employee = [];
   var PendingWork = [];
 
 
   for(var i = 0; i < 10; i++) {
-    Employee.push(data[i].Employee);
-    PendingWork.push(data[i].Work);
+    Employee.push(data2[i].Employee);
+    PendingWork.push(data2[i].assigned);
   }
 
 
@@ -508,16 +548,16 @@ rsort($data3);
 
       var chart = new ApexCharts(document.querySelector("#PendingWork"), options);
       chart.render();
+      
 
-
-      var data2= <?php print_r(json_encode($data2)); ?>;
+      var data1= <?php print_r(json_encode($data1)); ?>;
 
       var EmployeeE = [];
       var unassigned = [];
 
       for(var i = 0; i < 10; i++) {
-        EmployeeE.push(data2[i].Employee);
-        unassigned.push(data2[i].Unassigned);
+        EmployeeE.push(data1[i].Employee);
+        unassigned.push(data1[i].unassigned);
       }
 
 
@@ -562,57 +602,133 @@ rsort($data3);
       chart.render();
 
 
+
       var data3= <?php print_r(json_encode($data3)); ?>;
 
-      var Bankarr = [];
-      var PendingBills = [];
+      var Accepted = [];
+      var VDate = [];
 
-      for(var i = 0; i < 10; i++) {
-        Bankarr.push(data3[i].Bank);
-        PendingBills.push(data3[i].Payment);
+      for(var i = 0; i < data3.length; i++) {
+        Accepted.push(data3[i].Accepted);
+        VDate.push(data3[i].VDate);
       }
 
+      var data4= <?php print_r(json_encode($data4)); ?>;
 
-      var options3 = {
-        series: [{
-          data: PendingBills
-        }],
-        chart: {
-          height: 350,
-          type: 'bar',
-          events: {
-            click: function(chart, w, e) {
-              console.log(chart, w, e)
+      var Rejected = [];
+      var VDateR = [];
+
+      for(var i = 0; i < data4.length; i++) {
+        Rejected.push(data4[i].Rejected);
+        VDateR.push(data4[i].VDate);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new ApexCharts(document.querySelector("#Reporting"), {
+          series: [{
+            name: 'Accepted Jobcard',
+            data: Accepted,
+          }, {
+            name: 'Rejected Jobcard',
+            data: Rejected
+          }],
+          chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+              show: false
+            },
+          },
+          markers: {
+            size: 4
+          },
+          colors: ['#4154f1', '#2eca6a', '#ff771d'],
+          fill: {
+            type: "gradient",
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.3,
+              opacityTo: 0.4,
+              stops: [0, 90, 100]
             }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 2
+          },
+          xaxis: {
+            type: 'datetime',
+            categories: VDate
+          },
+          tooltip: {
+            x: {
+              format: 'dd/MM/yy HH:mm'
+            },
           }
-        },
-        colors: colors,
-        plotOptions: {
-          bar: {
-            columnWidth: '45%',
-            distributed: true,
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        legend: {
-          show: false
-        },
-        xaxis: {
-          categories: Bankarr,
-          labels: {
-            style: {
-              colors: xcolor,
-              fontSize: '12px'
-            }
-          }
-        }
-      };
+        }).render();
+      });
 
-      var chart = new ApexCharts(document.querySelector("#PendingPayment"), options3);
-      chart.render();
+      var data5= <?php print_r(json_encode($data5)); ?>;
 
+      var AcceptedM = [];
+      var VDateM = [];
+
+      for(var i = 0; i < data5.length; i++) {
+        AcceptedM.push(data5[i].Accepted);
+        VDateM.push( months[data5[i].VDateA]);
+      }
+
+      var data6= <?php print_r(json_encode($data6)); ?>;
+
+      var RejectedM = [];
+      var VDateRM = [];
+
+      for(var i = 0; i < data6.length; i++) {
+        RejectedM.push(data6[i].Rejected);
+        VDateRM.push(data6[i].VDateR);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new ApexCharts(document.querySelector("#ReportingYear"), {
+          series: [{
+            name: 'Accepted Jobcard',
+            data: AcceptedM,
+          }, {
+            name: 'Rejected Jobcard',
+            data: RejectedM
+          }],
+          chart: {
+            height: 250,
+            type: 'bar',
+            toolbar: {
+              show: false
+            },
+          },
+          markers: {
+            size: 4
+          },
+          colors: ['#4154f1', '#2eca6a', '#ff771d'],
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 2
+          },
+          xaxis: {
+            type: 'sate',
+            categories: VDateM
+          },
+          tooltip: {
+            x: {
+              format: 'dd/MM/yy HH:mm'
+            },
+          }
+        }).render();
+      });
 
     </script>
   </body>
