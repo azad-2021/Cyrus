@@ -241,106 +241,115 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   $Employee=$rowE["Employee Name"];
                   $EmployeeID=$rowE["EmployeeCode"];
 
-                  $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.vallcomplaintsd WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
+                  $query="SELECT count(ComplaintID) FROM cyrusbackend.vallcomplaintsd join districts on vallcomplaintsd.Address3=districts.District
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID and ControlerID=$EXEID";
                   $result=mysqli_query($con,$query);
                   $row = mysqli_fetch_array($result);
 
-                  $query2="SELECT count(vallordersd.OrderID), vallordersd.`Employee NAME`, vallordersd.EmployeeCode FROM vallordersd WHERE vallordersd.AssignDate is null and vallordersd.Discription like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID";
+                  $query2="SELECT count(vallordersd.OrderID) FROM vallordersd
+                  join districts on vallordersd.Address3=districts.District
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  WHERE vallordersd.AssignDate is null and vallordersd.Discription like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID and ControlerID=$EXEID";
                   $result2=mysqli_query($con,$query2);
                   $row2 = mysqli_fetch_array($result2);
 
-                  $query3 = "SELECT count(vallordersd.OrderID), vallordersd.`Employee NAME`, vallordersd.EmployeeCode FROM vallordersd WHERE AssignDate is null and Discription not like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID";
+                  $query3 = "SELECT count(vallordersd.OrderID) FROM vallordersd
+                  join districts on vallordersd.Address3=districts.District
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  WHERE AssignDate is null and Discription not like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID and ControlerID=$EXEID";
                   $result3 = mysqli_query($con, $query3);
                   $row3 = mysqli_fetch_array($result3);
+                  if ($row["count(ComplaintID)"]>0 or $row2["count(vallordersd.OrderID)"]>0 or $row3["count(vallordersd.OrderID)"]>0) {
+
+                    ?>
+                    <tr>
+                      <td><?php echo $Employee; ?></td>
+
+                      <td><a class="view_UNO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNO"><?php echo $row3["count(vallordersd.OrderID)"]; ?></a></td>
+
+                      <td ><a class="view_UNC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
+
+                      <td><a class="view_UAMC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUAMC"><?php echo $row2["count(vallordersd.OrderID)"];?></a></td>              
+                    </tr>
+                    <?php
+
+                  }}
+
                   ?>
-                  <tr>
-                    <td><?php echo $Employee; ?></td>
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-                    <td><a class="view_UNO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNO"><?php echo $row3["count(vallordersd.OrderID)"]; ?></a></td>
+          <div class="card-body">
+            <h5 class="card-title">Uassigned Work  <span>| Group by Bank & Zone</span></h5>
 
-                    <td ><a class="view_UNC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
+            <div class="table-responsive container">
+              <table width="100%" class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
+               <thead id="unhead">
+                <tr>
+                  <th>Bank</th>
+                  <th>Zone</th>
+                  <th>Unassigned Orders </th>
+                  <th>Unassigned Complaints</th>                
+                  <th>Unassigned AMC</th>           
+                </tr>
+              </thead>
+              <tbody >
+                <?php 
 
-                    <td><a class="view_UAMC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUAMC"><?php echo $row2["count(vallordersd.OrderID)"];?></a></td>              
+                $query="SELECT * FROM cyrusbackend.branchdetails 
+                join districts on branchdetails.Address3=districts.District
+                join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                WHERE ControlerID=$EXEID and Address3 not like 'Reserved'
+                Group by BankName, ZoneRegionName;";
+
+                $resultB=mysqli_query($con,$query);
+                while($rowB=mysqli_fetch_assoc($resultB)){
+                  $ZoneRegionName=$rowB["ZoneRegionName"];
+                  $BankName=$rowB["BankName"];
+
+                  $query="SELECT BankName, ZoneRegionName, count(DISTINCT ComplaintID) FROM cyrusbackend.vallcomplaintsd 
+                  join districts on vallcomplaintsd .EmployeeCode=districts.`Assign To`
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  where ControlerID=$EXEID and AssignDate is null and Attended=0 and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
+                  $result=mysqli_query($con,$query);
+                  $row = mysqli_fetch_array($result);
+
+                  $query2="SELECT count(DISTINCT vallordersd.OrderID) , BankName, ZoneRegionName FROM vallordersd
+                  join districts on vallordersd.EmployeeCode=districts.`Assign To`
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  WHERE ControlerID=$EXEID and vallordersd.AssignDate is null and vallordersd.Discription like '%AMC%' and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
+                  $result2=mysqli_query($con,$query2);
+                  $row2 = mysqli_fetch_array($result2);
+
+                  $query3 = "SELECT count(DISTINCT vallordersd.OrderID) AS CountOfOrderID, BankName, ZoneRegionName FROM vallordersd
+                  join districts on vallordersd.EmployeeCode=districts.`Assign To`
+                  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+                  WHERE ControlerID=$EXEID and vallordersd.AssignDate is null and vallordersd.Discription not like '%AMC%' and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
+                  $result3 = mysqli_query($con, $query3);
+                  $row3 = mysqli_fetch_array($result3);
+                  if ($row3["CountOfOrderID"]!=0 or $row["count(DISTINCT ComplaintID)"]!=0 or $row2["count(DISTINCT vallordersd.OrderID)"] ) {
+                   ?>
+                   <tr>
+                    <td><?php echo $BankName; ?></td>
+                    <td><?php echo $ZoneRegionName; ?></td>
+                    <td><a class="view_UNOB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUNOB"><?php echo $row3["CountOfOrderID"]; ?></a></td>
+
+                    <td ><a class="view_UNCB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUNCB"><?php echo $row["count(DISTINCT ComplaintID)"]; ?></a></td>
+
+                    <td><a class="view_UAMCB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUAMCB"><?php echo $row2["count(DISTINCT vallordersd.OrderID)"];; ?></a></td>              
                   </tr>
-                  <?php
-
-                }
-
+                <?php }} 
                 ?>
               </tbody>
             </table>
           </div>
         </div>
-
-        <div class="card-body">
-          <h5 class="card-title">Uassigned Work  <span>| Group by Bank & Zone</span></h5>
-
-          <div class="table-responsive container">
-            <table width="100%" class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
-             <thead id="unhead">
-              <tr>
-                <th>Bank</th>
-                <th>Zone</th>
-                <th>Unassigned Orders </th>
-                <th>Unassigned Complaints</th>                
-                <th>Unassigned AMC</th>           
-              </tr>
-            </thead>
-            <tbody >
-              <?php 
-
-              $query="SELECT * FROM cyrusbackend.branchdetails 
-              join districts on branchdetails.Address3=districts.District
-              join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-              WHERE ControlerID=$EXEID and Address3 not like 'Reserved'
-              Group by BankName, ZoneRegionName;";
-
-              $resultB=mysqli_query($con,$query);
-              while($rowB=mysqli_fetch_assoc($resultB)){
-                $ZoneRegionName=$rowB["ZoneRegionName"];
-                $BankName=$rowB["BankName"];
-
-                $query="SELECT BankName, ZoneRegionName, count(DISTINCT ComplaintID) FROM cyrusbackend.vallcomplaintsd 
-                join districts on vallcomplaintsd .EmployeeCode=districts.`Assign To`
-                join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                where ControlerID=$EXEID and AssignDate is null and Attended=0 and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
-                $result=mysqli_query($con,$query);
-                $row = mysqli_fetch_array($result);
-
-                $query2="SELECT count(DISTINCT vallordersd.OrderID) , BankName, ZoneRegionName FROM vallordersd
-                join districts on vallordersd.EmployeeCode=districts.`Assign To`
-                join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                WHERE ControlerID=$EXEID and vallordersd.AssignDate is null and vallordersd.Discription like '%AMC%' and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
-                $result2=mysqli_query($con,$query2);
-                $row2 = mysqli_fetch_array($result2);
-
-                $query3 = "SELECT count(DISTINCT vallordersd.OrderID) AS CountOfOrderID, BankName, ZoneRegionName FROM vallordersd
-                join districts on vallordersd.EmployeeCode=districts.`Assign To`
-                join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                WHERE ControlerID=$EXEID and vallordersd.AssignDate is null and vallordersd.Discription not like '%AMC%' and BankName='$BankName' and ZoneRegionName='$ZoneRegionName'";
-                $result3 = mysqli_query($con, $query3);
-                $row3 = mysqli_fetch_array($result3);
-                if ($row3["CountOfOrderID"]!=0 or $row["count(DISTINCT ComplaintID)"]!=0 or $row2["count(DISTINCT vallordersd.OrderID)"] ) {
-                 ?>
-                 <tr>
-                  <td><?php echo $BankName; ?></td>
-                  <td><?php echo $ZoneRegionName; ?></td>
-                  <td><a class="view_UNOB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUNOB"><?php echo $row3["CountOfOrderID"]; ?></a></td>
-
-                  <td ><a class="view_UNCB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUNCB"><?php echo $row["count(DISTINCT ComplaintID)"]; ?></a></td>
-
-                  <td><a class="view_UAMCB" id="<?php print $BankName; ?>" id2="<?php print $ZoneRegionName; ?>" data-bs-target="#ViewUAMCB"><?php echo $row2["count(DISTINCT vallordersd.OrderID)"];; ?></a></td>              
-                </tr>
-              <?php }} 
-              ?>
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
+    <!-- End Recent Sales -->
   </div>
-  <!-- End Recent Sales -->
-</div>
 </div>
 <!-- End Left side columns -->
 
@@ -492,59 +501,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }
   });
   });
-/*
-  $(document).on('click', '.view_UNOB', function(){
-    var Zone = $(this).attr("id2");
-    var Bank=$(this).attr("id");
-    console.log(Zone);
-    $.ajax({
-     url:"uno.php",
-     method:"POST",
-     data:{Zone:Zone, Bank:Bank},
-     success:function(data){
-      $('#UNODataB').html(data);
-      $('#ViewUNOB').modal('show');
-    }
-  });
-  });
 
-
-  $(document).on('click', '.view_UNCB', function(){
-    var Zone = $(this).attr("id2");
-    var Bank=$(this).attr("id");
-    console.log(Zone);
-    $.ajax({
-     url:"unc.php",
-     method:"POST",
-     data:{Zone:Zone, Bank:Bank},
-     $.ajax({
-       url:"unc.php",
-       method:"POST",
-       data:{EmployeeID:EmployeeID},
-       success:function(data){
-        $('#UNCData').html(data);
-        $('#ViewUNC').modal('show');
-      }
-    });
-   });
-
-    $(document).on('click', '.view_UAMCB', function(){
-      var Zone = $(this).attr("id2");
-      var Bank=$(this).attr("id");
-      console.log(Zone);
-      $.ajax({
-       url:"unamc.php",
-       method:"POST",
-       data:{Zone:Zone, Bank:Bank},
-       success:function(data){
-        $('#UAMCData').html(data);
-        $('#ViewUAMC').modal('show');
-      }
-    });
-    });
-    */
-
-  </script>
+</script>
 </body>
 
 </html>

@@ -35,7 +35,7 @@ if (isset($_POST['submit'])) {
         $resultAdd = mysqli_query($con3,$queryAdd); 
 
         if ($_SESSION['usertype']=="Reporting" or $_SESSION['usertype']=='Dataentry' or $_SESSION['userid']==32) {
-         header("location: reporting/reporting.php?");
+         header("location: reporting/");
      }elseif ($_SESSION['usertype']=="Reception") {
         header("location: reception/");
     }elseif ($_SESSION['usertype']=="Executive") {

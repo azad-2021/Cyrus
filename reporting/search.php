@@ -1,7 +1,19 @@
-<?php
+<?php 
 
 include('connection.php'); 
 include 'session.php';
+$username = $_SESSION['user'];
+$EXEID=$_SESSION['userid'];
+$Type=$_SESSION['usertype'];
+date_default_timezone_set('Asia/Calcutta');
+$Hour = date('G');
+if ( $Hour >= 1 && $Hour <= 11 ) {
+  $wish= "Good Morning ".$_SESSION['user'];
+} else if ( $Hour >= 12 && $Hour <= 15 ) {
+  $wish= "Good Afternoon ".$_SESSION['user'];
+} else if ( $Hour >= 19 || $Hour <= 23 ) {
+  $wish= "Good Evening ".$_SESSION['user'];
+}
 
 if(isset($_POST['submit'])){
 
@@ -10,7 +22,7 @@ if(isset($_POST['submit'])){
   $query ="SELECT * FROM `approval` WHERE JobCardNo='$Jobcard'";
   $results = mysqli_query($con, $query);
   $row=mysqli_fetch_assoc($results);
-    
+
     //echo $ApprovalID;
   if (empty($row)==false){
 
@@ -21,149 +33,94 @@ if(isset($_POST['submit'])){
   }
 }
 
-/*
-  $BranchCode=$_POST['Branch'];
-  $ZoneCode=$_POST['Zone'];
-  $BankCode=$_POST['Bank'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Jobcard Entry</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/cyrus logo.png" rel="icon">
 
 
-  $query ="SELECT * FROM `bank` WHERE BankCode=$BankCode";
-  $results = mysqli_query($con, $query);
-  $row=mysqli_fetch_assoc($results);
-  $Bank=$row['BankName'];
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-  $query ="SELECT * FROM `zoneregions` WHERE ZoneRegionCode=$ZoneCode";
-  $results = mysqli_query($con, $query);
-  $row=mysqli_fetch_assoc($results);
-  $Zone=$row['ZoneRegionName'];
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-  $query ="SELECT * FROM `branchs` WHERE BranchCode=$BranchCode";
-  $results = mysqli_query($con, $query);
-  $row=mysqli_fetch_assoc($results);
-  $Branch=$row['BranchName'];
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/sweetalert.min.js"></script>
 
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
-  echo $Zone.'<br>';
-  echo $Branch.'<br>';
-  echo $Bank.'<br>';
-  if (mysqli_num_rows($result)>0){
+</head>
 
-  }
-  */
+<body>
 
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.php" class="logo d-flex align-items-center">
+        <img src="assets/img/cyrus logo.png" alt="">
+        <span class="d-none d-lg-block">Cyrus</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <?php echo $wish; ?>
+    </div>
+    <?php 
+    include "nav.php";
+    //include "modals.php";
+
+    ?>
+
+  </header><!-- End Header -->
+  <?php 
+  include "sidebar.php";
+  include "modals.php";
   ?>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+          <li class="breadcrumb-item active">Search Jobcard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
 
 
-  <!doctype html>
-    <html lang="en">
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <title>Search Jobcard</title>
-      <!-- Bootstrap core CSS -->
-      <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-      <link rel="stylesheet" type="text/css" href="datatable/jquery.dataTables.min.css"/>
-      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
-      <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css"> 
-      <link rel="stylesheet" type="text/css" href="css/style.css"> 
-      <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-      <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-      <style>
-      fieldset {
-        background-color: #eeeeee;
-        margin: 5px;
-        padding: 10px;
-      }
-
-      legend {
-        background-color: #26082F;
-        color: white;
-        padding: 5px 5px;
-      }
-    </style>
-  </head>
-
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
-      <div class="container-fluid" align="center">
-        <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
-        <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown" align="center">
-          <ul class="navbar-nav">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="reporting.php?">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="/html/technician/editjobcard.php?apid=<?php echo $ApprovalID.'&cardno='.$Jobcard;  ?>">Edit Job Card</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="logout.php">Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container">
-      <br><br>
-
-      <legend style="text-align: center;">Search Jobcard</legend>
-      <fieldset>
-
-        <form method="POST" action="">
-          <div class="row">
-          <!--
-          <div class="form-group col-md-2">
-            <label for="Branch">Select Bank</label>
-            <select id="Bank" class="form-select" name="Bank" required>
-              <option value="">Select Bank</option>
-              <?php
-              /*
-              $BankData="Select BankCode, BankName from bank order by BankName";
-              $result=mysqli_query($con,$BankData);
-              if (mysqli_num_rows($result)>0)
-              {
-                while ($arr=mysqli_fetch_assoc($result))
-                {
-                  ?>
-                  <option value="<?php echo $arr['BankCode']; ?>"><?php echo $arr['BankName']; ?></option>
-                  <?php
-                }
-              }*/
-              ?>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="Branch">Select Zone</label>
-            <select id="Zone" class="form-control" name="Zone" required>
-              <option value="">Select</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="Branch">Branch</label>
-            <select id="Branch" class="form-control" name="Branch" required>
-              <option value="">Select</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="Branch">Select Search Type</label>
-            <select class="form-select" aria-label="Default select example" required>
-              <option value="">Select</option>
-              <option value="OrderID">Order ID</option>
-              <option value="ComplaintID">Complaint ID</option>
-              <option value="Jobcard">Jobcard Number</option>
-            </select>
-          </div>
-        -->
+    <form method="POST" action="">
+      <div class="row">
         <center>
-          <div class="form-group col-md-2">
+          <div class="form-group col-md-6">
             <label for="Branch">Enter Jobcard Number</label>
-            <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" name="Jobcard" required>
+            <input type="text" class="form-control rounded-corner" name="Jobcard" required>
           </div>
 
           <div class="form-group col-md-2">
@@ -174,27 +131,44 @@ if(isset($_POST['submit'])){
       </div>  
 
     </form>
+  </main>
+  <!-- End #main -->
 
-  </fieldset>
-</div>
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer" style="margin-top: 200px;">
+    <div class="copyright">
+      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+  <!-- End Footer -->
 
-<script src="assets/js/popper.js"></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="ajax-script.js" type="text/javascript"></script>
-<script>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  $(document).ready(function() {
-    var table = $('#example').DataTable( {
-      rowReorder: {
-        selector: 'td:nth-child(2)'
-      },
-      responsive: true
-    } );
-  } );
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.min.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
 
-</script>
+  <!-- Template Main JS File -->
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="ajax.js"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
-
+  <script type="text/javascript">
+  </script>
 </body>
+
 </html>
+
+<?php 
+$con->close();
+$con2->close();
+?>

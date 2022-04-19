@@ -242,31 +242,39 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                  $Employee=$rowE["Employee Name"];
                  $EmployeeID=$rowE["EmployeeCode"];
 
-                 $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID";
+                 $query="SELECT count(DISTINCT ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allcomplaint 
+                 join cyrusbackend.districts on allcomplaint.Address3=districts.District
+                 join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode WHERE AssignDate is not null and Attended=0 and EmployeeCode=$EmployeeID and ControlerID=$EXEID";
                  $result=mysqli_query($con,$query);
                  $row = mysqli_fetch_array($result);
 
-                 $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID";
+                 $query2="SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM cyrusbackend.allorders join cyrusbackend.districts on allorders.Address3=districts.District
+                 join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode 
+                 WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$EmployeeID and ControlerID=$EXEID";
                  $result2=mysqli_query($con,$query2);
                  $row2 = mysqli_fetch_array($result2);
                  $AMC=$row2["count(OrderID)"];
 
-                 $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%'";
+                 $query3 = "SELECT count(OrderID), `Employee NAME`, EmployeeCode FROM allorders
+                 join cyrusbackend.districts on allorders.Address3=districts.District
+                 join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode 
+                 WHERE EmployeeCode=$EmployeeID and AssignDate is not NULL and Attended=0 and Discription not like '%AMC%' and ControlerID=$EXEID";
                  $result3 = mysqli_query($con, $query3);
                  $row3 = mysqli_fetch_array($result3);
-                 $AO=$row3["count(OrderID)"]
+                 $AO=$row3["count(OrderID)"];
+                if ($row["count(DISTINCT ComplaintID)"]>0 or $AMC>0 or $AO>0) {             
                  ?>
                  <tr>
                   <td><?php echo $Employee; ?></td>
                   <td><a class="view_AO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAO"><?php echo $AO; ?></a></td>
 
-                  <td><a class="view_AC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
+                  <td><a class="view_AC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAC"><?php echo $row["count(DISTINCT ComplaintID)"]; ?></a></td>
 
 
                   <td><a class="view_AMC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewAMC"><?php echo $AMC; ?></a></td>              
                 </tr>
 
-              <?php } ?>
+              <?php } }?>
             </tbody>
           </table>
         </div>
@@ -336,8 +344,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
               }
 
               if ((!empty($PendingOrders)) || (!empty($PendingComplaint)) || (!empty($PendingAMC))) {
-
-
                 ?>
                 <tr>
                   <td><?php echo $row["BankName"]; ?></td>

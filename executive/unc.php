@@ -14,13 +14,6 @@ if(isset($_POST["EmployeeID"]))
   $query="SELECT * FROM cyrusbackend.vallcomplaintsd WHERE AssignDate is null and Attended=0 and EmployeeCode=$exEmployeeID";
   $result=mysqli_query($con,$query);
   $rowN = mysqli_fetch_array($result);
-  /*
-  if ($con->query($query) === TRUE) {
-
-  } else {
-    echo "Error: " . $query . "<br>" . $con->error;
-  }
-*/
 
   ?>
 
@@ -45,7 +38,10 @@ if(isset($_POST["EmployeeID"]))
         if (mysqli_num_rows($result)>0)
         {
           $Sn=1;
-          $query2="SELECT * FROM cyrusbackend.vallcomplaintsd WHERE AssignDate is null and Attended=0 and EmployeeCode=$exEmployeeID";
+          $query2="SELECT * FROM cyrusbackend.vallcomplaintsd
+          join districts on vallcomplaintsd.Address3=districts.District
+          join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+          WHERE AssignDate is null and Attended=0 and EmployeeCode=$exEmployeeID and ControlerID=$EXEID";
           $result2=mysqli_query($con,$query2);
           while($row = mysqli_fetch_array($result2)){
             ?>

@@ -92,9 +92,9 @@ if(isset($exEmployeeID))
             <td><?php echo date("d-m-Y", strtotime($row['AssignDate'])); ?></td>
             <td><?php echo $row3['count(ID)']?></td> 
 
-            <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['OrderID'];?>" name="Date" class="form-control my-select3" align="center"></td>
+            <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['OrderID'];?>" name="Date" class="form-control rounded-corner" align="center"></td>
             <td ALIGN="center">
-             <select class="form-control my-select3" id="amc">
+             <select class="form-control rounded-corner" id="amc">
                <option value="">Select</option>        
                <?php
                if ($Type !="Executive") {

@@ -46,7 +46,10 @@ if(isset($_POST["EmployeeID"]))
         if (mysqli_num_rows($result)>0)
         {
           $Sn=1;
-          $query2="SELECT * FROM cyrusbackend.allcomplaint WHERE AssignDate is not null and Attended=0 and EmployeeCode=$exEmployeeID";
+          $query2="SELECT * FROM cyrusbackend.allcomplaint 
+          join cyrusbackend.districts on allcomplaint.Address3=districts.District
+          join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+          WHERE AssignDate is not null and Attended=0 and EmployeeCode=$exEmployeeID and ControlerID=$EXEID";
           $result2=mysqli_query($con,$query2);
           while($row = mysqli_fetch_array($result2)){
             $org = $row["AssignDate"];
@@ -85,8 +88,7 @@ if(isset($_POST["EmployeeID"]))
               <td><?php echo $row['Discription']; ?></td>
               <td><?php echo date("d-M-Y", strtotime($row['DateOfInformation'])); ?></td>
               <td><?php echo date("d-M-Y", strtotime($row['AssignDate'])); ?></td>
-              <td><?php echo $row3['count(ID)']?></td>
-              <!--<td><button type="buttun" class="btn btn-primary" id="ReAssignC" value="Reassign" name="Assign">Reassign</button></td> -->            
+              <td><?php echo $row3['count(ID)']?></td>           
             </tr>
           </td>              
         </tr>

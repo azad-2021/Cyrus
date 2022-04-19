@@ -57,9 +57,9 @@ $Sub=0;
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap core CSS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.3/jquery.min.js"></script>
   <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
   <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <style type="text/css">
   body {
     padding: 50px;    
@@ -249,10 +249,6 @@ $Sub=0;
 </div>
 </fieldset>
 </div>
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/popper.js"></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>
-
 
 </script>
 <form method="post" action="" name="Home"></form>

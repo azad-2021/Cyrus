@@ -1,151 +1,272 @@
-
 <?php 
-
 include 'connection.php';
 include 'session.php';
+$Type=$_SESSION['usertype'];
+$EXEID=$_SESSION['userid'];
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($timestamp));
+
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
+
+$Hour = date('G');
+//echo $_SESSION['user'];
+
+$user=$_SESSION['user'];
+
+if ( $Hour >= 1 && $Hour <= 11 ) {
+  $wish= "Good Morning ".$_SESSION['user'];
+} else if ( $Hour >= 12 && $Hour <= 15 ) {
+  $wish= "Good Afternoon ".$_SESSION['user'];
+} else if ( $Hour >= 19 || $Hour <= 23 ) {
+  $wish= "Good Evening ".$_SESSION['user'];
+}
 
 $EXEID=$_SESSION['userid'];
 $Type=$_SESSION['usertype'];
-if (($EXEID==12) or ($EXEID==32)) {
-  $queryTechnicianList= "SELECT * FROM reporting";
-  $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
-}elseif ($Type=="Executive") {
-  $queryTechnicianList= "SELECT DISTINCT `Assign To` FROM cyrusbackend.`cyrus regions`
- join districts on `cyrus regions`.RegionCode=districts.RegionCode
- WHERE ControlerID=$EXEID and `Assign To`!=0";
- $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
-}else{
-  $queryTechnicianList= "SELECT * FROM reporting WHERE ExecutiveID=$EXEID";
-  $resultTechnicianList=mysqli_query($con,$queryTechnicianList);
-}
+
 ?>
-
-
-
 
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title><?php echo $_SESSION['user']; ?></title>
-  <link rel="icon" href="cyrus logo.png" type="image/icon type">
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-  <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="datatable/jquery.dataTables.min.css"/>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Reporting</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/cyrus logo.png" rel="icon">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/sweetalert.min.js"></script>
+
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="css/style.css"> 
-  <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-  
-  <style>
-  fieldset {
-    background-color: #eeeeee;
-    margin: 10px;
-  }
-
-  legend {
-    background-color: #26082F;
-    color: white;
-    padding: 5px 10px;
-  }
-
-  .r {
-    margin: 5px;
-  }
-</style>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
 </head>
 
 <body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.php" class="logo d-flex align-items-center">
+        <img src="assets/img/cyrus logo.png" alt="">
+        <span class="d-none d-lg-block">Cyrus</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <?php echo $wish; ?>
+    </div>
+    <?php 
+    include "nav.php";
+    //include "modals.php";
+
+    ?>
+
+  </header><!-- End Header -->
   <?php 
-  include 'navbar.php';
-  include 'modals.php';
+  include "sidebar.php";
+  include "modals.php";
   ?>
-  <br><br>
-  <div class="container"> 
-    <div class="col-lg-12">   
-      <div class="col-lg-12 table-responsive">
-        <table id="userTable2" class="table table-hover table-bordered border-primary">
-          <thead>
-            <tr>
-              <th scope="col">Name</th>
-              <th scope="col">Contact Number</th>
-              <th scope="col">Total Jobcards</th>
-              <th scope="col">Visit Date</th>
-              <th scope="col">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php 
-            while($data=mysqli_fetch_assoc($resultTechnicianList)){
-              if ($Type=='Executive') {
-                $ID =$data['Assign To'];
-              }else{
-                $ID =$data['EmployeeID'];
-              }
-              $query= "SELECT * FROM employees WHERE EmployeeCode=$ID";
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+          <li class="breadcrumb-item active">Reporting</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <div class="table-responsive container">
+      <table id="userTable2" class="table table-hover table-bordered border-primary">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Contact Number</th>
+            <th scope="col">Total Jobcards</th>
+            <th scope="col">Visit Date</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php 
+          $Date="2021-10-07 00:00:00";
+          if ($Type=="Executive") {
+
+            $query="SELECT `Employee Name` as Employee, Phone, employees.EmployeeCode FROM cyrusbackend. `cyrus regions`
+            join districts on districts.RegionCode=`cyrus regions`.RegionCode
+            join employees on districts.`Assign To`=employees.EmployeeCode
+            WHERE ControlerID=$EXEID and `Assign To`!=0
+            group by `Assign To`";
+
+            $resultE=mysqli_query($con,$query);
+            while($dataE=mysqli_fetch_assoc($resultE)){
+              $EmployeeID=base64_encode($dataE['EmployeeCode']);
+              $EmployeeCode=$dataE['EmployeeCode'];
+              $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified  FROM approval WHERE EmployeeID=$EmployeeCode and posted=0";
+
               $result=mysqli_query($con,$query);
-              $data1=mysqli_fetch_assoc($result);  
-              ?>
-              <tr>
-                <td >
-                  <?php echo $data1['Employee Name']; ?>
-                </td>
-                <td >
-                  <?php echo $data1['Phone']; ?>
-                </td>
+              while($data=mysqli_fetch_assoc($result)){
 
-                <td >
-                  <?php
-                  $Date="2021-10-07 00:00:00";
-                  $EmployeeID=base64_encode($data1['EmployeeCode']);
-                  if (($EXEID==12) or ($EXEID==32)) {
-                    //$queryA= "SELECT * FROM approval WHERE EmployeeID=$ID and posted=1 and VisitDate>='$Date'";
-                    $queryA ="SELECT COUNT(`Card Number`),min(VisitDate) as LastVerified  FROM `jobcardmain` Where EmployeeCode='$ID' and ServiceDone is null and VisitDate>='$Date'";
-                    $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
-                  }else{
-                    $queryA= "SELECT COUNT(approvalID), min(VisitDate) as LastVerified FROM approval WHERE EmployeeID=$ID and posted=0";
-                    $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
-                  }
+                if ($data['CountData']>0) {
+                 
+                  ?>
+                  <tr>
+                    <td >
+                      <?php echo $dataE['Employee']; ?>
+                    </td>
+                    <td >
+                      <?php echo $dataE['Phone']; ?>
+                    </td>
 
-                  $resultA=mysqli_query($con,$queryA);
-                  $d=mysqli_fetch_assoc($resultA);
+                    <td >
+                      <?php
+                      $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
 
-                  $toatalCards=0;
-                  if (($EXEID==12) or ($EXEID==32)) {
-                    echo $toatalCards=$d['COUNT(`Card Number`)'];
-                  }else{
-                   echo $toatalCards =$d['COUNT(approvalID)'];
-                 }
+                      echo $toatalCards =$data['CountData'];
 
-                 ?>
-               </td>
-               <td> <?php
-               if (!empty($d['LastVerified'])) {
-                 echo date("d-M-Y", strtotime($d['LastVerified']));
+                      ?>
+                    </td>
+                    <td> 
+                      <?php
+                      if (!empty($data['LastVerified'])) {
+                       echo date("d-M-Y", strtotime($data['LastVerified']));
+                     }else{
+                      echo 'N/A';
+                    }
+                    ?>
+
+                  </td>
+                  <td>
+                    <?php echo $Action ?>
+                  </td>
+                </tr>
+              <?php }
+            }
+
+          }
+        }elseif ($Type=="Reporting" or $Type=='Dataentry') {
+
+          if ($Type=="Reporting"){
+            $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified, `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.approval
+            join reporting on approval.EmployeeID=reporting.EmployeeID
+            join employees on approval.EmployeeID=employees.EmployeeCode
+            WHERE ExecutiveID=$EXEID and posted=0
+            group by EmployeeCode order by Employee";
+
+          }elseif($Type=='Dataentry'){
+
+            $query ="SELECT COUNT(`Card Number`) as CountData, min(VisitDate) as LastVerified,  `Employee Name` as Employee, Phone, employees.EmployeeCode  FROM `jobcardmain`
+            join employees on jobcardmain.EmployeeCode=employees.EmployeeCode Where ServiceDone is null and VisitDate>='$Date' group by employees.EmployeeCode order by Employee";
+
+          }
+
+          $result=mysqli_query($con,$query);
+          while($data=mysqli_fetch_assoc($result)){
+
+            $EmployeeID=base64_encode($data['EmployeeCode']);
+            ?>
+            <tr>
+              <td >
+                <?php echo $data['Employee']; ?>
+              </td>
+              <td >
+                <?php echo $data['Phone']; ?>
+              </td>
+
+              <td >
+                <?php
+                if ($Type=='Reporting' or $Type=='Executive') {
+
+                  $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
+                }elseif ($Type=='Dataentry') {
+                  $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
+                }
+
+                echo $toatalCards =$data['CountData'];
+
+                ?>
+              </td>
+              <td> 
+                <?php
+                if (!empty($data['LastVerified'])) {
+                 echo date("d-M-Y", strtotime($data['LastVerified']));
                }else{
                 echo 'N/A';
               }
-            ?></td>
+              ?>
+
+            </td>
             <td>
               <?php echo $Action ?>
             </td>
           </tr>
-        <?php } ?>
+        <?php } }?>
       </tbody>
     </table>  
-    <br>
   </div>
-</div> 
-<script src="assets/js/popper.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
-"></script>
-<script src="search.js"></script>
+</main>
+<!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+  </div>
+</footer>
+<!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="ajax.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
+
 <script type="text/javascript">
 
   $(document).ready(function() {
@@ -158,12 +279,12 @@ if (($EXEID==12) or ($EXEID==32)) {
 
   } );
  } );
-
-</script> 
+</script>
 </body>
+
 </html>
 
 <?php 
-$con -> close();
-$con2 -> close();
+$con->close();
+$con2->close();
 ?>

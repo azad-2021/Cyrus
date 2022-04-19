@@ -13,6 +13,7 @@
     <tbody>
      <?php 
      include 'connection.php';
+     $ItemID=0;
      $Data=!empty($_POST['Data'])?$_POST['Data']:'';
      if (!empty($Data))
      {

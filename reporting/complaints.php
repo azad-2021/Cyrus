@@ -87,9 +87,9 @@ if(isset($_POST["EmployeeID"]))
             <td><?php echo date("d-M-Y", strtotime($row['DateOfInformation'])); ?></td>
             <td><?php echo date("d-M-Y", strtotime($row['AssignDate'])); ?></td>
             <td><?php echo $row3['count(ID)']?></td>
-            <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['ComplaintID'];?>" name="Date" class="form-control my-select3" align="center"></td>
+            <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['ComplaintID'];?>" name="Date" class="form-control rounded-corner" align="center"></td>
             <td ALIGN="center">
-              <select class="form-control my-select3" style="text-align: center;" id="AC">
+              <select class="form-control rounded-corner" style="text-align: center;" id="AC">
                <option value="">Select</option>        
                <?php
                if ($Type !="Executive") {

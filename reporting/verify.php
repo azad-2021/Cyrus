@@ -1,14 +1,32 @@
-<?php
-
-include('connection.php'); 
+<?php 
+include 'connection.php';
 include 'session.php';
-$user=$_SESSION['user'];
-$Vby = $_SESSION['user'];
-date_default_timezone_set('Asia/Kolkata');
-$Date =date('Y-m-d');
+$Type=$_SESSION['usertype'];
+$EXEID=$_SESSION['userid'];
 
 $ApprovalID = base64_decode($_GET['apid']);
 $enApprovalID=$_GET['apid'];
+
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($timestamp));
+
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
+
+$Hour = date('G');
+//echo $_SESSION['user'];
+
+$user=$_SESSION['user'];
+
+if ( $Hour >= 1 && $Hour <= 11 ) {
+  $wish= "Good Morning ".$_SESSION['user'];
+} else if ( $Hour >= 12 && $Hour <= 15 ) {
+  $wish= "Good Afternoon ".$_SESSION['user'];
+} else if ( $Hour >= 19 || $Hour <= 23 ) {
+  $wish= "Good Evening ".$_SESSION['user'];
+}
+
 
 $sql = "SELECT * from pbills where ApprovalID = '$ApprovalID'";  
 $result = mysqli_query($con2, $sql);  
@@ -185,197 +203,237 @@ if($ComplaintID>0){
 ?>
 
 
-<!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Verify Approvals</title>
-    <!-- Bootstrap core CSS -->
-    <link rel="icon" href="cyrus logo.png" type="image/icon type">
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="datatable/jquery.dataTables.min.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowreorder/1.2.8/css/rowReorder.dataTables.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css"> 
-    <link rel="stylesheet" type="text/css" href="css/style.css"> 
-    <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-    <style>
-    fieldset {
-      background-color: #eeeeee;
-      margin: 5px;
-      padding: 10px;
-    }
+<!DOCTYPE html>
+<html lang="en">
 
-    legend {
-      background-color: #26082F;
-      color: white;
-      padding: 5px 5px;
-    }
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    .r {
-      margin: 5px;
-    }
+  <title>Verify</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
 
-    table{
-      font-size: 14px;
-    }
-  </style>
+  <!-- Favicons -->
+  <link href="assets/img/cyrus logo.png" rel="icon">
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/sweetalert.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
+
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
-    <div class="container-fluid" align="center">
-      <a class="navbar-brand" href=""><img src="cyrus logo.png" alt="cyrus.com" width="20" height="25">Cyrus Electronics</a>
-      <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown" align="center">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="reporting.php?">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/technician/editjobcard.php?apid=<?php echo $enApprovalID.'&cardno='.$enJobcard;  ?>">Edit Job Card</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="search.php" target="_blank">Search Jobcard</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="logout.php">Logout</a>
-          </li>
-        </ul>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.php" class="logo d-flex align-items-center">
+        <img src="assets/img/cyrus logo.png" alt="">
+        <span class="d-none d-lg-block">Cyrus</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <?php echo $wish; ?>
+    </div>
+    <?php 
+    include "nav.php";
+    //include "modals.php";
+
+    ?>
+
+  </header><!-- End Header -->
+  <?php 
+  include "sidebar.php";
+  include "modals.php";
+  ?>
+  <main id="main" class="main">
+    <section class="section dashboard">
+      <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+            <li class="breadcrumb-item active">Verification details</li>
+          </ol>
+        </nav>
+      </div><!-- End Page Title -->
+
+      <div class="table-responsive container">
+        <table class="table table-hover table-sm table-bordered border-primary nowrap">
+          <thead>
+            <tr>
+              <th style="min-width:120px">Bank</th>
+              <th style="min-width:120px">Zone</th>
+              <th style="min-width:280px">Branch Name</th>
+              <th style="min-width:50px">ID</th>
+              <th style="min-width:100px">Gadget</th>
+              <th style="min-width:150px">Phone No.</th>
+              <th style="min-width:150px">Mobile No.</th>
+              <th style="min-width:120px">Date of Visit</th>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><?php echo $Bank;?></td>
+              <td><?php echo $Zone;?></td>
+              <td><?php echo $BranchName;?></td>
+              <td><?php echo $ID;?></td>
+              <td><?php echo $Gadget;?></td>
+              <td><?php echo $BranchPhone;?></td>
+              <td><?php echo $BranchMobile;?></td>
+              <td><?php echo $VisitDate;?></td>
+
+            </tr>
+          </tbody>
+        </table>
       </div>
+
+      <div class="table-responsive container">
+        <table class="table table-hover table-sm table-bordered border-primary nowrap">
+          <thead>
+            <tr>
+              <th style="min-width:250px">Description</th>
+              <th style="min-width:100px">Job Card No.</th>
+              <th style="min-width:150px">Material Consumed</th>
+              <th style="min-width:150px">Estimate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><?php echo $Description;?></td>
+              <td><a href="/technician/view.php?card=<?php echo base64_encode($Jobcard);?>" target="_blank"><?php echo $Jobcard;?></a></td>
+              <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
+              <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <br>
+      <center>
+        <div class="pagetitle">
+          <h1>Verification Status</h1>
+        </div>
+      </center>
+      <fieldset>
+
+        <form method="POST" action="">
+          <div class="row">
+            <div class="col-lg-12">
+              <label for="Branch">Verification Remark</label>
+              <textarea class="form-control rounded-corner" cols="4" rows="2" name="VRemark" required></textarea>
+            </div>
+            <div class="form-group col-lg-12">
+              <label for="Bank ID">Pending Work</label>
+              <textarea class="form-control rounded-corner" cols="4" rows="2" name="Vpending"></textarea>
+            </div>
+
+            <div class="form-group col-lg-4">
+              <br>
+              <h5><label for="Branch">Branch OK</label></h5>
+              <input type="radio" name="Vok" id="Vok" value="YES" >
+              <label for="yes">Yes</label>
+              &nbsp;
+              <input type="radio" id="Vok" name="Vok" value="NO">
+              <label for="no">No</label>
+
+            </div>
+
+            <div class="form-group col-lg-4">
+              <br>
+              <h5><label for="Branch">Call Verified</label></h5>
+              <input type="radio" name="call" id="call" value="YES">
+              <label for="yes">Yes</label>
+              &nbsp;
+              <input type="radio" id="call" name="call" value="NO">
+              <label for="no">No</label>
+
+            </div>
+
+            <div class="form-group col-lg-4">
+              <br>
+              <h5><label for="Branch">Close ID</label></h5>
+              <input type="radio" name="Vopen" id="Vopen" value="YES">
+              <label for="yes">Yes</label>
+              &nbsp;
+              <input type="radio" id="Vopen" name="Vopen" value="No">
+              <label for="no">No</label>
+
+            </div>
+          </div>  
+          <br><br>
+          <center>
+
+            <input type="submit"  class=" btn btn-primary my-button" value="submit" name="submit"></input>
+          </center>      
+        </form>
+
+      </fieldset>
+    </section>
+  </main>
+  <!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
     </div>
-  </nav>
+  </footer>
+  <!-- End Footer -->
 
-  <div class="container">
-    <br><br>
-    <div class="table-responsive">
-      <table class="table table-hover table-sm table-bordered border-primary" id="example" class="display nowrap" id="example">
-        <thead>
-          <tr>
-            <th style="min-width:120px">Bank</th>
-            <th style="min-width:120px">Zone</th>
-            <th style="min-width:280px">Branch Name</th>
-            <th style="min-width:50px">ID</th>
-            <th style="min-width:100px">Gadget</th>
-            <th style="min-width:150px">Phone No.</th>
-            <th style="min-width:150px">Mobile No.</th>
-            <th style="min-width:120px">Date of Visit</th>
-            
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><?php echo $Bank;?></td>
-            <td><?php echo $Zone;?></td>
-            <td><?php echo $BranchName;?></td>
-            <td><?php echo $ID;?></td>
-            <td><?php echo $Gadget;?></td>
-            <td><?php echo $BranchPhone;?></td>
-            <td><?php echo $BranchMobile;?></td>
-            <td><?php echo $VisitDate;?></td>
-            
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <div class="table-responsive">
-      <table class="table table-hover table-sm table-bordered border-primary" id="example" class="display nowrap" id="example">
-        <thead>
-          <tr>
-            <th style="min-width:250px">Description</th>
-            <th style="min-width:100px">Job Card No.</th>
-            <th style="min-width:150px">Material Consumed</th>
-            <th style="min-width:150px">Estimate</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><?php echo $Description;?></td>
-            <td><a href="/technician/view.php?card=<?php echo base64_encode($Jobcard);?>" target="_blank"><?php echo $Jobcard;?></a></td>
-            <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
-            <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/chart.js/chart.min.js"></script>
+  <script src="assets/vendor/echarts/echarts.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
 
-    <br>
+  <!-- Template Main JS File -->
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="ajax.js"></script>
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
-    <legend style="text-align: center;" class="my-select">Verification Status</legend>
-    <fieldset>
+  <script type="text/javascript">
 
-      <form method="POST" action="">
-        <div class="row">
-          <div class="form-group col-md-12">
-            <label for="Branch">Verification Remark</label>
-            <textarea class="form-control my-select" cols="4" rows="2" name="VRemark" required></textarea>
-          </div>
-          <div class="form-group col-md-12">
-            <label for="Bank ID">Pending Work</label>
-
-            <textarea class="form-control my-select" cols="4" rows="2" name="Vpending"></textarea>
-          </div>
-          <div class="form-group col-md-4">
-            <h5><label for="Branch">Branch OK</label></h5>
-            <input type="radio" name="Vok" id="Vok" value="YES">
-            <label for="yes">Yes</label>
-            &nbsp;
-            <input type="radio" id="Vok" name="Vok" value="NO">
-            <label for="no">No</label>
-
-          </div>
-
-          <div class="form-group col-md-4">
-            <h5><label for="Branch">Call Verified</label></h5>
-            <input type="radio" name="call" id="call" value="YES">
-            <label for="yes">Yes</label>
-            &nbsp;
-            <input type="radio" id="call" name="call" value="NO">
-            <label for="no">No</label>
-
-          </div>
-
-          <div class="form-group col-md-4">
-            <h5><label for="Branch">Close ID</label></h5>
-            <input type="radio" name="Vopen" id="Vopen" value="YES">
-            <label for="yes">Yes</label>
-            &nbsp;
-            <input type="radio" id="Vopen" name="Vopen" value="No">
-            <label for="no">No</label>
-
-          </div>
-        </div>  
-        <br><br>
-        <center>
-
-          <input type="submit"  class=" btn btn-primary my-button" value="submit" name="submit"></input>
-        </center>      
-      </form>
-
-    </fieldset>
-  </div>
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/popper.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
-  "></script>
-
-  <script>
   </script>
-
-
 </body>
+
 </html>
+
 <?php 
-$con -> close();
-$con2 -> close();
-?> 
+$con->close();
+$con2->close();
+?>

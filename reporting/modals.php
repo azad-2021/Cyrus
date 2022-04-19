@@ -2,7 +2,7 @@
 
 <div class="modal" id="FindOrder" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Find Order</h5>
       </div>
@@ -12,7 +12,7 @@
           <center>
             <div class="col-md-4">
               <label for="validationCustom01" class="form-label ">Enter Order ID</label>
-              <input type="text" class="form-control my-select2" id="forder" name="forder" required>
+              <input type="text" class="form-control rounded-corner" id="forder" name="forder" required>
             </div>
           </center>
         </div>
@@ -32,7 +32,7 @@
 
 <div class="modal fade" id="ViewOrder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Order Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -50,7 +50,7 @@
 <!--END Find Orders -->
 <div class="modal fade" id="ReleasedMaterials" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content" style="background-color:#f0f0f0">
+    <div class="modal-content rounded-corner" style="background-color:#f0f0f0">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Released Materials</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -69,7 +69,7 @@
 
 <div class="modal" id="FindComplaint" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Find Complaint</h5>
       </div>
@@ -79,7 +79,7 @@
           <center>
             <div class="col-md-4">
               <label for="validationCustom01" class="form-label ">Enter Complaint ID</label>
-              <input type="text" class="form-control my-select2" id="fcomplaint" name="fcomplaint" required>
+              <input type="text" class="form-control rounded-corner" id="fcomplaint" name="fcomplaint" required>
             </div>
           </center>
         </div>
@@ -95,7 +95,7 @@
 
 <div class="modal fade" id="ViewComplaint" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Complaint Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -114,7 +114,7 @@
 <!-- Search Jobcard Details -->
 <div class="modal" id="FindJobcard" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Find Jobcard</h5>
       </div>
@@ -124,7 +124,7 @@
           <center>
             <div class="col-md-4">
               <label for="validationCustom01" class="form-label ">Enter Jobcard Number</label>
-              <input type="text" class="form-control my-select2" id="fjobcard" name="fjobcard" required>
+              <input type="text" class="form-control rounded-corner" id="fjobcard" name="fjobcard" required>
             </div>
           </center>
         </div>
@@ -140,7 +140,7 @@
 
 <div class="modal fade" id="ViewJobcard" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Job Card Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -160,7 +160,7 @@
 <!-- Search Branch -->
 <div class="modal" id="FindBranch" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Find Branch</h5>
       </div>
@@ -169,7 +169,7 @@
         <form class="row g-3 needs-validation" novalidate id="formB" name="form">
           <div class="col-md-6">
             <label for="validationCustom01" class="form-label " align="center">Select Search Type</label>
-            <select class="form-select my-select3" aria-label="Default select example" id="type">
+            <select class="form-select rounded-corner" aria-label="Default select example" id="type">
               <option value="">Select</option>
               <option value="Name">Branch Name</option>
               <option value="Code">Branch Code</option>
@@ -178,7 +178,7 @@
           </div>
           <div class="col-md-6">
             <label for="validationCustom01" class="form-label ">Enter Details</label>
-            <input type="text" class="form-control my-select2" id="fbranch" name="fbranch" required>
+            <input type="text" class="form-control rounded-corner" id="fbranch" name="fbranch" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -192,7 +192,7 @@
 
 <div class="modal fade" id="ViewBranch" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Branchs</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -211,7 +211,7 @@
 <!-- Find Employee Details -->
 <div class="modal fade" id="FindEmployee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Employee Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -220,7 +220,7 @@
         <center>
           <div class="col-md-5">
             <label for="validationCustom01" class="form-label " align="center">Select Employee</label>
-            <select class="form-select my-select3" aria-label="Default select example" id="EmployeeCode">
+            <select class="form-select rounded-corner" aria-label="Default select example" id="EmployeeCode">
               <option value="">Select</option>
               <?php 
               $query="SELECT * FROM employees WHERE Inservice=1";
@@ -262,7 +262,7 @@
 <!-- Work Details -->
 <div class="modal fade" id="WorkReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Work Report</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -271,7 +271,7 @@
         <div class="row">
           <div class="col-md-4">
             <label for="validationCustom01" class="form-label " align="center">Select Employee</label>
-            <select class="form-select my-select3" aria-label="Default select example" id="EmployeeCodeW">
+            <select class="form-select rounded-corner" aria-label="Default select example" id="EmployeeCodeW">
               <option value="">Select</option>
               <?php 
               $query="SELECT * FROM employees WHERE Inservice=1";
@@ -289,11 +289,11 @@
         </div>
         <div class="col-md-4">
           <label for="validationCustom01" class="form-label " align="center">Start Date</label>
-          <input type="date" class="form-control my-select3" name="" id="Sdate">
+          <input type="date" class="form-control rounded-corner" name="" id="Sdate">
         </div>
         <div class="col-md-4">
           <label for="validationCustom01" class="form-label " align="center">End Date</label>
-          <input type="date" class="form-control my-select3" name="" id="Edate">
+          <input type="date" class="form-control rounded-corner" name="" id="Edate">
         </div>
       </div>
       <div class="col-lg-12" style="margin: 12px;">
@@ -328,7 +328,7 @@
 <!-- Inventory Pending -->
 <div class="modal fade" id="InventoryPending" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Materials Pending Data</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

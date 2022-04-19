@@ -9,18 +9,8 @@ $newtimestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($newtimestamp));
 if(isset($_POST["EmployeeID"]))
 {   
-  $exEmployeeID=$_POST["EmployeeID"];
-  //echo $EmployeeID;
-  $query="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%' and EmployeeCode=$exEmployeeID";
-  $result=mysqli_query($con,$query);
-  $rowN = mysqli_fetch_array($result);
-  /*
-  if ($con->query($query) === TRUE) {
+  $EmployeeID=$_POST["EmployeeID"];
 
-  } else {
-    echo "Error: " . $query . "<br>" . $con->error;
-  }
-*/
   ?>
 
   <div class="col-lg-12" style="margin: 12px;">
@@ -43,13 +33,15 @@ if(isset($_POST["EmployeeID"]))
       </thead>                 
       <tbody>
         <?php 
+        $query="SELECT * FROM cyrusbackend.allorders
+        join cyrusbackend.districts on allorders.Address3=districts.District
+        join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+        WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%' and ControlerID=$EXEID and EmployeeCode=$EmployeeID";
+        $result=mysqli_query($con,$query);
         if (mysqli_num_rows($result)>0)
         {
           $Sn=1;
-
-          $query2="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and `Discription` not like '%AMC%' and EmployeeCode=$exEmployeeID";
-          $result2=mysqli_query($con,$query2);
-          while($row = mysqli_fetch_array($result2)){
+          while($row = mysqli_fetch_array($result)){
             $OrderID=$row['OrderID'];
             $AssignDate = $row["AssignDate"];
             $query3="SELECT count(ID) FROM cyrusbackend.sms WHERE ID=$OrderID and Type='o' and AssignType='R'";
