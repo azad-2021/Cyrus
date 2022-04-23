@@ -28,6 +28,9 @@ if (!empty($ZoneCode))
   //echo $ZoneCode;
   $Sr=1;
   $Quarter=!empty($_POST['Quarter'])?$_POST['Quarter']:'';
+  $StartDate=!empty($_POST['StartDate'])?$_POST['StartDate']:'';
+  $EndDate=!empty($_POST['EndDate'])?$_POST['EndDate']:'';
+
 
   $query="SELECT * FROM branchdetails WHERE ZoneRegionCode=$ZoneCode order by BranchName";
 
@@ -46,8 +49,8 @@ if (!empty($ZoneCode))
       while ($row=mysqli_fetch_assoc($result))
       {
 
-        $StartDate=$row['StartDate'];
-        $EndDate=$row['EndDate'];
+        $AMCStartDate=$row['StartDate'];
+        $AMCEndDate=$row['EndDate'];
         $GadgetID=$row['GadgetID'];
       //echo $StartDate.'<br>';
         if ($Quarter==1) {
@@ -63,7 +66,6 @@ if (!empty($ZoneCode))
           $S=date('Y-m-d', strtotime($StartDate. ' + 270 days'));
           $E=$EndDate;
         }
-
 
         $BranchCode=$row2['BranchCode'];
         $Bank=$row2['BankName'];
@@ -96,17 +98,14 @@ if (!empty($ZoneCode))
 
             $VisitDate=date('d-M-Y',strtotime($row3['LastVisit']));
             $Status=$row5['Remark'];
-            
-            
+
+
           }else{
             $VisitDate='Null';
             $Status='Null';
             $jobcard='Null';     
           }
-          
-
           ?>
-
           <tr>
             <td ><?php echo $Sr; ?></td>
             <td ><?php echo $Branch; ?></td>
@@ -125,5 +124,26 @@ if (!empty($ZoneCode))
   }
 }
 
-
+$StartDate=!empty($_POST['StartDate'])?$_POST['StartDate']:'';
+$EndDate=!empty($_POST['EndDate'])?$_POST['EndDate']:'';
+if (!empty($StartDate) and !empty($EndDate)){
+  $ZoneCodeAMC=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
+  $ZoneData="SELECT * from amcs
+  join gadget on amcs.Device=gadget.Gadget
+  WHERE ZoneRegionCode=$ZoneCodeAMC and StartDate>='$StartDate' and EndDate<='$EndDate'";
+  $result=mysqli_query($con,$ZoneData);
+  if (mysqli_num_rows($result)>0){
+    $Sr=1;
+    while ($row=mysqli_fetch_assoc($result)){
+     ?>
+     <tr>
+      <td><?php echo $Sr ?></td>
+      <td><?php echo $row["StartDate"] ?></td>
+      <td><?php echo $row["EndDate"] ?></td>
+      <td><?php echo $row["Gadget"] ?></td>
+    </tr>
+    <?php $Sr++;
+  }
+}
+}
 ?>

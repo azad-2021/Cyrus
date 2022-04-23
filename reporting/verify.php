@@ -3,16 +3,12 @@ include 'connection.php';
 include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
-
+$Edit=1;
 $ApprovalID = base64_decode($_GET['apid']);
 $enApprovalID=$_GET['apid'];
-
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
-
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -48,7 +44,7 @@ if (mysqli_num_rows($result)>0)
 
 $query ="SELECT * FROM `approval`
 join gadget on approval.GadgetID=gadget.GadgetID
-join branchdetails on approval.BranchCode = branchdetails.BranchCode WHERE ApprovalID=23625";
+join branchdetails on approval.BranchCode = branchdetails.BranchCode WHERE ApprovalID=$ApprovalID";
 $results = mysqli_query($con, $query);
 $row=mysqli_fetch_array($results);
 
@@ -71,7 +67,7 @@ $Bank= $row["BankName"];
 if($ComplaintID>0){
   $ID=$ComplaintID;
   $refrence='Complaint';
-  $query ="SELECT * FROM `complaints` Where ComplaintID=ComplaintID";
+  $query ="SELECT * FROM `complaints` Where ComplaintID=$ComplaintID";
   $results = mysqli_query($con, $query);
   $row=mysqli_fetch_array($results);
   $Description = $row["Discription"];
@@ -163,6 +159,8 @@ if($ComplaintID>0){
 
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     }else{
+      $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
+      $resultupdate = mysqli_query($con,$sql);
       $sql = "UPDATE `complaints` SET `Executive Remark`='$Vremark' WHERE ComplaintID=$ComplaintID";
       $resultupdate = mysqli_query($con,$sql);
       header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
@@ -184,6 +182,8 @@ if($ComplaintID>0){
       $enEmployeeID=base64_encode($EmployeeID);
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$enEmployeeID");
     }else{
+      $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
+      $resultupdate = mysqli_query($con,$sql);
       $sql = "UPDATE `orders` SET `Executive Remark`='$Vremark' WHERE OrderID=$OrderID";
       $resultupdate = mysqli_query($con,$sql);
       $enEmployeeID=base64_encode($EmployeeID);
@@ -234,7 +234,7 @@ if($ComplaintID>0){
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
-
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
@@ -419,9 +419,10 @@ if($ComplaintID>0){
   <script src="assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  
   <script src="assets/js/main.js"></script>
-  <script src="ajax.js"></script>
+  <script src="ajax-script.js"></script>
+  <script src="search.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
@@ -434,6 +435,7 @@ if($ComplaintID>0){
 </html>
 
 <?php 
-$con->close();
-$con2->close();
+//echo $ApprovalID;
+echo $_SESSION['user'];
+
 ?>

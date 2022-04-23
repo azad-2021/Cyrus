@@ -275,21 +275,21 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }else if(EmployeeCode==''){
       swal("error", "No Assign Employee Selected", "error");
     }else{
-      //var element = document.getElementById("button");
-      //element.classList.add("d-none");
+      var element = document.getElementById("button");
+      element.classList.add("d-none");
 
       $.ajax({
         type:'POST',
         url:'addmultiamc.php',
         data:{'AMCID':AMCID, 'EmployeeCode':EmployeeCode},
         success:function(result){
-          /*
+          
           var delayInMilliseconds = 2000; 
           console.log(array);
           setTimeout(function() {
             location.reload();
           }, delayInMilliseconds);
-          */
+          
           $('#viewResult').html(result);
 
         }

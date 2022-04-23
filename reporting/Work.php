@@ -36,7 +36,7 @@ $Type=$_SESSION['usertype'];
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Rejected orders & complaints</title>
+  <title>Unassigned & Pending Work</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 

@@ -317,7 +317,7 @@ if($Type=='Reporting'){
             <div class="card">
 
               <div class="card-body">
-                <h5 class="card-title">Pending <span> Work <a style="float:right" href="assigned.php" target="_blank">Show All</a></span></h5>
+                <h5 class="card-title">Pending <span> Work <a style="float:right" href="Work.php" target="_blank">Show All</a></span></h5>
 
                 <div id="PendingWork"></div>
 
@@ -328,7 +328,7 @@ if($Type=='Reporting'){
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Unassigned <span> Work <a style="float:right" href="assign.php" target="_blank">Show All</a></span></h5>
+                <h5 class="card-title">Unassigned <span> Work <a style="float:right" href="Work.php" target="_blank">Show All</a></span></h5>
 
                 <div id="unassigned"></div>
 
@@ -341,8 +341,17 @@ if($Type=='Reporting'){
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <h5 class="card-title">Verification<span> This Month</span></h5>
-                <div id="Reporting"></div>
+                <h5 class="card-title">Accepted Verification<span> This Month</span></h5>
+                <div id="ReportingAccepted"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Rejected Verification<span> This Month</span></h5>
+                <div id="ReportingRejected"></div>
               </div>
             </div>
           </div>
@@ -531,13 +540,10 @@ if($Type=='Reporting'){
       }
 
       document.addEventListener("DOMContentLoaded", () => {
-        new ApexCharts(document.querySelector("#Reporting"), {
+        new ApexCharts(document.querySelector("#ReportingAccepted"), {
           series: [{
             name: 'Accepted Jobcard',
             data: Accepted,
-          }, {
-            name: 'Rejected Jobcard',
-            data: Rejected
           }],
           chart: {
             height: 250,
@@ -549,7 +555,7 @@ if($Type=='Reporting'){
           markers: {
             size: 4
           },
-          colors: ['#4154f1', '#2eca6a', '#ff771d'],
+          colors: ['#4154f1'],
           fill: {
             type: "gradient",
             gradient: {
@@ -577,6 +583,53 @@ if($Type=='Reporting'){
           }
         }).render();
       });
+
+
+      document.addEventListener("DOMContentLoaded", () => {
+        new ApexCharts(document.querySelector("#ReportingRejected"), {
+          series: [ {
+            name: 'Rejected Jobcard',
+            data: Rejected
+          }],
+          chart: {
+            height: 250,
+            type: 'area',
+            toolbar: {
+              show: false
+            },
+          },
+          markers: {
+            size: 4
+          },
+          colors: ['#2eca6a'],
+          fill: {
+            type: "gradient",
+            gradient: {
+              shadeIntensity: 1,
+              opacityFrom: 0.3,
+              opacityTo: 0.4,
+              stops: [0, 90, 100]
+            }
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: 'smooth',
+            width: 2
+          },
+          xaxis: {
+            type: 'datetime',
+            categories: VDateR
+          },
+          tooltip: {
+            x: {
+              format: 'dd/MM/yy HH:mm'
+            },
+          }
+        }).render();
+      });
+
 
       var data5= <?php print_r(json_encode($data5)); ?>;
 

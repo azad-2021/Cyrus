@@ -27,19 +27,19 @@ if(isset($_POST['submit'])){
     if(rename("jobcard/".$jobcard.".jpg","jobcard/".$NewCard.".jpg")){
    // echo "renamed";
       $resultupdate = mysqli_query($con2,$sql);
-      header("location:/executive/verify.php?apid=$enApprovalID");
+      header("location:/cyrus/reporting//verify.php?apid=$enApprovalID");
     }elseif(rename("jobcard/".$jobcard.".jpeg","jobcard/".$NewCard.".jpeg")){
    // echo "renamed";
       $resultupdate = mysqli_query($con2,$sql);
-      header("location:/executive/verify.php?apid=$enApprovalID");
+      header("location:/cyrus/reporting//verify.php?apid=$enApprovalID");
     }elseif(rename("jobcard/".$jobcard.".JPEG","jobcard/".$NewCard.".JPEG")){
    // echo "renamed";
       $resultupdate = mysqli_query($con2,$sql);
-      header("location:/executive/verify.php?apid=$enApprovalID");
+      header("location:/cyrus/reporting//verify.php?apid=$enApprovalID");
     }elseif(rename("jobcard/".$jobcard.".pdf","jobcard/".$NewCard.".pdf")){
    // echo "renamed";
       $resultupdate = mysqli_query($con2,$sql);
-      header("location:/executive/verify.php?apid=$enApprovalID");
+      header("location:/cyrus/reporting/verify.php?apid=$enApprovalID");
     }
   }
 }
@@ -97,7 +97,7 @@ $con4 -> close();
       <div class="collapse navbar-collapse" id="navbarNavDropdown" align="center">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/executive/reporting.php?">Home</a>
+            <a class="nav-link" aria-current="page" href="/cyrus/reporting/reporting.php?">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="">Edit Job Card</a>

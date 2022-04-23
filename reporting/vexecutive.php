@@ -75,6 +75,7 @@ $EmployeeName = $row2["Employee Name"];
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+   <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
@@ -209,9 +210,11 @@ $EmployeeName = $row2["Employee Name"];
       <script src="assets/vendor/php-email-form/validate.js"></script>
 
       <!-- Template Main JS File -->
-      <script src="assets/js/jquery-3.6.0.min.js"></script>
+     
       <script src="assets/js/main.js"></script>
       <script src="ajax.js"></script>
+      <script src="ajax-script.js"></script>
+      <script src="search.js"></script>
       <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
       <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
       <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>

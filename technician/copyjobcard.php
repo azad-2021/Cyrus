@@ -7,17 +7,17 @@ $EmployeeID=$_GET['empid'];
 if(copy('jobcard/'.$jobcard.'.jpg', '/home/ashok/Public/onlinejobcards/accepted/'.$jobcard.'.jpg')) {
 	// 'home/ashok/public/onlinejobcards/accepted/'
   //echo "It worked!!!";
-    header("location:/executive/vexecutive.php?empid=$EmployeeID");
+    header("location:/cyrus/reporting/vexecutive.php?empid=$EmployeeID");
 }
 
 else if(copy('jobcard/'.$jobcard.'.pdf', '/home/ashok/Public/onlinejobcards/accepted/'.$jobcard.'.pdf')) {
 	// 'home/ashok/public/onlinejobcards/accepted/'
   //echo "It worked!!!";
-    header("location:/executive/vexecutive.php?empid=$EmployeeID");
+    header("location:/cyrus/reporting/vexecutive.php?empid=$EmployeeID");
 }elseif(copy('jobcard/'.$jobcard.'.jpeg', '/home/ashok/Public/onlinejobcards/accepted/'.$jobcard.'.jpeg')) {
   // 'home/ashok/public/onlinejobcards/accepted/'
   //echo "It worked!!!";
-    header("location:/executive/vexecutive.php?empid=$EmployeeID");
+    header("location:/cyrus/reporting/vexecutive.php?empid=$EmployeeID");
 }
 
 else {echo "it failed";

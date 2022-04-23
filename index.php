@@ -35,8 +35,8 @@ if (isset($_POST['submit'])) {
         $resultAdd = mysqli_query($con3,$queryAdd); 
 
         if ($_SESSION['usertype']=="Reporting" or $_SESSION['usertype']=='Dataentry' or $_SESSION['userid']==32) {
-         header("location: reporting/");
-     }elseif ($_SESSION['usertype']=="Reception") {
+           header("location: reporting/?");
+       }elseif ($_SESSION['usertype']=="Reception") {
         header("location: reception/");
     }elseif ($_SESSION['usertype']=="Executive") {
         header("location: executive/");
@@ -77,26 +77,62 @@ if (isset($_POST['submit'])) {
         <!-- Custom styles for this template -->
         <link href="css/sign-in.css" rel="stylesheet">
         <link rel="icon" href="cyrus logo.png" type="image/icon type">
-    </head>
-    <body>
-        <div class="container">
+        <style type="text/css">
+        .dropbtn {
+          background-color: #04AA6D;
+          color: white;
+          padding: 16px;
+          font-size: 16px;
+          border: none;
+      }
+
+      .dropdown {
+          position: relative;
+          display: inline-block;
+      }
+
+      .dropdown-content {
+          display: none;
+          position: absolute;
+          background-color: #f1f1f1;
+          min-width: 160px;
+          box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+          z-index: 1;
+      }
+
+      .dropdown-content a {
+          color: black;
+          padding: 12px 16px;
+          text-decoration: none;
+          display: block;
+      }
+
+      .dropdown-content a:hover {background-color: #ddd;}
+
+      .dropdown:hover .dropdown-content {display: block;}
+
+      .dropdown:hover .dropbtn {background-color: #3e8e41;}
+  </style>
+</head>
+<body>
+    <div class="container">
+        <center>
+            <img class="img-fluid mb-4" alt="Cyrus Logo" height="50" src="cyrus logo.png" width="50">
+            <h1 class="h3 mb-3 font-weight-normal">Welcome to Cyrus</h1>
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        </center>
+        <form class="form-signin" action="" method="post">           
+            <input type="text" id="UName" name="user" class="form-control select" placeholder="User Name" required autofocus>
+            
+            <input type="password" id="pass" name="password" class="form-control select" placeholder="Password" required>
             <center>
-                <img class="img-fluid mb-4" alt="Cyrus Logo" height="50" src="cyrus logo.png" width="50">
-                <h1 class="h3 mb-3 font-weight-normal">Welcome to Cyrus</h1>
-                <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+                <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">Sign in</button>
+                <p class="mt-5 mb-3 text-muted">&copy; Cyrus Electronics Pvt. Ltd.</p>
             </center>
-            <form class="form-signin" action="" method="post">           
-                <input type="text" id="UName" name="user" class="form-control select" placeholder="User Name" required autofocus>
-                
-                <input type="password" id="pass" name="password" class="form-control select" placeholder="Password" required>
-                <center>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">Sign in</button>
-                    <p class="mt-5 mb-3 text-muted">&copy; Cyrus Electronics Pvt. Ltd.</p>
-                </center>
-            </form>
-        </div>
-        <script src="assets/js/jquery.min.js"></script>
-        <script src="assets/js/popper.js"></script>
-        <script src="bootstrap/js/bootstrap.min.js"></script>
-    </body>
-    </html>
+        </form>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/popper.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

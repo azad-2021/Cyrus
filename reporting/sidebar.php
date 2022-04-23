@@ -107,6 +107,16 @@
     </a>
   </li>
   <?php 
+  if (isset($Edit)) {
+    ?>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/technician/editjobcard.php?apid=<?php echo $enApprovalID.'&cardno='.$enJobcard;  ?>">
+        <i class="bi bi-grid"></i>
+        <span>Edit Jobcard</span>
+      </a>
+    </li>
+    <?php 
+  }
 }elseif($Type=='Dataentry'){
   ?>
   <li class="nav-item">
