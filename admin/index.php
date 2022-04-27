@@ -1,9 +1,9 @@
-
 <?php 
 include 'connection.php';
 include 'session.php';
 
-$EXEID=$_SESSION['userid'];
+//$EXEID=$_SESSION['userid'];
+
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
@@ -13,698 +13,357 @@ $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
-
+$_SESSION['user']='';
 
 if ( $Hour >= 1 && $Hour <= 11 ) {
-    $wish= "Good Morning ".$_SESSION['user'];
+  $wish= "Good Morning ".$_SESSION['user'];
 } else if ( $Hour >= 12 && $Hour <= 15 ) {
-    $wish= "Good Afternoon ".$_SESSION['user'];
+  $wish= "Good Afternoon ".$_SESSION['user'];
 } else if ( $Hour >= 19 || $Hour <= 23 ) {
-    $wish= "Good Evening ".$_SESSION['user'];
+  $wish= "Good Evening ".$_SESSION['user'];
 }
-
-
-$query="SELECT count(orders.OrderID) as PendingMaterials
-FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
-join branchdetails on orders.BranchCode=branchdetails.BranchCode
-join districts on branchdetails.Address3=districts.district
-join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE demandbase.StatusID=1 and ControlerID=$EXEID order by DateOfInformation";
-
-$result=mysqli_query($con,$query);
-$row = mysqli_fetch_array($result);
-$PendingMaterials=$row["PendingMaterials"];
-
-
-$query="SELECT  sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.billbook
-join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
-join cyrusbackend.districts on billbook.EmployeeCode=districts.`Assign To`
-join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE (TotalBilledValue-ReceivedAmount)>1 and Cancelled=0 and ControlerID=$EXEID and BankName!='Cyrus'";
-
-$result=mysqli_query($con,$query);
-$row = mysqli_fetch_array($result);
-$PendingPayment=$row["TotalAmount"]-$row["ReceiveAMOUNT"];
-
-
-
-$sql ="SELECT sum(`Pending Order`) as PendingOrders, sum(`Pending Complaints`) as PendingComplaints, sum(`Pending AMC`) as PendingAMC, `Employee Name` FROM cyrusbackend.pendingwork
-join districts on pendingwork.Address3=districts.District
-join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE ControlerID=$EXEID group by EmployeeCode;";
-
-$result = mysqli_query($con,$sql);
-$TotalPendingWork=0;
-while ($row = mysqli_fetch_array($result)) { 
-
-    $PendingWork  = $row['PendingOrders']+$row['PendingComplaints']+$row['PendingAMC'];
-    $Employee = $row['Employee Name'];
-    $data[]=array("Work"=>$PendingWork, "Employee"=>$Employee);
-
-    $TotalPendingWork=$TotalPendingWork+$PendingWork;
-}
-rsort($data);
-
-
-
-$query="SELECT `Employee Name`, employees.EmployeeCode FROM cyrusbackend.employees
-join districts on employees.EmployeeCode=districts.`Assign To`
-join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-where ControlerID=$EXEID
-group by employees.EmployeeCode
-order by `Employee Name`;";
-
-$resultTech=mysqli_query($con,$query);
-while($rowE=mysqli_fetch_assoc($resultTech)){
-    $Employee=$rowE["Employee Name"];
-    $EmployeeID=$rowE["EmployeeCode"];
-    $query="SELECT count(ComplaintID), `Employee NAME`, EmployeeCode FROM cyrusbackend.vallcomplaintsd WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
-    $result=mysqli_query($con,$query);
-    $row = mysqli_fetch_array($result);
-
-    $query2="SELECT count(vallordersd.OrderID), vallordersd.`Employee NAME`, vallordersd.EmployeeCode FROM vallordersd WHERE vallordersd.AssignDate is null and vallordersd.Discription like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID";
-    $result2=mysqli_query($con,$query2);
-    $row2 = mysqli_fetch_array($result2);
-
-    $query3 = "SELECT count(vallordersd.OrderID), vallordersd.`Employee NAME`, vallordersd.EmployeeCode FROM vallordersd WHERE AssignDate is null and Discription not like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID";
-    $result3 = mysqli_query($con, $query3);
-    $row3 = mysqli_fetch_array($result3);
-
-
-
-    $PendingWorkE= $row3["count(vallordersd.OrderID)"] + $row["count(ComplaintID)"] + $row2["count(vallordersd.OrderID)"];            
-    $data2[]=array("Unassigned"=>$PendingWorkE, "Employee"=>$Employee);
-}
-rsort($data2);
-//print_r($data2);
-
-$sql ="SELECT BankName, ZoneRegionName, EmployeeCode,  BranchName, BookNo, BankCode, ZoneRegionCode, BillDate, sum(TotalBilledValue) as TotalAmount, sum(ReceivedAmount) as ReceiveAMOUNT FROM cyrusbilling.billbook
-join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
-join cyrusbackend.districts on billbook.EmployeeCode=districts.`Assign To`
-join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-WHERE (TotalBilledValue-ReceivedAmount)>1 and Cancelled=0 and ControlerID=$EXEID and BankName!='Cyrus'
-group by BankCode, ZoneRegionCode
-ORDER BY BankName";
-
-$result = mysqli_query($con,$sql);
-
-while ($row = mysqli_fetch_array($result)) { 
-
-    $PendingBill  = $row['TotalAmount']-$row['ReceiveAMOUNT'];
-    $Bankarr = $row['BankName'].' '.$row['ZoneRegionName'];
-    $data3[]=array("Payment"=>$PendingBill, "Bank"=>$Bankarr);
-}
-rsort($data3);
-
-
-
-
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>Home</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+  <title>Home</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Favicons -->
+  <link href="assets/img/cyrus logo.png" rel="icon">
 
-    <!-- Icon Font Stylesheet -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
-    <link href="lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet">
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/sweetalert.min.js"></script>
+
+
 </head>
 
 <body>
-    <div class="container-xxl position-relative bg-white d-flex p-0">
-        <!-- Spinner Start -->
-        <?php 
-        include"modals.php";
-        ?>
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <!-- Spinner End -->
-        <?php 
-        include"sidebar.php";
-        ?>
-        <!-- Content Start -->
-        <div class="content">
-            <!-- Navbar Start -->
-            <?php include"nav.php" ?>
-            <!-- Navbar End -->
 
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
 
-            <!-- Sale & Revenue Start -->
-            <div class="container-fluid pt-4 px-4">
-                <div class="row g-4">
-                    <div class="col-sm-6 col-xl-4">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-line fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2" style="font-size: 13.6px;">Total Pending Material Confirmation</p>
-                                <h6 class="mb-0"><?php echo $PendingMaterials; ?></h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-4">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Pending Payment</p>
-                                <h6 class="mb-0">&#x20B9 <?php echo $PendingPayment; ?></h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-xl-4">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-industry fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Pending Work</p>
-                                <h6 class="mb-0"><?php echo $TotalPendingWork; ?></h6>
-                            </div>
-                        </div>
-                    </div>
-                    <!--
-                    <div class="col-sm-6 col-xl-3">
-                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
-                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
-                            <div class="ms-3">
-                                <p class="mb-2">Total Revenue</p>
-                                <h6 class="mb-0">$1234</h6>
-                            </div>
-                        </div>
-                    </div>
-                -->
-            </div>
-        </div>
-        <!-- Sale & Revenue End -->
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.php" class="logo d-flex align-items-center">
+        <img src="assets/img/cyrus logo.png" alt="">
+        <span class="d-none d-lg-block">Cyrus</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
 
-
-        <!-- Sales Chart Start -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="col-sm-12 col-xl-6">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Pending Work</h6>
-                            <a href="PendingWork.php" target="_blank">Show All</a>
-                        </div>
-                        <canvas id="PendingWork"></canvas>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-xl-6">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Unassigned Work</h6>
-                            <a href="UnassignedWork.php" target="_blank">Show All</a>
-                        </div>
-                        <canvas id="unassigned"></canvas>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="row g-4">
-                <div class="col-sm-12 col-xl-12">
-                    <div class="bg-light text-center rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Pending Payment</h6>
-                            <a href="PendingPayment.php" target="_blank">Show All</a>
-                        </div>
-                        <canvas id="PendingPayment"></canvas>
-                    </div>
-                </div>
-                    <!--
-                    <div class="col-sm-12 col-xl-6">
-                        <div class="bg-light text-center rounded p-4">
-                            <div class="d-flex align-items-center justify-content-between mb-4">
-                                <h6 class="mb-0">Salse & Revenue</h6>
-                                <a href="">Show All</a>
-                            </div>
-                            <canvas id="salse-revenue"></canvas>
-                        </div>
-                    </div>
-                -->
-            </div>
-
-        </div>
-        <!-- Sales Chart End -->
-
-
-        <!-- Recent Orders Start -->
-        <div class="container-fluid pt-4 px-4">
-            <div class="bg-light text-center rounded p-4">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h6 class="mb-0">Recent Placed Orders</h6>
-                    <a href="">Show All</a>
-                </div>
-                <div class="table-responsive">
-                    <table class="table text-start align-middle table-bordered table-hover mb-0">
-                        <thead>
-                            <tr class="text-dark">
-                                <th scope="col" style="min-width:200px">Bank</th>
-                                <th scope="col" style="min-width:200px">Zone</th>
-                                <th scope="col" style="min-width:200px">Branch</th>
-                                <th scope="col" style="min-width:100px">Order ID</th>
-                                <th scope="col" style="min-width:300px">Description</th>
-                                <th scope="col" style="min-width:150px">Order Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php 
-                            $sql ="SELECT BankName, ZoneRegionName, BranchName, OrderID, Discription, DateOfInformation FROM cyrusbackend.orders
-                            join branchdetails on orders.BranchCode=branchdetails.BranchCode
-                            join districts on branchdetails.Address3=districts.District
-                            join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                            WHERE ControlerID=$EXEID and AssignDate is null
-                            Order by DateOfInformation desc limit 10";
-
-                            $result = mysqli_query($con,$sql);
-                            while ($row = mysqli_fetch_array($result)) { 
-                             ?>
-                             <tr>
-
-                                <td><?php echo $row["BankName"]; ?></td>
-                                <td><?php echo $row["ZoneRegionName"]; ?></td>
-                                <td><?php echo $row["BranchName"]; ?></td>
-                                <td><?php echo $row["OrderID"]; ?></td>
-                                <td><?php echo $row["Discription"]; ?></td>
-                                <td><?php echo $row["DateOfInformation"]; ?></td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="search-bar">
+      <?php echo $wish; ?>
     </div>
-    <!-- Recent Orders End -->
+    <?php 
+    include "nav.php";
+    //include "modals.php";
 
-    <!-- Recent Comlaints Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-light text-center rounded p-4">
-            <div class="d-flex align-items-center justify-content-between mb-4">
-                <h6 class="mb-0">Recent Placed Complaints</h6>
-                <a href="">Show All</a>
+    ?>
+
+  </header><!-- End Header -->
+  <?php 
+  include "sidebar.php";
+  //include "modals.php";
+  ?>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+          <li class="breadcrumb-item active">Work Report</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+      <div class="row">
+
+        <!-- Left side columns -->
+        <div class="col-lg-12">
+          <div class="row g-3">
+            <div class="col-md-12">
+              <!--<h5 align="center" style="margin-top: 2px;">Search</h5>-->
+              <form class="needs-validation form-control rounded-corner" method="POST" style="margin-bottom: 5px;" >
+                <div class="row g-3">
+                  <div class="col-lg-3">
+                    <label>Select Start Date</label>
+                    <input type="date" name="" id="Sdate" class="form-control rounded-corner">
+                  </div>
+                  <div class="col-lg-3">
+                    <label>Select End Date</label>
+                    <input type="date" name="" id="Edate" class="form-control rounded-corner">           
+                  </div>
+
+                  <div class="col-lg-3">
+                    <label>Select Employee</label>
+                    <select id="Bank" class="form-control rounded-corner" name="Bank" required>
+                      <option value="">Select</option>
+                      <?php
+                      $query="SELECT * FROM employees WHERE Inservice=1 order by `Employee Name`";
+                      $result=mysqli_query($con,$Query);
+                      if (mysqli_num_rows($result)>0)
+                      {
+                        while ($arr=mysqli_fetch_assoc($result))
+                        {
+                          $d = array("BankName"=>$arr['BankName'], "BankCode"=>$arr['BankCode']);
+
+                          $data= json_encode($d);
+                          ?>
+                          <option value='<?php echo "$data"; ?>'><?php echo $arr['BankName']; ?></option>
+                          <?php
+                        }
+                      }
+                      ?>
+                    </select>
+                  </div>
+                  <div class="col-lg-3">
+                    <label>End Date</label>
+                    
+                  </div>
+                  <center>
+                    <div class="col-lg-4">
+                      <label>Select Quarter</label>
+                      <select id="Quarter" class="form-control rounded-corner" name="Zone" required>
+                        <option value="">Select Quarter</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                      </select>
+                      <p>Note: Duration between Start Date & End Date is maximum 365 days.</p>
+                    </div>
+                  </center>
+                </div>
+              </form>
             </div>
-            <div class="table-responsive">
-                <table class="table text-start align-middle table-bordered table-hover mb-0">
-                    <thead>
-                        <tr class="text-dark">
-                            <th scope="col" style="min-width:200px">Bank</th>
-                            <th scope="col" style="min-width:200px">Zone</th>
-                            <th scope="col" style="min-width:200px">Branch</th>
-                            <th scope="col" style="min-width:120px">Complaint ID</th>
-                            <th scope="col" style="min-width:300px">Description</th>
-                            <th scope="col" style="min-width:150px">Complaint Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php 
-                        $sql ="SELECT BankName, ZoneRegionName, BranchName, ComplaintID, Discription, DateOfInformation FROM cyrusbackend.complaints
-                        join branchdetails on complaints.BranchCode=branchdetails.BranchCode
-                        join districts on branchdetails.Address3=districts.District
-                        join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                        WHERE ControlerID=$EXEID and AssignDate is null
-                        Order by DateOfInformation desc limit 10";
+          </div>
 
-                        $result = mysqli_query($con,$sql);
-                        while ($row = mysqli_fetch_array($result)) { 
-                         ?>
-                         <tr>
+          <div id="printableArea">
+            <div class="col-lg-12 table-responsive" style="margin: 12px;" >
+              <center>
+                <h4>Posted AMC</h4>
+              </center>
+              <table class="table table-hover table-bordered border-primary" >
 
-                            <td><?php echo $row["BankName"]; ?></td>
-                            <td><?php echo $row["ZoneRegionName"]; ?></td>
-                            <td><?php echo $row["BranchName"]; ?></td>
-                            <td><?php echo $row["ComplaintID"]; ?></td>
-                            <td><?php echo $row["Discription"]; ?></td>
-                            <td><?php echo $row["DateOfInformation"]; ?></td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
+                <thead> 
+                 <tr>
+                  <th>Sr.No.</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Gadget</th>
+                </tr>                     
+              </thead>                 
+              <tbody id="AMCZone">
+              </tbody>
             </table>
+          </div>
+
+
+          <div class="col-lg-12 table-responsive" style="margin: 12px;" >
+            <center>
+              <h4>AMC Report</h4>
+              <h5>
+                <div id="BankName" class="col-lg-6"></div>
+                <div id="ZoneName" class="col-lg-6"></div>
+              </h5>
+            </center>
+            <table class="table table-hover table-bordered border-primary" >
+
+              <thead> 
+               <tr>
+                <th>Sr.No.</th>
+                <th>Branch</th>
+                <th>Jobcard No</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Visit Date</th>
+                <th>Status</th>
+                <th>Gadget</th>
+              </tr>                     
+            </thead>                 
+            <tbody id="AmcData">
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
+    <center>
+      <button class="btn btn-primary" onclick="printDiv('printableArea');">Print</button>
+    </center>
+
+  </div>
 </div>
+<!-- End Left side columns -->
 
-<!-- Widgets Start -->
-        <!--
-        <div class="container-fluid pt-4 px-4">
-            <div class="row g-4">
-                <div class="col-sm-12 col-md-6 col-xl-4">
-                    <div class="h-100 bg-light rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-2">
-                            <h6 class="mb-0">Messages</h6>
-                            <a href="">Show All</a>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center pt-3">
-                            <img class="rounded-circle flex-shrink-0" src="img/user.jpg" alt="" style="width: 40px; height: 40px;">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-0">Jhon Doe</h6>
-                                    <small>15 minutes ago</small>
-                                </div>
-                                <span>Short message goes here...</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-6 col-xl-4">
-                    <div class="h-100 bg-light rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">Calender</h6>
-                            <a href="">Show All</a>
-                        </div>
-                        <div id="calender"></div>
-                    </div>
-                </div>
-                <div class="col-sm-12 col-md-6 col-xl-4">
-                    <div class="h-100 bg-light rounded p-4">
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h6 class="mb-0">To Do List</h6>
-                            <a href="">Show All</a>
-                        </div>
-                        <div class="d-flex mb-2">
-                            <input class="form-control bg-transparent" type="text" placeholder="Enter task">
-                            <button type="button" class="btn btn-primary ms-2">Add</button>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-2">
-                            <input class="form-check-input m-0" type="checkbox">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <span>Short task goes here...</span>
-                                    <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-2">
-                            <input class="form-check-input m-0" type="checkbox">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <span>Short task goes here...</span>
-                                    <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-2">
-                            <input class="form-check-input m-0" type="checkbox" checked>
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <span><del>Short task goes here...</del></span>
-                                    <button class="btn btn-sm text-primary"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center border-bottom py-2">
-                            <input class="form-check-input m-0" type="checkbox">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <span>Short task goes here...</span>
-                                    <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center pt-2">
-                            <input class="form-check-input m-0" type="checkbox">
-                            <div class="w-100 ms-3">
-                                <div class="d-flex w-100 align-items-center justify-content-between">
-                                    <span>Short task goes here...</span>
-                                    <button class="btn btn-sm"><i class="fa fa-times"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    -->
-    <!-- Widgets End -->
+</section>
+</main>
+<!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+  </div>
+</footer>
+<!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="ajax.js"></script>
 
 
-    <!-- Footer Start -->
-    <div class="container-fluid pt-4 px-4">
-        <div class="bg-light rounded-top p-4">
-            <div class="row">
-                <div class="col-12 col-sm-12 text-center text-sm-start">
-                    <center>
-                        &copy; <a href="">Cyrus</a>, All Right Reserved. 
-                    </center>
-                </div>
-                <div class="col-12 col-sm-6 text-center text-sm-end">
-                    <!--/*** This template is free as long as you keep the footer author’s credit link/attribution link/backlink. If you'd like to use the template without the footer author’s credit link/attribution link/backlink, you can purchase the Credit Removal License from "https://htmlcodex.com/credit-removal". Thank you for your support. ***/-->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Footer End -->
-</div>
-<!-- Content End -->
-
-
-<!-- Back to Top -->
-<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-</div>
-
-<!-- JavaScript Libraries -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="lib/chart/chart.min.js"></script>
-<script src="lib/easing/easing.min.js"></script>
-<script src="lib/waypoints/waypoints.min.js"></script>
-<script src="lib/owlcarousel/owl.carousel.min.js"></script>
-<script src="lib/tempusdominus/js/moment.min.js"></script>
-<script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-<script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
-<!-- Template Javascript -->
-<script src="js/main.js"></script>
-<script src="js/ajax.js"></script>
 <script type="text/javascript">
-
-    var barColors = ["#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff","#5969ff", "#ff407b","#25d5f2","#ffc750","#2ec551","#7040fa","#ff004e","#5969ff"];
-    var hoverBackground='rgba(200, 200, 200, 1)';
-    var hoverBorder='rgba(200, 200, 200, 1)';
-
-        // Pending Work
-
-        var data= <?php print_r(json_encode($data)); ?>;
-
-        var Employee = [];
-        var PendingWork = [];
-
-        for(var i = 0; i < 10; i++) {
-            Employee.push(data[i].Employee);
-            PendingWork.push(data[i].Work);
+  $(document).ready(function() {
+    $('table.display').DataTable( {
+      responsive: false,
+      responsive: {
+        details: {
+          display: $.fn.dataTable.Responsive.display.modal( {
+            header: function ( row ) {
+              var data = row.data();
+              return 'Details for '+data[0]+' '+data[1];
+            }
+          } ),
+          renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+            tableClass: 'table'
+          } )
         }
-
-        var xValuesP = Employee;
-        var ctx1 = $("#PendingWork").get(0).getContext("2d");
-        var myChart1 = new Chart(ctx1, {
-            type: "bar",
-            data: {
-                labels: xValuesP,
-                datasets: [{
-                    label: "Pending Work",
-                    data: PendingWork,
-                    backgroundColor: barColors
-                }
-                ]
-            },
-            options: {
-                responsive: true
-            }
-        });
+      },
+      stateSave: true,
+    } );
+  } );
 
 
-        var data2= <?php print_r(json_encode($data2)); ?>;
+  $(document).on('change','#Bank', function(){
+    var data = $(this).val();
+    //console.log(data);
+    const obj = JSON.parse(data);
+    BankCode = obj.BankCode;
+    document.getElementById("BankName").innerHTML=obj.BankName;
+    if(BankCode){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BankCode':BankCode},
+        success:function(result){
+          $('#Zone').html(result);
 
-        var EmployeeE = [];
-        var unassigned = [];
-
-        for(var i = 0; i < 10; i++) {
-            EmployeeE.push(data2[i].EmployeeE);
-            unassigned.push(data2[i].Unassigned);
         }
+      }); 
+    }else{
+      $('#Zone').html('<option value="">Zone</option>');
+      $('#Branch').html('<option value="">Branch</option>'); 
+    }
+  });
 
-        var xValuesP = Employee;
-        var ctx2 = $("#unassigned").get(0).getContext("2d");
-        var myChart2 = new Chart(ctx2, {
-            type: "bar",
-            data: {
-                labels: xValuesP,
-                datasets: [{
-                    label: "Unassigned Work",
-                    data: unassigned,
-                    backgroundColor: barColors
-                }
-                ]
-            },
-            options: {
-                responsive: true
-            }
-        });
-        
 
-/*
+  $(document).on('change','#Zone', function(){
+    var data = $(this).val();
+    //console.log(data);
+    const obj = JSON.parse(data);
+    document.getElementById("ZoneName").innerHTML=obj.ZoneName;
+    document.getElementById("Quarter").value='';
+  });
 
-        var ctx2 = $("#salse-revenue").get(0).getContext("2d");
-        var myChart2 = new Chart(ctx2, {
-            type: "line",
-            data: {
-                labels: ["2016", "2017", "2018", "2019", "2020", "2021", "2022"],
-                datasets: [{
-                    label: "Salse",
-                    data: [15, 30, 55, 45, 70, 65, 85],
-                    backgroundColor: "rgba(0, 156, 255, .5)",
-                    fill: true
-                },
-                {
-                    label: "Revenue",
-                    data: [99, 135, 170, 130, 190, 180, 270],
-                    backgroundColor: "rgba(0, 156, 255, .3)",
-                    fill: true
-                }
-                ]
-            },
-            options: {
-                responsive: true
-            }
-        });
 
-        */
+  $(document).on('change','#Quarter', function(){
+    var Quarter = $(this).val();
+    var StartDate= document.getElementById("Sdate").value;
+    var EndDate= document.getElementById("Edate").value;
+    var data= document.getElementById("Zone").value;
+    const obj = JSON.parse(data);
+    ZoneCode = obj.ZoneCode;
 
-    // Single Bar Chart
+    const date1 = new Date(StartDate);
+    const date2 = new Date(EndDate);
+    const diffTime = Math.abs(date2 - date1);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    console.log(diffDays + " days");
+    if(diffDays>365){
+      swal("error","Duration between Start Date & End Date is maximum 365 days.","error");
+    }else{
+      if((Quarter!='' || StartDate!='' || EndDate!='') && (diffDays<366)){
+        $.ajax({
+          type:'POST',
+          url:'dataget.php',
+          data:{'ZoneCodeAMC':ZoneCode,'StartDate':StartDate, 'EndDate':EndDate},
+          success:function(result){
+            $('#AMCZone').html(result);
 
-    var data3= <?php print_r(json_encode($data3)); ?>;
-    
-    var Bankarr = [];
-    var PendingBills = [];
+            $.ajax({
+              type:'POST',
+              url:'dataget.php',
+              data:{'ZoneCode':ZoneCode, 'Quarter':Quarter, 'StartDate':StartDate, 'EndDate':EndDate},
+              success:function(result){
+                $('#AmcData').html(result);
 
-    for(var i = 0; i < 10; i++) {
-        Bankarr.push(data3[i].Bank);
-        PendingBills.push(data3[i].Payment);
+              }
+            }); 
+
+          }
+        }); 
+
+      }
     }
 
-    var xValues = Bankarr;
+  });
 
-    var ctx4 = $("#PendingPayment").get(0).getContext("2d");
-    var myChart4 = new Chart(ctx4, {
-        type: "bar",
-        data: {
+  function printDiv(divName) {
 
-            labels: xValues,
-            datasets: [{
-                label: "Pending Payments in your area Group By Bank & Zone",
-                backgroundColor: barColors,
-                data: PendingBills
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
+    var printContents = document.getElementById(divName).innerHTML;
+    var originalContents = document.body.innerHTML;
 
+    document.body.innerHTML = printContents;
 
-    // Pie Chart
-    var ctx5 = $("#pie-chart").get(0).getContext("2d");
-    var myChart5 = new Chart(ctx5, {
-        type: "pie",
-        data: {
-            labels: ["Italy", "France", "Spain", "USA", "Argentina"],
-            datasets: [{
-                backgroundColor: [
-                "rgba(0, 156, 255, .7)",
-                "rgba(0, 156, 255, .6)",
-                "rgba(0, 156, 255, .5)",
-                "rgba(0, 156, 255, .4)",
-                "rgba(0, 156, 255, .3)"
-                ],
-                data: [55, 49, 44, 24, 15]
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
+    window.print();
 
-
-    // Doughnut Chart
-    var ctx6 = $("#doughnut-chart").get(0).getContext("2d");
-    var myChart6 = new Chart(ctx6, {
-        type: "doughnut",
-        data: {
-            labels: ["Italy", "France", "Spain", "USA", "Argentina"],
-            datasets: [{
-                backgroundColor: [
-                "rgba(0, 156, 255, .7)",
-                "rgba(0, 156, 255, .6)",
-                "rgba(0, 156, 255, .5)",
-                "rgba(0, 156, 255, .4)",
-                "rgba(0, 156, 255, .3)"
-                ],
-                data: [55, 49, 44, 24, 15]
-            }]
-        },
-        options: {
-            responsive: true
-        }
-    });
-
-    
-
+    document.body.innerHTML = originalContents;
+  }
 
 </script>
 </body>
 
 </html>
+
+<?php 
+$con->close();
+$con2->close();
+?>

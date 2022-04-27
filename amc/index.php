@@ -8,9 +8,6 @@ date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
-
 $Hour = date('G');
 //echo $_SESSION['user'];
 $_SESSION['user']='';
@@ -52,7 +49,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
@@ -150,21 +146,11 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                     <label>End Date</label>
                     <input type="date" name="" id="Edate" class="form-control rounded-corner">
                   </div>
-                  <center>
-                    <div class="col-lg-4">
-                      <label>Select Quarter</label>
-                      <select id="Quarter" class="form-control rounded-corner" name="Zone" required>
-                        <option value="">Select Quarter</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                      </select>
-                      <p>Note: Duration between Start Date & End Date is maximum 365 days.</p>
-                    </div>
-                  </center>
                 </div>
               </form>
+              <center>
+                <button class="btn btn-primary" id="view">View</button>
+              </center>
             </div>
           </div>
 
@@ -187,7 +173,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
               </tbody>
             </table>
           </div>
-
 
           <div class="col-lg-12 table-responsive" style="margin: 12px;" >
             <center>
@@ -240,19 +225,18 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
+<script src="assets/js/jquery-3.6.0.min.js"></script>
 <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <script src="assets/vendor/chart.js/chart.min.js"></script>
 <script src="assets/vendor/echarts/echarts.min.js"></script>
 <script src="assets/vendor/quill/quill.min.js"></script>
-<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
 <script src="assets/vendor/tinymce/tinymce.min.js"></script>
 <script src="assets/vendor/php-email-form/validate.js"></script>
 
 <!-- Template Main JS File -->
-<script src="assets/js/jquery-3.6.0.min.js"></script>
+
 <script src="assets/js/main.js"></script>
-<script src="ajax.js"></script>
 
 
 <script type="text/javascript">
@@ -302,53 +286,44 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
   $(document).on('change','#Zone', function(){
     var data = $(this).val();
-    //console.log(data);
+    console.log(data);
     const obj = JSON.parse(data);
-    document.getElementById("ZoneName").innerHTML=obj.ZoneName;
-    document.getElementById("Quarter").value='';
+    ZoneCode = obj.ZoneCode;
+    if(ZoneCode){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'AMCZone':ZoneCode},
+        success:function(result){
+          $('#AMCZone').html(result);
+          $('#AmcData').html("");
+
+        }
+      }); 
+    }
   });
 
 
-  $(document).on('change','#Quarter', function(){
-    var Quarter = $(this).val();
+  $(document).on('click','#view', function(){
     var StartDate= document.getElementById("Sdate").value;
     var EndDate= document.getElementById("Edate").value;
     var data= document.getElementById("Zone").value;
     const obj = JSON.parse(data);
     ZoneCode = obj.ZoneCode;
 
-    const date1 = new Date(StartDate);
-    const date2 = new Date(EndDate);
-    const diffTime = Math.abs(date2 - date1);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-    console.log(diffDays + " days");
-    if(diffDays>365){
-      swal("error","Duration between Start Date & End Date is maximum 365 days.","error");
+    if(StartDate!='' || EndDate!='' || ZoneCode!=''){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'ZoneCodeAMC':ZoneCode,'StartDate':StartDate, 'EndDate':EndDate, 'ZoneCodeA':ZoneCode},
+        success:function(result){
+          $('#AmcData').html(result);
+
+        }
+      }); 
     }else{
-      if((Quarter!='' || StartDate!='' || EndDate!='') && (diffDays<366)){
-        $.ajax({
-          type:'POST',
-          url:'dataget.php',
-          data:{'ZoneCodeAMC':ZoneCode,'StartDate':StartDate, 'EndDate':EndDate},
-          success:function(result){
-            $('#AMCZone').html(result);
-
-            $.ajax({
-              type:'POST',
-              url:'dataget.php',
-              data:{'ZoneCode':ZoneCode, 'Quarter':Quarter, 'StartDate':StartDate, 'EndDate':EndDate},
-              success:function(result){
-                $('#AmcData').html(result);
-
-              }
-            }); 
-
-          }
-        }); 
-
-      }
+      swal("error","Please Enter all fields","error")
     }
-
   });
 
   function printDiv(divName) {

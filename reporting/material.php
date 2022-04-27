@@ -25,7 +25,7 @@ if (!empty($Data)){
 
   <div class="col-lg-12" style="margin: 12px;">
    <table class="container table table-hover table-bordered border-primary table-responsive">
-     <h5><?php echo 'Bank : '.$row['BankName'].' &nbsp;&nbsp;&nbsp;&nbsp;Zone : '.$row['ZoneRegionName'].' &nbsp;&nbsp;&nbsp;&nbsp;Branch : '.$row['BranchName'].' &nbsp;&nbsp;&nbsp;&nbsp;Order ID :'.$OrderID.'<br>Description :'.$Description; ?></h5> 
+     <h5><?php echo 'Banks : '.$row['BankName'].' &nbsp;&nbsp;&nbsp;&nbsp;Zone : '.$row['ZoneRegionName'].' &nbsp;&nbsp;&nbsp;&nbsp;Branch : '.$row['BranchName'].' &nbsp;&nbsp;&nbsp;&nbsp;Order ID :'.$OrderID.'<br>Description :'.$Description; ?></h5> 
      <thead> 
        <tr>
         <th style="min-width:20px">SNo.</th>

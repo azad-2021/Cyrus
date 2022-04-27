@@ -22,15 +22,13 @@ if (!empty($BankCode))
   }
 
 }
-$ZoneCode=!empty($_POST['ZoneCode'])?$_POST['ZoneCode']:'';
-if (!empty($ZoneCode))
+$StartDate=!empty($_POST['StartDate'])?$_POST['StartDate']:'';
+$EndDate=!empty($_POST['EndDate'])?$_POST['EndDate']:'';
+if (!empty($EndDate) and !empty($StartDate))
 {
-  //echo $ZoneCode;
   $Sr=1;
-  $Quarter=!empty($_POST['Quarter'])?$_POST['Quarter']:'';
-  $StartDate=!empty($_POST['StartDate'])?$_POST['StartDate']:'';
-  $EndDate=!empty($_POST['EndDate'])?$_POST['EndDate']:'';
-
+  
+  $ZoneCode=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
 
   $query="SELECT * FROM branchdetails WHERE ZoneRegionCode=$ZoneCode order by BranchName";
 
@@ -53,6 +51,7 @@ if (!empty($ZoneCode))
         $AMCEndDate=$row['EndDate'];
         $GadgetID=$row['GadgetID'];
       //echo $StartDate.'<br>';
+        /*
         if ($Quarter==1) {
           $S=date('Y-m-d', strtotime($StartDate));
           $E=date('Y-m-d', strtotime($S. ' + 90 days'));
@@ -65,14 +64,14 @@ if (!empty($ZoneCode))
         }elseif($Quarter==4){
           $S=date('Y-m-d', strtotime($StartDate. ' + 270 days'));
           $E=$EndDate;
-        }
+        }*/
 
         $BranchCode=$row2['BranchCode'];
         $Bank=$row2['BankName'];
         $Zone=$row2['ZoneRegionName'];
         $Branch=$row2['BranchName'];
         $query="SELECT `Job_Card_No`, Remark, VisitDate as LastVisit FROM cyrusbackend.jobcardmain
-        WHERE VisitDate between '$S'  and '$E' and GadgetID=$GadgetID and BranchCode=$BranchCode and `Card Number` like '%AMC%'";
+        WHERE VisitDate between '$StartDate'  and '$EndDate' and GadgetID=$GadgetID and BranchCode=$BranchCode and `Card Number` like '%AMC%' order by Job_Card_No desc limit 1";
 
         $result3=mysqli_query($con,$query);
         if (mysqli_num_rows($result3)>0)
@@ -80,7 +79,7 @@ if (!empty($ZoneCode))
           $result4=$result3;
         }else{
           $query="SELECT max(VisitDate) as LastVisit FROM cyrusbackend.jobcardmain
-          WHERE VisitDate between '$S'  and '$E' and GadgetID=$GadgetID and BranchCode=$BranchCode";
+          WHERE VisitDate between '$StartDate'  and '$EndDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
 
           $result4=mysqli_query($con,$query);
         }
@@ -110,8 +109,8 @@ if (!empty($ZoneCode))
             <td ><?php echo $Sr; ?></td>
             <td ><?php echo $Branch; ?></td>
             <td ><?php echo $jobcard; ?></td>
-            <td><?php echo date('d-M-Y',strtotime($S)); ?></td>
-            <td><?php echo date('d-M-Y',strtotime($E)); ?></td>
+            <td><?php echo date('d-M-Y',strtotime($StartDate)); ?></td>
+            <td><?php echo date('d-M-Y',strtotime($EndDate)); ?></td>
             <td ><?php echo $VisitDate; ?></td>
             <td ><?php echo $Status; ?></td>
             <td><?php echo $Gadget; ?></td>
@@ -124,13 +123,13 @@ if (!empty($ZoneCode))
   }
 }
 
-$StartDate=!empty($_POST['StartDate'])?$_POST['StartDate']:'';
-$EndDate=!empty($_POST['EndDate'])?$_POST['EndDate']:'';
-if (!empty($StartDate) and !empty($EndDate)){
-  $ZoneCodeAMC=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
+$ZoneCodeAMC=!empty($_POST['AMCZone'])?$_POST['AMCZone']:'';
+if (!empty($ZoneCodeAMC))
+{
+  $ZoneCodeAMC=!empty($_POST['AMCZone'])?$_POST['AMCZone']:'';
   $ZoneData="SELECT * from amcs
   join gadget on amcs.Device=gadget.Gadget
-  WHERE ZoneRegionCode=$ZoneCodeAMC and StartDate>='$StartDate' and EndDate<='$EndDate'";
+  WHERE ZoneRegionCode=$ZoneCodeAMC";
   $result=mysqli_query($con,$ZoneData);
   if (mysqli_num_rows($result)>0){
     $Sr=1;
@@ -146,4 +145,7 @@ if (!empty($StartDate) and !empty($EndDate)){
   }
 }
 }
+
+
+
 ?>

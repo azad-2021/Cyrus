@@ -246,7 +246,7 @@ $Type=$_SESSION['usertype'];
             $result2=mysqli_query($con,$query2);
             $row2 = mysqli_fetch_array($result2);
 
-            $query3 = "SELECT count(vallordersd.OrderID) FROM vallordersd WHERE AssignDate is null and Discription not like '%AMC%' and vallordersd.EmployeeCode=$EmployeeID";
+            $query3 = "SELECT count(unassignedorders.OrderID) FROM unassignedorders WHERE AssignDate is null and Discription not like '%AMC%' and unassignedorders.EmployeeCode=$EmployeeID";
             $result3 = mysqli_query($con, $query3);
             $row3 = mysqli_fetch_array($result3);
             if ($row["count(ComplaintID)"]>0 or $row2["count(vallordersd.OrderID)"]>0 or $row3["count(vallordersd.OrderID)"]>0 ) {
@@ -255,7 +255,7 @@ $Type=$_SESSION['usertype'];
               <tr>
                 <td><?php echo $Employee; ?></td>
 
-                <td><a class="view_UNO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNO"><?php echo $row3["count(vallordersd.OrderID)"]; ?></a></td>
+                <td><a class="view_UNO" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNO"><?php echo $row3["count(unassignedorders.OrderID)"]; ?></a></td>
 
                 <td ><a class="view_UNC" id="<?php print $EmployeeID; ?>" data-bs-target="#ViewUNC"><?php echo $row["count(ComplaintID)"]; ?></a></td>
 

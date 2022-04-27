@@ -6,8 +6,8 @@
         <th style="min-width:20px">SNo.</th>
         <th style="min-width:50px">Bank</th>
         <th style="min-width:150px">Zone</th>
-        <th style="min-width:150px">District</th>
         <th style="min-width:250px">Branch</th>
+        <th style="min-width:150px">District</th>       
         <th style="min-width:150px">Bill No.</th>
         <th style="min-width:20px">Pending Payment</th>
       </tr>                     

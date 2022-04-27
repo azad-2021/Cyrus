@@ -12,7 +12,10 @@ if (!empty($EmployeeCodeAMC))
     ?>
     <tr>
       <td><?php echo $Sr; ?></td>
+      <td><?php echo $row["BankName"] ?></td>
+      <td><?php echo $row["ZoneRegionName"] ?></td>
       <td><?php echo $row["BranchName"] ?></td>
+      <td><?php echo $row["Address3"] ?></td>
       <td><?php echo $row["OrderID"] ?></td>
       <td><?php print $row["Discription"]; ?></td>
       <td>

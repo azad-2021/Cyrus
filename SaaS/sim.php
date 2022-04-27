@@ -2,7 +2,27 @@
 
 include('connection.php'); 
 include 'session.php';
-$username = $_SESSION['user'];
+$Type=$_SESSION['usertype'];
+$EXEID=$_SESSION['userid'];
+
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($timestamp));
+
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
+
+$Hour = date('G');
+
+$user=$_SESSION['user'];
+
+if ( $Hour >= 1 && $Hour <= 11 ) {
+  $wish= "Good Morning ".$_SESSION['user'];
+} else if ( $Hour >= 12 && $Hour <= 15 ) {
+  $wish= "Good Afternoon ".$_SESSION['user'];
+} else if ( $Hour >= 19 || $Hour <= 23 ) {
+  $wish= "Good Evening ".$_SESSION['user'];
+}
 
 $query ="SELECT * FROM `operators`";
 $resultOperator = mysqli_query($con, $query);
@@ -33,7 +53,7 @@ if(isset($_POST['submit'])){
   }
   if (empty($errors)==true) {
         // code...
-    
+
     if(empty($_POST['ADate'])==false) {
 
 
@@ -46,12 +66,12 @@ if(isset($_POST['submit'])){
       $queryAdd="INSERT INTO `simprovider`( `MobileNumber`, `SimNo`, `SimType`, `OperatorID`, `SimProvider`, `Remark`) VALUES ('$Mobile','$SimNo','$SimType', '$OperatorID', '$Provider', '$Remark')" ;
 
     }
-    $resultAdd = mysqli_query($con,$queryAdd);
+    $resultAdd = mysqli_query($con3,$queryAdd);
     if ($resultAdd) {
       echo '<script>alert("Your response recorded successfully")</script>';
       header("location:simtable.php?user=$username");
     }else {
-      echo "Error updating record: " . $con->error;
+      echo "Error updating record: " . $con3->error;
     }
 
   }else{
@@ -63,126 +83,95 @@ if(isset($_POST['submit'])){
 ?>
 
 
+<!DOCTYPE html>
+<html lang="en">
 
-<!doctype html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <title>Sim Provider</title>
-    <link rel="icon" href="cyrus logo.png" type="image/icon type">
-    <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css"> 
-    <link href='https://fonts.googleapis.com/css?family=Lato:100' rel='stylesheet' type='text/css'>
-    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    <style>
-    fieldset {
-      background-color: #eeeeee;
-      margin: 5px;
-      padding: 10px;
-    }
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    legend {
-      background-color: #26082F;
-      color: white;
-      padding: 5px 5px;
-    }
+  <title>Home</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
 
-  </style>
+  <!-- Favicons -->
+  <link href="assets/img/cyrus logo.png" rel="icon">
 
 
-  <script type="text/javascript">
-    function yesnoCheck(that) {
-      if(that.value == "Bank"){
-        document.getElementById("1").style.display = "flex";
-      }else{
-        document.getElementById("1").style.display = "none";
-      }
-    }
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-    function limit1(element)
-    {
-      var max_chars = 20;
+  <!-- Template Main CSS File -->
+  <link href="assets/css/style.css" rel="stylesheet">
+  <script src="assets/js/sweetalert.min.js"></script>
 
-      if(element.value.length > max_chars) {
-        element.value = element.value.substr(0, max_chars);
-      }
-    }
-
-
-    function limit2(element)
-    {
-      var max_chars = 13;
-
-      if(element.value.length > max_chars) {
-        element.value = element.value.substr(0, max_chars);
-      }
-    }
-
-
-  </script>
 </head>
 
 <body>
 
 
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #E0E1DE;" id="nav">
-    <div class="container-fluid" align="center">
-      <a class="navbar-brand" href="index.html"><img src="cyrus logo.png" alt="cyrus.com" width="50" height="60">Cyrus Electronics</a>
-      <button class="navbar-toggler " type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-md-center" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="simtable.php">Home</a>
-          </li>
-          <li class="nav-item">
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" target="blank" href="simpending.php?">Pending Orders</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" target="blank" href="sim.php?">Release Sim</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" target="blank" href="viewsim.php?">Active Sim Cards</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/cyrus/executive/changepass.php">Change Password</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <br><br>
-  <div class="container">
-    <legend style="text-align: center;" class="my-select">Enter Details</legend>
-    <fieldset>
+  <header id="header" class="header fixed-top d-flex align-items-center">
 
-      <form method="POST" action="">
-        <div class="form-row">
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="index.php" class="logo d-flex align-items-center">
+        <img src="assets/img/cyrus logo.png" alt="">
+        <span class="d-none d-lg-block">Cyrus</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <div class="search-bar">
+      <?php echo $wish; ?>
+    </div>
+    <?php 
+    include "nav.php";
+    //include "modals.php";
+
+    ?>
+
+  </header><!-- End Header -->
+  <?php 
+  include "sidebar.php";
+  //include "modals.php";
+  ?>
+  <main id="main" class="main">
+
+    <div class="pagetitle">
+      <h1>Dashboard</h1>
+      <nav>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="index.php">Home</a></li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+      </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section dashboard">
+
+      <form method="POST" action="" class="form-control rounded-corner">
+        <div class="row">
 
           <div class="form-group col-md-3">
             <label for="Branch">Mobile No.</label>
-            <input type="text" minlength="13" maxlength="13" class="form-control my-select" placeholder="Mobile No" name="Mobile" onkeydown="limit2(this);" onkeyup="limit2(this);" required>
+            <input type="text" minlength="13" maxlength="13" class="form-control rounded-corner" placeholder="Mobile No" name="Mobile" onkeydown="limit2(this);" onkeyup="limit2(this);" required>
           </div>
           <div class="form-group col-md-3">
             <label for="Bank ID">Sim No.</label>
-            <input type="text" class="form-control my-select" placeholder="Sim No" name="SimNo" onkeydown="limit1(this);" onkeyup="limit1(this);"required>
+            <input type="text" class="form-control rounded-corner" placeholder="Sim No" name="SimNo" onkeydown="limit1(this);" onkeyup="limit1(this);"required>
           </div>
           <div class="form-group col-md-2">
             <label for="IssueDate">Sim Type</label>
-            <select class="form-control my-select" name="SimType" required>
+            <select class="form-control rounded-corner" name="SimType" required>
               <option value="">Select</option>
               <option value="Prepaid">Prepaid</option>
               <option value="Postpaid">Postpaid</option>
@@ -191,7 +180,7 @@ if(isset($_POST['submit'])){
           </div>
           <div class="form-group col-md-2">
             <label for="IssueDate">Sim Provider</label>
-            <select class="form-control my-select" name="Provider" required onchange="yesnoCheck(this);">
+            <select class="form-control rounded-corner" name="Provider" required onchange="yesnoCheck(this);">
               <option value="">Select</option>
               <option value="Bank">Bank</option>
               <option value="Cyrus">Cyrus</option>
@@ -200,7 +189,7 @@ if(isset($_POST['submit'])){
           </div>
           <div class="form-group col-md-2">
             <label for="operator">Operator</label>
-            <select class="form-control my-select" name="Operator">
+            <select class="form-control rounded-corner" name="Operator">
               <option value="">Select</option>
               <?php
               while ($arr=mysqli_fetch_assoc($resultOperator)){
@@ -215,17 +204,17 @@ if(isset($_POST['submit'])){
           <div class="form-group col-md-12" id="1"  style="display: none;">
             <label for="SimType">Activation Date</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="date" name="ADate" placeholder="dd/mm/yy" class="form-control my-select">
+            <input type="date" name="ADate" placeholder="dd/mm/yy" class="form-control rounded-corner">
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <label for="SimType">Recharge Expiry Date</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="date" name="RDate" placeholder="dd/mm/yy" class="form-control my-select">
+            <input type="date" name="RDate" placeholder="dd/mm/yy" class="form-control rounded-corner">
 
           </div>
           <div class="form-group col-md-12">
-
+            <br>
             <label for="Remark">Remark</label>
-            <textarea class="form-control my-select" id="exampleFormControlTextarea1" cols="4" rows="4" name="Remark"></textarea>
+            <textarea class="form-control rounded-corner" id="exampleFormControlTextarea1" cols="4" rows="4" name="Remark"></textarea>
 
           </div>
 
@@ -233,15 +222,33 @@ if(isset($_POST['submit'])){
         <br><br>
         <center>
 
-          <input type="submit"  class=" btn btn-success my-button" value="submit" name="submit" onclick="checkLength()" /></input>
+          <input type="submit"  class=" btn btn-primary" value="submit" name="submit" onclick="checkLength()" /></input>
         </center>      
       </form>
+    </section>
+  </main>
+  <!-- End #main -->
 
-    </fieldset>
-  </div>
-  <script src="assets/js/jquery.min.js"></script>
-  <script src="assets/js/popper.js"></script>
-  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+  <!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <!-- Template Main JS File -->
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
 

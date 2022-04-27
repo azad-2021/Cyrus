@@ -169,7 +169,10 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
               <thead>
                 <tr>
                   <th style="min-width:80px">Sr. No</th>
+                  <th style="min-width:160px">Bank</th>
+                  <th style="min-width:160px">Zone</th>
                   <th style="min-width:160px">Branch</th>
+                  <th style="min-width:160px">District</th>
                   <th style="min-width:80px">AMC ID</th>
                   <th>Description</th>
                   <th style="min-width:120px">Action</th>

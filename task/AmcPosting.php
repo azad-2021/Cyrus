@@ -1,11 +1,5 @@
 <?php 
 
-/*
-$myfile = fopen("test.txt", "w") or die("Unable to open file!");
-fwrite($myfile, "TEST");
-fclose($myfile);
-*/
-
 $host = "localhost";  
 $user = "root";  
 $password = '';
@@ -25,143 +19,64 @@ $r=0;
 while($row=mysqli_fetch_assoc($result3)){
 	$r++;
 	$Days=$row["Days"];
+	$Visits=$row["Visits"];
 	$StartDate=$row["StartDate"];
 	$EndDate=$row["EndDate"];
-	$Quarter=round($Days/4);
+	$Quarter=round($Days/$Visits);
 
-	$FSDate=$StartDate;
-	$FEDate = date('Y-m-d', strtotime($FSDate. $Quarter.' days'));
-	//echo $FSDate.' '.$FEDate.' '.$Quarter.'<br>';
 
-	$SSDate=$FEDate;
-	$SEDate = date('Y-m-d', strtotime($SSDate. $Quarter.' days'));
-	//echo $SSDate.' '.$SEDate.' '.$Quarter.'<br>';
+	$SDate='';
+	$EDate='';
+	//echo $Quarter.'<br>';
+	for ($i=1; $i <=$Visits ; $i++) { 
+		;	
 
-	$TSDate=$SEDate;
-	$TEDate = date('Y-m-d', strtotime($TSDate. $Quarter.' days'));
-	//echo $TSDate.' '.$TEDate.' '.$Quarter.'<br>';
+		if ($i==1) {
+			$QSDate=$StartDate;
+			$QEDate = date('Y-m-d', strtotime($QSDate. $Quarter.' days'));
+		}elseif ($Visits>$i and $i>0) {
+			$QSDate = date('Y-m-d', strtotime($EDate. $Quarter.' days'));
+			$QEDate = date('Y-m-d', strtotime($QSDate. $Quarter.' days'));
+		}elseif($i==$Visits){
+			$QSDate = date('Y-m-d', strtotime($EDate. $Quarter.' days'));
+			$QEDate=$EndDate;
+		}
 
-	$FrSDate=$TEDate;
-	$FrEDate = $EndDate;
-	//echo $FrSDate.' '.$FrEDate.' '.$Quarter.'<br>';
+		$SDate=$QSDate;
+		$EDate=$QEDate;
 
-	if ($Date>=$FSDate and $Date<$FEDate) {
-		//echo '1';
 
-		$GadgetID=$row["GadgetID"];
-		$Gadget=$row["Gadget"];
-		$BranchCode=$row["BranchCode"];
+		if ($Date>=$SDate and $Date<$EDate) {
 
-		$query="SELECT * FROM cyrusbackend.orders WHERE Discription like '%AMC%' and DateOfInformation between '$FSDate' and '$FEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result = mysqli_query($con,$query);
+			$GadgetID=$row["GadgetID"];
+			$Gadget=$row["Gadget"];
+			$BranchCode=$row["BranchCode"];
 
-		$query2="SELECT * FROM cyrusbackend.jobcardmain WHERE VisitDate between '$FSDate' and '$FEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result2 = mysqli_query($con,$query2);
+			$query="SELECT * FROM cyrusbackend.orders WHERE Discription like '%AMC%' and DateOfInformation between '$SDate' and '$EDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
+			$result = mysqli_query($con,$query);
 
-		if ((mysqli_num_rows($result)>0) or (mysqli_num_rows($result2)>0))
-		{
-			$PostAMC=0;
-		}else{
+			$query2="SELECT * FROM cyrusbackend.jobcardmain WHERE VisitDate between '$SDate' and '$EDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
+			$result2 = mysqli_query($con,$query2);
 
-			$Description='Q1 Amc Visit of '.$Gadget.' is due, please complete the visit on or before'.$FEDate;
-			$sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, GadgetID)
-			VALUES ($BranchCode, '$Description', '$Date', '$FEDate', 'Auto', 'System', $GadgetID)";
-			if ($con->query($sql) === TRUE) {
-			}else {
-				echo "Error: " . $sql . "<br>" . $con->error;
+			if ((mysqli_num_rows($result)>0) or (mysqli_num_rows($result2)>0))
+			{
+				$PostAMC=0;
+			}else{
 
+				$Description='Q'.$i.' Amc Visit of '.$Gadget.' is due, please complete the visit on or before'.$EDate;
+				$sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, GadgetID)
+				VALUES ($BranchCode, '$Description', '$Date', '$EDate', 'Auto', 'System', $GadgetID)";
+				if ($con->query($sql) === TRUE) {
+					echo "inserted<br>";
+				}else {
+					echo "Error: " . $sql . "<br>" . $con->error;
+
+				}
 			}
 
 		}
-	}elseif ($Date>=$SSDate and $Date<$SEDate) {
-		//echo '2';
-
-		$GadgetID=$row["GadgetID"];
-		$Gadget=$row["Gadget"];
-		$BranchCode=$row["BranchCode"];
-
-		$query="SELECT * FROM cyrusbackend.orders WHERE Discription like '%AMC%' and DateOfInformation between '$SSDate' and '$SEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result = mysqli_query($con,$query);
-
-		$query2="SELECT * FROM cyrusbackend.jobcardmain WHERE VisitDate between '$SSDate' and '$SEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result2 = mysqli_query($con,$query2);
-
-		if ((mysqli_num_rows($result)>0) or (mysqli_num_rows($result2)>0))
-		{
-			$PostAMC=0;
-		}else{
-
-			$Description='Q2 Amc Visit of '.$Gadget.' is due, please complete the visit on or before'.$SEDate;
-			$sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, GadgetID)
-			VALUES ($BranchCode, '$Description', '$Date', '$SEDate', 'Auto', 'System', $GadgetID)";
-			if ($con->query($sql) === TRUE) {
-			}else {
-				echo "Error: " . $sql . "<br>" . $con->error;
-
-			}
-
-		}
-
-	}elseif ($Date>=$TSDate and $Date<$TEDate) {
-		//echo '3';
-
-		$GadgetID=$row["GadgetID"];
-		$Gadget=$row["Gadget"];
-		$BranchCode=$row["BranchCode"];
-
-		$query="SELECT * FROM cyrusbackend.orders WHERE Discription like '%AMC%' and DateOfInformation between '$TSDate' and '$TEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result = mysqli_query($con,$query);
-
-		$query2="SELECT * FROM cyrusbackend.jobcardmain WHERE VisitDate between '$SSDate' and '$TEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result2 = mysqli_query($con,$query2);
-
-		if ((mysqli_num_rows($result)>0) or (mysqli_num_rows($result2)>0))
-		{
-			$PostAMC=0;
-		}else{
-
-			$Description='Q3 Amc Visit of '.$Gadget.' is due, please complete the visit on or before'.$TEDate;
-			$sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, GadgetID)
-			VALUES ($BranchCode, '$Description', '$Date', '$TEDate', 'Auto', 'System', $GadgetID)";
-			if ($con->query($sql) === TRUE) {
-			}else {
-				echo "Error: " . $sql . "<br>" . $con->error;
-
-			}
-
-		}
-
-
-	}elseif ($Date>=$FrSDate and $Date<$FrEDate) {
-		//echo '4';
-
-		$GadgetID=$row["GadgetID"];
-		$Gadget=$row["Gadget"];
-		$BranchCode=$row["BranchCode"];
-
-		$query="SELECT * FROM cyrusbackend.orders WHERE Discription like '%AMC%' and DateOfInformation between '$FrSDate' and '$FrEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result = mysqli_query($con,$query);
-
-		$query2="SELECT * FROM cyrusbackend.jobcardmain WHERE VisitDate between '$FrSDate' and '$FrEDate' and GadgetID=$GadgetID and BranchCode=$BranchCode";
-		$result2 = mysqli_query($con,$query2);
-
-		if ((mysqli_num_rows($result)>0) or (mysqli_num_rows($result2)>0))
-		{
-			$PostAMC=0;
-		}else{
-
-			$Description='Q4 Amc Visit of '.$Gadget.' is due, please complete the visit on or before'.$FrEDate;
-			$sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, GadgetID)
-			VALUES ($BranchCode, '$Description', '$Date', '$FrEDate', 'Auto', 'System', $GadgetID)";
-			if ($con->query($sql) === TRUE) {
-			}else {
-				echo "Error: " . $sql . "<br>" . $con->error;
-
-			}
-
-		}
-
 	}
 }
 echo $r;
+
 ?>

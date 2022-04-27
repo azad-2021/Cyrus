@@ -41,13 +41,13 @@ if (isset($_POST['submit'])) {
     }elseif ($_SESSION['usertype']=="Executive") {
         header("location: executive/");
     }elseif ($_SESSION['usertype']=="Production") {
-        header("location: SaaS/protable.php");
+        header("location: SaaS/");
     }elseif ($_SESSION['usertype']=="Store") {
-        header("location: SaaS/storetable.php");
+        header("location: SaaS/");
     }elseif ($_SESSION['usertype']=="Installation") {
-        header("location: SaaS/instable.php");
+        header("location: SaaS/");
     }elseif ($_SESSION['usertype']=="Sim Provider") {
-        header("location: SaaS/simtable.php");
+        header("location: SaaS/");
     }elseif ($_SESSION['usertype']=="Inventory") {
         header("location: inventory/");
     }elseif ($_SESSION['usertype']=="Reminders") {

@@ -42,7 +42,7 @@
             $query="SELECT * FROM cyrusbackend.demandbase 
             join cyrusbackend.demandextended on demandbase.OrderID=demandextended.OrderID 
             join cyrusbilling.rates on demandextended.RateID=rates.RateID 
-            where demandbase.StatusID=2 and demandbase.OrderID=$OrderID
+            where demandbase.OrderID=$OrderID
             and rates.Zone=$ZoneCode and demandextended.RateID=$RateIDS";
 
           }elseif($row3['RateID']==0){
@@ -50,7 +50,7 @@
             $query="SELECT * FROM cyrusbackend.demandbase 
             join cyrusbackend.demandextended on demandbase.OrderID=demandextended.OrderID 
             join cyrusbilling.rates on demandextended.ItemID=rates.ItemID 
-            where demandbase.StatusID=2 and demandbase.OrderID=$OrderID
+            where demandbase.OrderID=$OrderID
             and rates.Zone=$ZoneCode and demandextended.ItemID=$ItemIDS";
           }
         //$result2=mysqli_query($con,$query2);
