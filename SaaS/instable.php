@@ -69,8 +69,6 @@
                 $Operator='';
             }
 
-
-
             if ($Status==2 and empty($ActivationDate)==true and $row["SimProvider"]=='Cyrus') {
                 $Bank='<span style="color: red;">'.$row["BankName"].'</span>';
             }else{

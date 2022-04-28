@@ -492,7 +492,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   }
 });
 
-
   $(document).on('click','.CancelChallan', function(){
 
    Challan =  $(this).attr("id");
@@ -516,18 +515,12 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         data:{'SDateCh':Sdate, 'EmployeeCodeCh':EmployeeCode},
         success:function(result){
           $('#ChallanView').html(result);
-
         }
       }); 
-
     }
-
   }); 
-
   }
 });
-
-
 
   $(document).on('click','.PrintChallan', function(){
 
@@ -537,89 +530,88 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
  });
 
-$(document).on('click','.ServiceCenter', function(){
-  $.ajax({
-    type:'POST',
-    url:'dataget.php',
-    data:{'ServiceCenter':'ServiceCenter'},
-    success:function(result){
-      $('#ServiceCenterData').html(result);
-
-    }
-  });
-
-});
-
-
-$(document).on('change','#RItemID', function(){
-  var ItemID = $(this).val();
-  if(ItemID){
+  $(document).on('click','.ServiceCenter', function(){
     $.ajax({
       type:'POST',
       url:'dataget.php',
-      data:{'RItemID':ItemID},
+      data:{'ServiceCenter':'ServiceCenter'},
       success:function(result){
-        $('#RSerialNo').html(result);
+        $('#ServiceCenterData').html(result);
 
-      }
-    }); 
-  }else{
-    $('#RSerialNo').html('<option value="">Select</option>');
-  }
-});
-document.getElementById("NewSr").disabled = true;
-var NewSr='NA';
-
-$(document).on('change','#NewSerialNo', function(){
-
-  if ($('#NewSerialNo').is(":checked")) {
-    NewSr=$(this).val();
-    
-
-    if (NewSr=='New') {
-     document.getElementById("NewSr").disabled = false;
-   }
- }else{
-  document.getElementById("NewSr").disabled = true;    
-  NewSr='NA';
-}
-console.log(NewSr);
-});
-
-
-$(document).on('click','.SaveReturned', function(){
-  var ItemID=document.getElementById("RItemID").value;
-  var OldSrNo=document.getElementById("RSerialNo").value;
-  var ReturnDate=document.getElementById("RDate").value;
-  console.log(NewSr);
-  if (NewSr=='New') {
-    var NewSrNo=document.getElementById("NewSr").value;
-  }else{
-    NewSrNo='NA';
-  }
-  console.log(NewSrNo);
-
-  if(ItemID!='' && OldSrNo!='' && ReturnDate!='' && ((NewSr=='NA' && NewSrNo=='NA') || (NewSr=='New' && NewSr!='NA'))){
-
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'ReturnedItemID':ItemID, 'OldSrNo':OldSrNo, 'ReturnDate':ReturnDate, 'NewSrNo':NewSrNo},
-      success:function(result){
-        swal("success","Update Success","success");
-        document.getElementById("Freturn").reset();
-        var delayInMilliseconds = 2000; 
-
-        setTimeout(function() {
-          location.reload();
-        }, delayInMilliseconds);
       }
     });
-  }else{
-    swal("error","Please enter all fields","error");
-  }
 
+  });
+
+  $(document).on('change','#RItemID', function(){
+    var ItemID = $(this).val();
+    if(ItemID){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'RItemID':ItemID},
+        success:function(result){
+          $('#RSerialNo').html(result);
+
+        }
+      }); 
+    }else{
+      $('#RSerialNo').html('<option value="">Select</option>');
+    }
+  });
+  document.getElementById("NewSr").disabled = true;
+  var NewSr='NA';
+
+  $(document).on('change','#NewSerialNo', function(){
+
+    if ($('#NewSerialNo').is(":checked")) {
+      NewSr=$(this).val();
+      
+
+      if (NewSr=='New') {
+       document.getElementById("NewSr").disabled = false;
+     }
+   }else{
+    document.getElementById("NewSr").disabled = true;    
+    NewSr='NA';
+  }
+  console.log(NewSr);
 });
+
+
+  $(document).on('click','.SaveReturned', function(){
+    var ItemID=document.getElementById("RItemID").value;
+    var OldSrNo=document.getElementById("RSerialNo").value;
+    var ReturnDate=document.getElementById("RDate").value;
+    console.log(NewSr);
+    if (NewSr=='New') {
+      var NewSrNo=document.getElementById("NewSr").value;
+    }else{
+      NewSrNo='NA';
+    }
+    console.log(NewSrNo);
+
+    if(ItemID!='' && OldSrNo!='' && ReturnDate!='' && ((NewSr=='NA' && NewSrNo=='NA') || (NewSr=='New' && NewSr!='NA'))){
+
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'ReturnedItemID':ItemID, 'OldSrNo':OldSrNo, 'ReturnDate':ReturnDate, 'NewSrNo':NewSrNo},
+        success:function(result){
+          swal("success","Update Success","success");
+          document.getElementById("Freturn").reset();
+          var delayInMilliseconds = 2000; 
+
+          setTimeout(function() {
+            location.reload();
+          }, delayInMilliseconds);
+        }
+      });
+    }else{
+      swal("error","Please enter all fields","error");
+    }
+
+  });
 </script>
 </body>
 

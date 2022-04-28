@@ -135,7 +135,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                 </div>
                 <div class="col-sm-3">
                   <label>Release To</label>
-                  <input type="text" class="form-control rounded-corner" id="ReleaseTo" Name="Address" placeholder="Name" >
+                  <input type="text" class="form-control rounded-corner" id="ReleaseTo" Name="ReleaseTo" placeholder="Name" >
                 </div>
                 <div class="col-sm-2 d-none">
                   <label>State Code</label>
@@ -634,7 +634,7 @@ function showResult(str) {
 
 
 $(document).on('click','.SaveReturned', function(){
-  var ExendedID==document.getElementById("RREmployeeCode").value;
+  var ExendedID=document.getElementById("RREmployeeCode").value;
   var ItemID=document.getElementById("RRItemID").value;
   var BarCode=document.getElementById("RRBarCode").value;
   var Address=document.getElementById("RRAddress").value;

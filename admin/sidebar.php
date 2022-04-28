@@ -59,99 +59,97 @@
       </li>
 
 
-      <!-- End Components Nav -->
-    <!--
-    <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-journal-text"></i><span>Add</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-grid"></i><span>SaaS</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="" data-bs-toggle="modal" data-bs-target="#AddUser">
-            <i class="bi bi-circle"></i><span>User</span>
+          <a href="/cyrus/SaaS/index.php?user=Order" target="_blank">
+            <i class="bi bi-circle"></i><span>Order</span>
           </a>
         </li>
         <li>
-          <a href="" data-bs-toggle="modal" data-bs-target="#AddInstitute">
-            <i class="bi bi-circle"></i><span>Institute</span>
+          <a href="/cyrus/SaaS/index.php?user=Sim" target="_blank">
+            <i class="bi bi-circle"></i><span>Sim Provider</span>
           </a>
         </li>
         <li>
-          <a href="" data-bs-toggle="modal" data-bs-target="#AddStudent">
-            <i class="bi bi-circle"></i><span>Student</span>
+          <a href="/cyrus/SaaS/index.php?user=Production" target="_blank">
+            <i class="bi bi-circle"></i><span>Production</span>
           </a>
         </li>
         <li>
-          <a href="" data-bs-toggle="modal" data-bs-target="#AddState">
-            <i class="bi bi-circle"></i><span>State</span>
+          <a href="/cyrus/SaaS/index.php?user=Store" target="_blank">
+            <i class="bi bi-circle"></i><span>Store</span>
           </a>
         </li>
         <li>
-          <a href="" data-bs-toggle="modal" data-bs-target="#AddDistrict">
-            <i class="bi bi-circle"></i><span>District</span>
+          <a href="/cyrus/SaaS/index.php?user=Installation" target="_blank">
+            <i class="bi bi-circle"></i><span>Installation</span>
           </a>
         </li>
       </ul>
     </li>
-  -->
-  <!-- End Forms Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" target="_blank" href="/cyrus/reporting/reporting.php">
-      <i class="bi bi-grid"></i>
-      <span>Reporting</span>
-    </a>
-  </li><!-- End Profile Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="/cyrus/SaaS/ordertable.php" target="_blank">
-      <i class="bi bi-grid"></i>
-      <span>SaaS</span>
-    </a>
-  </li><!-- End F.A.Q Page Nav -->
+    <!-- End Forms Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingMaterial.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Material Confirmation</span>
-    </a>
-  </li><!-- End Contact Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" target="_blank" href="/cyrus/reporting/reporting.php">
+        <i class="bi bi-grid"></i>
+        <span>Reporting</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="InventoryData.php">
-      <i class="bi bi-card-list"></i>
-      <span>Pending Material at Inventory</span>
-    </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="UnassignedWork.php">
-      <i class="bi bi-grid"></i>
-      <span>Unassigned Work</span>
-    </a>
-  </li><!-- End Profile Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="/cyrus/SaaS/ordertable.php" target="_blank">
+        <i class="bi bi-grid"></i>
+        <span>SaaS</span>
+      </a>
+    </li><!-- End F.A.Q Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingWork.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Work</span>
-    </a>
-  </li><!-- End F.A.Q Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="PendingMaterial.php">
+        <i class="bi bi-grid"></i>
+        <span>Pending Material Confirmation</span>
+      </a>
+    </li><!-- End Contact Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingBills.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Bills</span>
-    </a>
-  </li><!-- End Contact Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="InventoryData.php">
+        <i class="bi bi-card-list"></i>
+        <span>Pending Material at Inventory</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="UnassignedWork.php">
+        <i class="bi bi-grid"></i>
+        <span>Unassigned Work</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="multiorders.php">
-      <i class="bi bi-grid"></i>
-      <span>Multi-Orders Confirmation</span>
-    </a>
-  </li>
-  <!-- End Register Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="PendingWork.php">
+        <i class="bi bi-grid"></i>
+        <span>Pending Work</span>
+      </a>
+    </li><!-- End F.A.Q Page Nav -->
 
-</ul>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="PendingBills.php">
+        <i class="bi bi-grid"></i>
+        <span>Pending Bills</span>
+      </a>
+    </li><!-- End Contact Page Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="multiorders.php">
+        <i class="bi bi-grid"></i>
+        <span>Multi-Orders Confirmation</span>
+      </a>
+    </li>
+    <!-- End Register Page Nav -->
+
+  </ul>
 
 </aside><!-- End Sidebar-->

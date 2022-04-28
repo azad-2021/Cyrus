@@ -1,6 +1,16 @@
 <?php 
 include 'connection.php';
 include 'session.php';
+
+if (isset($_GET['user'])) {
+  $QueryType=$_GET['user'];
+  $_SESSION['QueryType']=$QueryType;
+}elseif($_SESSION['QueryType']){
+  $QueryType=$_SESSION['QueryType'];
+  
+}else{
+  $QueryType='';
+}
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
 
@@ -40,7 +50,7 @@ if($Type=='Executive'){
   $result=mysqli_query($con3,$query);
   $row = mysqli_fetch_array($result);
   $InstalledPending=$row["count(OrderID)"];
-}elseif($Type=='Sim Provider'){
+}elseif($Type=='Sim Provider' or $QueryType=='Sim'){
 
 
   $query="SELECT count(MobileNumber) FROM saas.simprovider where DATEDIFF(ExpDate, current_date())<0 ";
@@ -59,7 +69,7 @@ if($Type=='Executive'){
   //$InstalledPending=$row["count(OrderID)"];
   $Suspended=0;
 
-}elseif($Type=='Production'){
+}elseif($Type=='Production' or $QueryType=='Production'){
 
 
   $query="SELECT count(OrderID) FROM saas.orders WHERE Installed=0 and Status=0";
@@ -78,6 +88,22 @@ if($Type=='Executive'){
   //$InstalledPending=$row["count(OrderID)"];
   //$Suspended=0;
 
+}if($Type=='Super User' and $QueryType=='Order'){
+
+  $query="SELECT count(OrderID) FROM saas.orders WHERE Installed=0 and Status=0";
+  $result=mysqli_query($con3,$query);
+  $row = mysqli_fetch_array($result);
+  $ProductionPending=$row["count(OrderID)"];
+
+  $query="SELECT count(OrderID) FROM saas.orders WHERE Installed=0 and Status=1";
+  $result=mysqli_query($con3,$query);
+  $row = mysqli_fetch_array($result);
+  $StorePending=$row["count(OrderID)"];
+
+  $query="SELECT count(OrderID) FROM saas.orders WHERE Installed=0 and Status=2";
+  $result=mysqli_query($con3,$query);
+  $row = mysqli_fetch_array($result);
+  $InstalledPending=$row["count(OrderID)"];
 }
 
 
@@ -167,7 +193,7 @@ if($Type=='Executive'){
         <div class="row">
 
           <?php
-          if($Type=='Sim Provider'){
+          if($Type=='Sim Provider' or $QueryType=='Sim'){
             ?>
             <div class="col-xxl-4 col-md-4">
               <div class="card info-card sales-card">
@@ -210,7 +236,7 @@ if($Type=='Executive'){
               </div>
             </div>
             <?php 
-          }elseif($Type=='Executive'){
+          }elseif($Type=='Executive' or $QueryType=='Order'){
             ?>
 
             <div class="col-xxl-4 col-md-4">
@@ -255,7 +281,7 @@ if($Type=='Executive'){
               </div>
             </div>
             <?php 
-          }elseif($Type=='Production'){
+          }elseif($Type=='Production' or $QueryType=='Production'){
             ?>
 
             <div class="col-xxl-4 col-md-6">
@@ -300,149 +326,149 @@ if($Type=='Executive'){
               </div>
             </div>
           -->
+          <?php 
+        }
+        ?>
+        <!-- End Customers Card -->
+
+        <!-- Reports -->
+
+        <div class="col-lg-12">
+          <!-- Start -->
+          <div class="table-responsive">  
             <?php 
-          }
-          ?>
-          <!-- End Customers Card -->
-
-          <!-- Reports -->
-
-          <div class="col-lg-12">
-            <!-- Start -->
-            <div class="table-responsive">  
-              <?php 
-              if($Type=='Executive'){
-                include"ordertable.php";
-              }elseif($Type=='Sim Provider'){
-                include"simtable.php";
-              }elseif($Type=='Production'){
-                include"protable.php";
-              }elseif($Type=='Store'){
-                include"storetable.php";
-              }elseif($Type=='Installation'){
-                include"instable.php";
-              }
-              ?>
-            </div>  
-            <!-- END-->
-          </div>
+            if($Type=='Executive' or $QueryType=='Order'){
+              include"ordertable.php";
+            }elseif($Type=='Sim Provider' or $QueryType=='Sim'){
+              include"simtable.php";
+            }elseif($Type=='Production' or $QueryType=='Production'){
+              include"protable.php";
+            }elseif($Type=='Store' or $QueryType=='Store'){
+              include"storetable.php";
+            }elseif($Type=='Installation' or $QueryType=='Installation'){
+              include"instable.php";
+            }
+            ?>
+          </div>  
+          <!-- END-->
         </div>
-      </section>
-    </main>
-    <!-- End #main -->
-
-    <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
-      <div class="copyright">
-        &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
       </div>
-    </footer>
-    <!-- End Footer -->
+    </section>
+  </main>
+  <!-- End #main -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+    </div>
+  </footer>
+  <!-- End Footer -->
 
-    <!-- Vendor JS Files -->
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/quill/quill.min.js"></script>
-    <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-    <script src="assets/vendor/php-email-form/validate.js"></script>
-    <!-- Template Main JS File -->
-    <script src="assets/js/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="datatable/js/jquery.dataTables.min.js"></script>]
-    <script src="datatable/js/dataTables.bootstrap5.min.js"></script>
-    <script src="datatable/js/dataTables.responsive.min.js"></script>
-    <script src="datatable/js/responsive.bootstrap5.min.js"></script>
+  <!-- Vendor JS Files -->
 
-    <script type="text/javascript">
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <!-- Template Main JS File -->
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="datatable/js/jquery.dataTables.min.js"></script>]
+  <script src="datatable/js/dataTables.bootstrap5.min.js"></script>
+  <script src="datatable/js/dataTables.responsive.min.js"></script>
+  <script src="datatable/js/responsive.bootstrap5.min.js"></script>
 
-      $(document).ready(function() {
-        $('#myTable').DataTable( {
-          responsive: {
-            details: {
-              display: $.fn.dataTable.Responsive.display.modal( {
-                header: function ( row ) {
-                  var data = row.data();
-                  return 'Details for '+data[0]+' '+data[1];
-                }
-              } ),
-              renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                tableClass: 'table'
-              } )
-            }
-          },
+  <script type="text/javascript">
 
-        } );
+    $(document).ready(function() {
+      $('#myTable').DataTable( {
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.modal( {
+              header: function ( row ) {
+                var data = row.data();
+                return 'Details for '+data[0]+' '+data[1];
+              }
+            } ),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+              tableClass: 'table'
+            } )
+          }
+        },
+
       } );
+    } );
 
 
-      $(document).ready(function() {
-        $('#example').DataTable( {
-          responsive: {
-            details: {
-              display: $.fn.dataTable.Responsive.display.modal( {
-                header: function ( row ) {
-                  var data = row.data();
-                  return 'Details for '+data[0]+' '+data[1];
-                }
-              } ),
-              renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                tableClass: 'table'
-              } )
-            }
-          },
+    $(document).ready(function() {
+      $('#example').DataTable( {
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.modal( {
+              header: function ( row ) {
+                var data = row.data();
+                return 'Details for '+data[0]+' '+data[1];
+              }
+            } ),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+              tableClass: 'table'
+            } )
+          }
+        },
 
-        } );
       } );
+    } );
 
-      $(document).ready(function() {
-        $('#example2').DataTable( {
-          responsive: {
-            details: {
-              display: $.fn.dataTable.Responsive.display.modal( {
-                header: function ( row ) {
-                  var data = row.data();
-                  return 'Details for '+data[0]+' '+data[1];
-                }
-              } ),
-              renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                tableClass: 'table'
-              } )
-            }
-          },
+    $(document).ready(function() {
+      $('#example2').DataTable( {
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.modal( {
+              header: function ( row ) {
+                var data = row.data();
+                return 'Details for '+data[0]+' '+data[1];
+              }
+            } ),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+              tableClass: 'table'
+            } )
+          }
+        },
 
-        } );
       } );
+    } );
 
 
-      $(document).ready(function() {
-        $('#example3').DataTable( {
-          responsive: {
-            details: {
-              display: $.fn.dataTable.Responsive.display.modal( {
-                header: function ( row ) {
-                  var data = row.data();
-                  return 'Details for '+data[0]+' '+data[1];
-                }
-              } ),
-              renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-                tableClass: 'table'
-              } )
-            }
-          },
+    $(document).ready(function() {
+      $('#example3').DataTable( {
+        responsive: {
+          details: {
+            display: $.fn.dataTable.Responsive.display.modal( {
+              header: function ( row ) {
+                var data = row.data();
+                return 'Details for '+data[0]+' '+data[1];
+              }
+            } ),
+            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+              tableClass: 'table'
+            } )
+          }
+        },
 
-        } );
       } );
+    } );
 
-    </script>
-  </body>
+  </script>
+</body>
 
-  </html>
+</html>
 
-  <?php 
-  $con->close();
-  $con2->close();
-  $con3 -> close();
+<?php 
+$con->close();
+$con2->close();
+$con3 -> close();
 ?>
