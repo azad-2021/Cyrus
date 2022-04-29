@@ -3,18 +3,12 @@ include 'connection.php';
 include 'session.php';
 
 $EXEID=$_SESSION['userid'];
-$Type=$_SESSION['usertype'];
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-if (isset($_GET['user'])) {
-  $QueryType=$_GET['user'];
-  $_SESSION['QueryType']=$QueryType;
-}elseif($_SESSION['QueryType']){
-  $QueryType=$_SESSION['QueryType'];
-  
-}
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -59,12 +53,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
@@ -335,12 +323,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <script src="assets/js/jquery-3.6.0.min.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="ajax.js"></script>
-<script src="search.js"></script>
-<script src="ajax-script.js"></script>
-
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
 <script type="text/javascript">
 

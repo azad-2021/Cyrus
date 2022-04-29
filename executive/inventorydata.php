@@ -2,7 +2,14 @@
 include 'connection.php';
 include 'session.php';
 
-$EXEID=$_SESSION['userid'];
+if (isset($_GET['user'])) {
+  $EXEID=$_GET['user'];
+  $_SESSION['query']=$EXEID;
+}if (isset($_SESSION['query'])) {
+  $EXEID=$_SESSION['query'];
+}else{
+  $EXEID=$_SESSION['userid'];
+}
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
@@ -256,27 +263,27 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
 <script type="text/javascript">
  $(document).ready(function() {
-      $('table.display').DataTable( {
-        responsive: true,
-        responsive: {
-          details: {
-            display: $.fn.dataTable.Responsive.display.modal( {
-              header: function ( row ) {
-                var data = row.data();
-                return 'Details for '+data[0]+' '+data[1];
-            }
+  $('table.display').DataTable( {
+    responsive: true,
+    responsive: {
+      details: {
+        display: $.fn.dataTable.Responsive.display.modal( {
+          header: function ( row ) {
+            var data = row.data();
+            return 'Details for '+data[0]+' '+data[1];
+          }
         } ),
-            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-              tableClass: 'table'
-          } )
-        }
+        renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+          tableClass: 'table'
+        } )
+      }
     },
     stateSave: true,
-} );
   } );
+} );
 
-  var exampleModal = document.getElementById('editQty')
-  exampleModal.addEventListener('show.bs.modal', function (event) {
+ var exampleModal = document.getElementById('editQty')
+ exampleModal.addEventListener('show.bs.modal', function (event) {
   // Button that triggered the modal
   var button = event.relatedTarget
   // Extract info from data-bs-* attributes
@@ -286,36 +293,36 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
 })
 
-  var exampleModal = document.getElementById('add')
-  exampleModal.addEventListener('show.bs.modal', function (event) {
-    var button = event.relatedTarget
-    var ID = button.getAttribute('data-bs-orderid')
-    var ZoneCode=button.getAttribute('data-bs-zonecode')
+ var exampleModal = document.getElementById('add')
+ exampleModal.addEventListener('show.bs.modal', function (event) {
+  var button = event.relatedTarget
+  var ID = button.getAttribute('data-bs-orderid')
+  var ZoneCode=button.getAttribute('data-bs-zonecode')
       //console.log(recipient);
       //document.getElementById("orderid").value = ID;
       //document.getElementById("ZoneCode").value = ZoneCode;
     })
 
 
-  $(document).on('click', '.cl', function(){
+ $(document).on('click', '.cl', function(){
 
-    var delayInMilliseconds = 1000; 
+  var delayInMilliseconds = 1000; 
 
-    setTimeout(function() {
-      location.reload();
-    }, delayInMilliseconds);
+  setTimeout(function() {
+    location.reload();
+  }, delayInMilliseconds);
 
 
-  });
+});
 
-  function limit(element)
-  {
-    var max_chars = 5;
+ function limit(element)
+ {
+  var max_chars = 5;
 
-    if(element.value.length > max_chars) {
-      element.value = element.value.substr(0, max_chars);
-    }
+  if(element.value.length > max_chars) {
+    element.value = element.value.substr(0, max_chars);
   }
+}
 
 </script>
 </body>

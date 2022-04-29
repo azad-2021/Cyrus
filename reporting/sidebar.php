@@ -1,4 +1,10 @@
   <!-- ======= Sidebar ======= -->
+  <?php 
+  if (isset($_SESSION['QueryType'])) {
+    $QueryType=$_SESSION['QueryType'];
+  }
+  
+  ?>
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -21,7 +27,7 @@
   </li>
   <?php 
 
-  if ($Type=='Reporting') {
+  if ($Type=='Reporting' or ($Type=='Super User' and $QueryType=='reporting')) {
 
    ?>
    <li class="nav-item">
@@ -117,7 +123,7 @@
     </li>
     <?php 
   }
-}elseif($Type=='Dataentry'){
+}elseif($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
   ?>
   <li class="nav-item">
     <a class="nav-link collapsed" href="search.php">

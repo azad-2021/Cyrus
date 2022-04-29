@@ -1,18 +1,12 @@
 <?php 
-include 'connection.php';
+
+include('connection.php'); 
 include 'session.php';
-
-//$EXEID=$_SESSION['userid'];
-
+$username = $_SESSION['user'];
+$EXEID=$_SESSION['userid'];
+$Type=$_SESSION['usertype'];
 date_default_timezone_set('Asia/Calcutta');
-$timestamp =date('y-m-d H:i:s');
-$Date = date('Y-m-d',strtotime($timestamp));
-
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
-
 $Hour = date('G');
-
 if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Morning ".$_SESSION['user'];
 } else if ( $Hour >= 12 && $Hour <= 15 ) {
@@ -21,8 +15,25 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
-?>
+if(isset($_POST['submit'])){
 
+  $Jobcard=$_POST['Jobcard'];
+
+  $query ="SELECT * FROM `approval` WHERE JobCardNo='$Jobcard'";
+  $results = mysqli_query($con, $query);
+  $row=mysqli_fetch_assoc($results);
+
+    //echo $ApprovalID;
+  if (empty($row)==false){
+
+    $ApprovalID=$row['ApprovalID'];
+    echo $ApprovalID;
+    $Jobcard=base64_encode($Jobcard);
+    header("location:/technician/view.php?card=$Jobcard");
+  }
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -31,7 +42,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Home</title>
+  <title>Jobcard Entry</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -54,9 +65,13 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
-  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/sweetalert.min.js"></script>
 
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
 </head>
 
@@ -85,7 +100,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   </header><!-- End Header -->
   <?php 
   include "sidebar.php";
-  //include "modals.php";
+  include "modals.php";
   ?>
   <main id="main" class="main">
 
@@ -94,27 +109,33 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Work Report</li>
+          <li class="breadcrumb-item active">Search Jobcard</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
 
-    <section class="section dashboard">
+
+    <form method="POST" action="">
       <div class="row">
+        <center>
+          <div class="form-group col-md-6">
+            <label for="Branch">Enter Jobcard Number</label>
+            <input type="text" class="form-control rounded-corner" name="Jobcard" required>
+          </div>
 
-        <!-- Left side columns -->
-        <div class="col-lg-12">
+          <div class="form-group col-md-2">
+            <label for="Branch"><br><br></label>
+            <input type="submit"  class="btn btn-primary" name="submit"></input>
+          </div>
+        </center>
+      </div>  
 
-        </div>
-      </div>
-      <!-- End Left side columns -->
-
-    </section>
+    </form>
   </main>
   <!-- End #main -->
 
   <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
+  <footer id="footer" class="footer" style="margin-top: 200px;">
     <div class="copyright">
       &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
     </div>
@@ -134,106 +155,10 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <script src="assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-  
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/main.js"></script>
-
-
+  <script src="ajax.js"></script>
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('table.display').DataTable( {
-        responsive: false,
-        responsive: {
-          details: {
-            display: $.fn.dataTable.Responsive.display.modal( {
-              header: function ( row ) {
-                var data = row.data();
-                return 'Details for '+data[0]+' '+data[1];
-              }
-            } ),
-            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-              tableClass: 'table'
-            } )
-          }
-        },
-        stateSave: true,
-      } );
-    } );
-
-
-    $(document).on('change','#Bank', function(){
-      var data = $(this).val();
-    //console.log(data);
-    const obj = JSON.parse(data);
-    BankCode = obj.BankCode;
-    document.getElementById("BankName").innerHTML=obj.BankName;
-    if(BankCode){
-      $.ajax({
-        type:'POST',
-        url:'dataget.php',
-        data:{'BankCode':BankCode},
-        success:function(result){
-          $('#Zone').html(result);
-
-        }
-      }); 
-    }else{
-      $('#Zone').html('<option value="">Zone</option>');
-      $('#Branch').html('<option value="">Branch</option>'); 
-    }
-  });
-
-
-    $(document).on('change','#Zone', function(){
-      var data = $(this).val();
-    //console.log(data);
-    const obj = JSON.parse(data);
-    document.getElementById("ZoneName").innerHTML=obj.ZoneName;
-    document.getElementById("Quarter").value='';
-  });
-
-
-    $(document).on('change','#Quarter', function(){
-      var Quarter = $(this).val();
-      var StartDate= document.getElementById("Sdate").value;
-      var EndDate= document.getElementById("Edate").value;
-      var data= document.getElementById("Zone").value;
-      const obj = JSON.parse(data);
-      ZoneCode = obj.ZoneCode;
-
-      const date1 = new Date(StartDate);
-      const date2 = new Date(EndDate);
-      const diffTime = Math.abs(date2 - date1);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-      console.log(diffDays + " days");
-      if(diffDays>365){
-        swal("error","Duration between Start Date & End Date is maximum 365 days.","error");
-      }else{
-        if((Quarter!='' || StartDate!='' || EndDate!='') && (diffDays<366)){
-          $.ajax({
-            type:'POST',
-            url:'dataget.php',
-            data:{'ZoneCodeAMC':ZoneCode,'StartDate':StartDate, 'EndDate':EndDate},
-            success:function(result){
-              $('#AMCZone').html(result);
-
-              $.ajax({
-                type:'POST',
-                url:'dataget.php',
-                data:{'ZoneCode':ZoneCode, 'Quarter':Quarter, 'StartDate':StartDate, 'EndDate':EndDate},
-                success:function(result){
-                  $('#AmcData').html(result);
-
-                }
-              }); 
-
-            }
-          }); 
-
-        }
-      }
-
-    });
-
   </script>
 </body>
 

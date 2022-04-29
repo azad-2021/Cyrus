@@ -2,7 +2,14 @@
 include 'connection.php';
 include 'session.php';
 
-$EXEID=$_SESSION['userid'];
+if (isset($_GET['user'])) {
+  $EXEID=$_GET['user'];
+  $_SESSION['query']=$EXEID;
+}if (isset($_SESSION['query'])) {
+  $EXEID=$_SESSION['query'];
+}else{
+  $EXEID=$_SESSION['userid'];
+}
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));

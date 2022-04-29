@@ -1,4 +1,7 @@
   <!-- ======= Sidebar ======= -->
+  <?php 
+  $Type=$_SESSION['usertype'];
+  ?>
   <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -96,61 +99,66 @@
   -->
   <!-- End Forms Nav -->
 
-  <li class="nav-item">
+
+  <?php 
+  if ($Type=='Executive') {
+   ?>
+   <li class="nav-item">
     <a class="nav-link collapsed" target="_blank" href="/cyrus/reporting/reporting.php">
       <i class="bi bi-grid"></i>
       <span>Reporting</span>
     </a>
   </li><!-- End Profile Page Nav -->
-
   <li class="nav-item">
-    <a class="nav-link collapsed" href="/cyrus/SaaS/ordertable.php" target="_blank">
+    <a class="nav-link collapsed" href="/cyrus/SaaS/" target="_blank">
       <i class="bi bi-grid"></i>
       <span>SaaS</span>
     </a>
   </li><!-- End F.A.Q Page Nav -->
+  <?php 
+}
+?>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingMaterial.php">
+    <i class="bi bi-grid"></i>
+    <span>Pending Material Confirmation</span>
+  </a>
+</li><!-- End Contact Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingMaterial.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Material Confirmation</span>
-    </a>
-  </li><!-- End Contact Page Nav -->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="InventoryData.php">
+    <i class="bi bi-card-list"></i>
+    <span>Pending Material at Inventory</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="UnassignedWork.php">
+    <i class="bi bi-grid"></i>
+    <span>Unassigned Work</span>
+  </a>
+</li><!-- End Profile Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="InventoryData.php">
-      <i class="bi bi-card-list"></i>
-      <span>Pending Material at Inventory</span>
-    </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="UnassignedWork.php">
-      <i class="bi bi-grid"></i>
-      <span>Unassigned Work</span>
-    </a>
-  </li><!-- End Profile Page Nav -->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingWork.php">
+    <i class="bi bi-grid"></i>
+    <span>Pending Work</span>
+  </a>
+</li><!-- End F.A.Q Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingWork.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Work</span>
-    </a>
-  </li><!-- End F.A.Q Page Nav -->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingBills.php">
+    <i class="bi bi-grid"></i>
+    <span>Pending Bills</span>
+  </a>
+</li><!-- End Contact Page Nav -->
 
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="PendingBills.php">
-      <i class="bi bi-grid"></i>
-      <span>Pending Bills</span>
-    </a>
-  </li><!-- End Contact Page Nav -->
-
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="multiorders.php">
-      <i class="bi bi-grid"></i>
-      <span>Multi-Orders Confirmation</span>
-    </a>
-  </li>
-  <!-- End Register Page Nav -->
+<li class="nav-item">
+  <a class="nav-link collapsed" href="multiorders.php">
+    <i class="bi bi-grid"></i>
+    <span>Multi-Orders Confirmation</span>
+  </a>
+</li>
+<!-- End Register Page Nav -->
 
 </ul>
 

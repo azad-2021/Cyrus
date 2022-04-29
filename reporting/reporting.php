@@ -3,6 +3,15 @@ include 'connection.php';
 include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
+
+if (isset($_GET['user'])) {
+  $QueryType=$_GET['user'];
+  $_SESSION['QueryType']=$QueryType;
+}elseif($_SESSION['QueryType']){
+  $QueryType=$_SESSION['QueryType'];
+  
+}
+
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
@@ -140,7 +149,7 @@ $Type=$_SESSION['usertype'];
               while($data=mysqli_fetch_assoc($result)){
 
                 if ($data['CountData']>0) {
-                 
+
                   ?>
                   <tr>
                     <td >
@@ -176,66 +185,75 @@ $Type=$_SESSION['usertype'];
             }
 
           }
-        }elseif ($Type=="Reporting" or $Type=='Dataentry') {
+        }elseif ($Type=="Reporting" or $Type=='Dataentry' or $Type=='Super User') {
 
-          if ($Type=="Reporting"){
+          if ($Type=="Reporting" ){
             $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified, `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.approval
             join reporting on approval.EmployeeID=reporting.EmployeeID
             join employees on approval.EmployeeID=employees.EmployeeCode
             WHERE ExecutiveID=$EXEID and posted=0
             group by EmployeeCode order by Employee";
 
-          }elseif($Type=='Dataentry'){
+          }elseif($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
 
             $query ="SELECT COUNT(`Card Number`) as CountData, min(VisitDate) as LastVerified,  `Employee Name` as Employee, Phone, employees.EmployeeCode  FROM `jobcardmain`
             join employees on jobcardmain.EmployeeCode=employees.EmployeeCode Where ServiceDone is null and VisitDate>='$Date' group by employees.EmployeeCode order by Employee";
 
+          }elseif($QueryType=='reporting' and $Type=='Super User'){
+
+           $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified, `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.approval
+           join reporting on approval.EmployeeID=reporting.EmployeeID
+           join employees on approval.EmployeeID=employees.EmployeeCode
+           WHERE posted=0
+           group by EmployeeCode order by Employee";
+         }
+
+         $result=mysqli_query($con,$query);
+         while($data=mysqli_fetch_assoc($result)){
+
+          $EmployeeID=base64_encode($data['EmployeeCode']);
+          ?>
+          <tr>
+            <td >
+              <?php echo $data['Employee']; ?>
+            </td>
+            <td >
+              <?php echo $data['Phone']; ?>
+            </td>
+
+            <td >
+              <?php
+              if ($Type=='Reporting' or $Type=='Executive') {
+
+                $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
+              }elseif ($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')) {
+                $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
+              }elseif (($Type=='Super User' and $QueryType=='reporting')) {
+               $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
+             }
+
+             echo $toatalCards =$data['CountData'];
+
+             ?>
+           </td>
+           <td> 
+            <?php
+            if (!empty($data['LastVerified'])) {
+             echo date("d-M-Y", strtotime($data['LastVerified']));
+           }else{
+            echo 'N/A';
           }
+          ?>
 
-          $result=mysqli_query($con,$query);
-          while($data=mysqli_fetch_assoc($result)){
-
-            $EmployeeID=base64_encode($data['EmployeeCode']);
-            ?>
-            <tr>
-              <td >
-                <?php echo $data['Employee']; ?>
-              </td>
-              <td >
-                <?php echo $data['Phone']; ?>
-              </td>
-
-              <td >
-                <?php
-                if ($Type=='Reporting' or $Type=='Executive') {
-
-                  $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
-                }elseif ($Type=='Dataentry') {
-                  $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
-                }
-
-                echo $toatalCards =$data['CountData'];
-
-                ?>
-              </td>
-              <td> 
-                <?php
-                if (!empty($data['LastVerified'])) {
-                 echo date("d-M-Y", strtotime($data['LastVerified']));
-               }else{
-                echo 'N/A';
-              }
-              ?>
-
-            </td>
-            <td>
-              <?php echo $Action ?>
-            </td>
-          </tr>
-        <?php } }?>
-      </tbody>
-    </table>  
-  </div>
+        </td>
+        <td>
+          <?php echo $Action ?>
+        </td>
+      </tr>
+    <?php } }?>
+  </tbody>
+</table>  
+</div>
 </main>
 <!-- End #main -->
 

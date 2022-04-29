@@ -17,6 +17,7 @@
      if (!empty($Data))
      {
       $Sn=1;
+      $ItemID=0;
       $obj=json_decode($Data);
       $OrderID=$obj->OrderID;
       $ZoneCode=$obj->ZoneCode;

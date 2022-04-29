@@ -1,3 +1,10 @@
+  <?php 
+  if (isset($_SESSION['QueryType'])) {
+    $QueryType=$_SESSION['QueryType'];
+  }
+  
+  ?>
+
   <!-- ======= Sidebar ======= -->
   <aside id="sidebar" class="sidebar">
 
@@ -11,7 +18,7 @@
       </li>
       <?php 
 
-      if ($Type=='Executive') {
+      if ($Type=='Executive' or $QueryType=='Order') {
 
        ?>
 
@@ -37,7 +44,7 @@
       </li>
 
       <?php 
-    }elseif ($Type=='Sim Provider') {
+    }elseif ($Type=='Sim Provider' or $QueryType=='Sim') {
       ?>
 
       <li class="nav-item">
@@ -62,7 +69,7 @@
       </li>
 
       <?php 
-    }elseif ($Type=='Production') {
+    }elseif ($Type=='Production' or $QueryType=='Production') {
       ?>
 
       <li class="nav-item">
@@ -73,7 +80,7 @@
       </li>
 
       <?php 
-    }elseif ($Type=='Store') {
+    }elseif ($Type=='Store' or $QueryType=='Store') {
       ?>
 
       <li class="nav-item">
@@ -84,7 +91,7 @@
       </li>
 
       <?php 
-    }elseif ($Type=='Installation') {
+    }elseif ($Type=='Installation' or $QueryType=='Installation') {
       ?>
 
       <li class="nav-item">

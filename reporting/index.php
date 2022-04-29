@@ -4,18 +4,25 @@ include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
 
+if (isset($_GET['user'])) {
+  $QueryType=$_GET['user'];
+  $_SESSION['QueryType']=$QueryType;
+}elseif(isset($_SESSION['QueryType'])){
+  $QueryType=$_SESSION['QueryType'];
+  
+}else{
+  $QueryType='';
+}
+
 if ($Type=='Executive') {
   header('location:/cyrus/executive/index.php');
-}elseif($Type=='Dataentry'){
+}elseif($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
   header('location:reporting.php');
 }
 
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
-
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -154,11 +161,125 @@ if($Type=='Reporting'){
   while($row= mysqli_fetch_array($result)){
     $data6[]=$row;
   }
+}elseif($Type=='Super User' and $QueryType=='reporting'){
+
+  $query="SELECT count(ApprovalID) FROM cyrusbackend.reporting 
+  join approval on reporting.EmployeeID=approval.EmployeeID
+  WHERE posted=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $PendingReporting=$row["count(ApprovalID)"];
 
 
+  $query="SELECT count(OrderID) FROM cyrusbackend.reporting
+  join vallordersd on reporting.EmployeeID=vallordersd.EmployeeCode
+  WHERE AssignDate is null and Attended=0 and Discription like '%AMC%'";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $UnassignedAMC=$row["count(OrderID)"];
+
+  $query="SELECT count(OrderID) FROM cyrusbackend.reporting
+  join vallordersd on reporting.EmployeeID=vallordersd.EmployeeCode
+  WHERE AssignDate is null and Attended=0 and Discription not like '%AMC%'";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $UnassignedOrder=$row["count(OrderID)"];
+
+  $query="SELECT count(ComplaintID) FROM cyrusbackend.reporting 
+  join vallcomplaintsd on reporting.EmployeeID=vallcomplaintsd.EmployeeCode
+  WHERE AssignDate is null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $UnassignedComplaints=$row["count(ComplaintID)"];
+
+  $UnassignedWork=$UnassignedOrder+$UnassignedComplaints+$UnassignedAMC;
+
+  $query="SELECT count(OrderID), `Employee Name` FROM cyrusbackend.reporting
+  join allorders on reporting.EmployeeID=allorders.EmployeeCode
+  WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%'";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $AssignedOrder=$row["count(OrderID)"];
+
+  $query="SELECT count(OrderID), `Employee Name` FROM cyrusbackend.reporting
+  join allorders on reporting.EmployeeID=allorders.EmployeeCode
+  WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%'";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $AssignedAMC=$row["count(OrderID)"];
+
+  $query="SELECT count(ComplaintID), `Employee Name` FROM cyrusbackend.reporting 
+  join allcomplaint on reporting.EmployeeID=allcomplaint.EmployeeCode
+  WHERE AssignDate is not null and Attended=0";
+  $result=mysqli_query($con,$query);
+  $row = mysqli_fetch_array($result);
+  $AssignedComplaints=$row["count(ComplaintID)"];
+
+  $PendingWork=$AssignedOrder+$AssignedComplaints+$AssignedAMC;
+
+  $queryTech= "SELECT * FROM reporting";
+  $resultTech=mysqli_query($con,$queryTech);
+
+  while($rowE= mysqli_fetch_array($resultTech)){
+    $EmployeeID=$rowE['EmployeeID'];
+    
+    $query="SELECT count(OrderID) , `Employee Name` as Employee FROM vallordersd
+    WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
+
+    $result=mysqli_query($con,$query);
+    $row1= mysqli_fetch_array($result);
+
+    $query="SELECT count(ComplaintID) FROM vallcomplaintsd
+    WHERE AssignDate is null and Attended=0 and EmployeeCode=$EmployeeID";
+
+    $result=mysqli_query($con,$query);
+    $row2= mysqli_fetch_array($result);
+
+    $data1[]=array("unassigned"=>($row1['count(OrderID)']+$row2['count(ComplaintID)']), "Employee"=>$row1['Employee']);
 
 
+    $query="SELECT count(OrderID), `Employee Name` as Employee FROM allorders
+    WHERE EmployeeCode=$EmployeeID and AssignDate is not null and Attended=0";
+    $result=mysqli_query($con,$query);
+    $row3 = mysqli_fetch_array($result);
 
+    $query="SELECT count(ComplaintID) FROM allcomplaint
+    WHERE EmployeeCode=$EmployeeID and AssignDate is not null and Attended=0";
+    $result=mysqli_query($con,$query);
+    $row4 = mysqli_fetch_array($result);    
+    $data2[]=array("assigned"=>($row3['count(OrderID)']+$row4['count(ComplaintID)']), "Employee"=>$row3['Employee']);
+  }
+
+  rsort($data1);
+  rsort($data2);
+
+  $query="SELECT Count(ApprovalID) as Accepted, VDate FROM cyrusbackend.approval WHERE Vremark!='REJECTED' and year(VDate)=year(current_date()) and month(Vdate)=month(current_date())
+  group by VDate Order By Vdate";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data3[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Rejected, VDate FROM cyrusbackend.approval WHERE Vremark='REJECTED' and year(VDate)=year(current_date()) and month(Vdate)=month(current_date())
+  group by VDate Order By Vdate";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data4[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Accepted, month(VDate) as VDateA FROM cyrusbackend.approval WHERE  Vremark!='REJECTED' and year(VDate)=year(current_date())
+  group by month(VDate) Order By month(Vdate)";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data5[]=$row;
+  }
+
+  $query="SELECT Count(ApprovalID) as Rejected, month(VDate) as VDateR FROM cyrusbackend.approval WHERE  Vremark='REJECTED' and year(VDate)=year(current_date())
+  group by month(VDate) Order By month(Vdate)";
+  $result=mysqli_query($con,$query);
+  while($row= mysqli_fetch_array($result)){
+    $data6[]=$row;
+  }
 }
 
 
