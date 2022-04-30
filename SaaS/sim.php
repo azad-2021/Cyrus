@@ -30,7 +30,6 @@ $resultOperator = mysqli_query($con, $query);
 
 if(isset($_POST['submit'])){
 
-
   $Mobile=$_POST['Mobile'];
   $SimNo=$_POST['SimNo'];
   $SimType=$_POST['SimType'];
@@ -40,8 +39,6 @@ if(isset($_POST['submit'])){
 
   $query ="SELECT * FROM `simprovider` WHERE `MobileNumber`=$Mobile";
   $result = mysqli_query($con, $query);
-     // $date = str_replace('-"', '/', $IssueDate);  
-     // $IssueDate = date("y/m/d", strtotime($date));
   $errors='';
   if (strlen($Mobile) < 13){
     $errors='<script>alert("Mobile Number must be 12 Digit Long")</script>';
@@ -55,7 +52,6 @@ if(isset($_POST['submit'])){
         // code...
 
     if(empty($_POST['ADate'])==false) {
-
 
       $ADate=$_POST['ADate'];
       $ExpDate=$_POST['RDate'];
@@ -78,30 +74,21 @@ if(isset($_POST['submit'])){
     echo $errors;
   }
 }
-
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
   <title>Home</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
-
   <!-- Favicons -->
   <link href="assets/img/cyrus logo.png" rel="icon">
-
-
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -110,18 +97,12 @@ if(isset($_POST['submit'])){
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
-
 </head>
-
 <body>
-
-
   <header id="header" class="header fixed-top d-flex align-items-center">
-
     <div class="d-flex align-items-center justify-content-between">
       <a href="index.php" class="logo d-flex align-items-center">
         <img src="assets/img/cyrus logo.png" alt="">
@@ -138,7 +119,6 @@ if(isset($_POST['submit'])){
     //include "modals.php";
 
     ?>
-
   </header><!-- End Header -->
   <?php 
   include "sidebar.php";
@@ -198,7 +178,6 @@ if(isset($_POST['submit'])){
                 
               <?php } ?>                
             </select>
-
           </div>
 
           <div class="form-group col-md-12" id="1"  style="display: none;">
@@ -209,26 +188,21 @@ if(isset($_POST['submit'])){
             <label for="SimType">Recharge Expiry Date</label>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="date" name="RDate" placeholder="dd/mm/yy" class="form-control rounded-corner">
-
           </div>
           <div class="form-group col-md-12">
             <br>
             <label for="Remark">Remark</label>
             <textarea class="form-control rounded-corner" id="exampleFormControlTextarea1" cols="4" rows="4" name="Remark"></textarea>
-
           </div>
-
         </div>  
         <br><br>
         <center>
-
           <input type="submit"  class=" btn btn-primary" value="submit" name="submit" onclick="checkLength()" /></input>
         </center>      
       </form>
     </section>
   </main>
   <!-- End #main -->
-
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
     <div class="copyright">
@@ -251,7 +225,6 @@ if(isset($_POST['submit'])){
   <script src="assets/js/main.js"></script>
 </body>
 </html>
-
 <?php 
 $con -> close();
 $con2 -> close();

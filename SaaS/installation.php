@@ -159,10 +159,6 @@ if(empty($error)==true){
   $resultAdd = mysqli_query($con,$queryAdd);
 
 }else{
-
-      //$date = str_replace('-"', '/', $InstallationDate);  
-      //$IssueDate = date("Y/m/d", strtotime($date));
-
   $queryAdd="INSERT INTO `installation`( `OrderID`, `InstalledBy`, `InstallationDate`, `Remark` ) VALUES ('$ID', '$InstalledBy','$InstDate', '$Remark')" ;
   $resultAdd = mysqli_query($con,$queryAdd);
   if ($resultAdd) {
@@ -282,9 +278,7 @@ if(empty($error)==true){
     <?php 
     include "nav.php";
     //include "modals.php";
-
     ?>
-
   </header><!-- End Header -->
   <?php 
   include "sidebar.php";
@@ -315,8 +309,6 @@ if(empty($error)==true){
               $query ="SELECT * FROM `operators`";
               $resultOperator = mysqli_query($con, $query);
               ?>
-
-
 
               <div class="row">
                 <div class="form-group col-md-4">
@@ -363,17 +355,12 @@ if(empty($error)==true){
 
               </div>
             <?php } ?>
-
-
             <?php
             if ($Provider=='Bank') {
 
               $query ="SELECT * FROM `operators`";
               $resultOperator = mysqli_query($con, $query);
               ?>
-
-
-
               <div class="row">
 
                 <div class="form-group col-md-6">
@@ -453,7 +440,6 @@ if(empty($error)==true){
       &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
     </div>
   </footer>
-  <!-- End Footer -->
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

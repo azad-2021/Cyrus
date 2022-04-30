@@ -87,12 +87,12 @@
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="charts-chartjs.html">
+            <a href="/cyrus/reporting/index.php?userid=21&name=Jayant Saxena&type=Reporting" target="_blank">
               <i class="bi bi-circle"></i><span>Jayant Saxena</span>
             </a>
           </li>
           <li>
-            <a href="charts-apexcharts.html">
+            <a href="/cyrus/reporting/index.php?userid=23&name=Sanjay Singh&type=Reporting" target="_blank">
               <i class="bi bi-circle"></i><span>Shreyansh Awasthi</span>
             </a>
           </li>
@@ -192,11 +192,18 @@
         <span>Jobacrd Entry</span>
       </a>
     </li><!-- End F.A.Q Page Nav -->
-
-
-
-
-
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="" data-bs-toggle="modal" data-bs-target="#AddExecutive">
+        <i class="bi bi-grid"></i>
+        <span>Add User</span>
+      </a>
+    </li><!-- End F.A.Q Page Nav -->
+    <li class="nav-item">
+      <a class="nav-link collapsed Employees" href="" data-bs-toggle="modal" data-bs-target="Employees">
+        <i class="bi bi-grid"></i>
+        <span>Employees</span>
+      </a>
+    </li><!-- End F.A.Q Page Nav -->
   </ul>
 
 </aside><!-- End Sidebar-->

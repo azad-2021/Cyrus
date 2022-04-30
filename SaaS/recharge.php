@@ -13,16 +13,7 @@ if (isset($_POST['submit'])) {
   $ExpDate=$_POST['ExpDate'];
 
 }
-/*
-$query ="SELECT BankName, ZoneRegionName, BranchName, Gadget, orders.OrderID, simprovider.SimProvider, simprovider.SimType, MobileNumber, SimNo, Operator, ReleaseDate as SimReleaseDate, production.IssueDate as InuseDate, ActivationDate, ExpDate, simprovider.ID as SimID, ProductionID, DATEDIFF(ExpDate,ActivationDate) as leftDays FROM saas.simprovider
-join production on simprovider.ID=production.SimID
-join orders on production.OrderID=orders.OrderID
-join gadget on orders.GadgetID=gadget.GadgetID
-join operators on orders.OperatorID=operators.OperatorID
-join cyrusbackend.branchdetails on SaaS.orders.BranchCode=branchdetails.BranchCode
-WHERE Installed=1 and orders.SimProvider='Cyrus' ORDER BY orders.OrderID DESC";
-$results = mysqli_query($con, $query); 
-*/
+
 ?>
 
 <!DOCTYPE html>  

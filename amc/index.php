@@ -2,7 +2,7 @@
 include 'connection.php';
 include 'session.php';
 
-//$EXEID=$_SESSION['userid'];
+$EXEID=$_SESSION['userid'];
 
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
@@ -10,7 +10,6 @@ $Date = date('Y-m-d',strtotime($timestamp));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
-$_SESSION['user']='';
 
 if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Morning ".$_SESSION['user'];

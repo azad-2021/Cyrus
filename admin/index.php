@@ -56,12 +56,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/sweetalert.min.js"></script>
-
-
 </head>
-
 <body>
-
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -71,7 +67,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         <span class="d-none d-lg-block">Cyrus</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div><!-- End Logo -->
+    </div>
 
     <div class="search-bar">
       <?php echo $wish; ?>
@@ -79,13 +75,11 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     <?php 
     include "nav.php";
     //include "modals.php";
-
     ?>
-
-  </header><!-- End Header -->
+  </header>
   <?php 
   include "sidebar.php";
-  //include "modals.php";
+  include "modals.php";
   ?>
   <main id="main" class="main">
 
@@ -108,11 +102,9 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         </div>
       </div>
       <!-- End Left side columns -->
-
     </section>
   </main>
   <!-- End #main -->
-
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
     <div class="copyright">
@@ -139,102 +131,42 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
 
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('table.display').DataTable( {
-        responsive: false,
-        responsive: {
-          details: {
-            display: $.fn.dataTable.Responsive.display.modal( {
-              header: function ( row ) {
-                var data = row.data();
-                return 'Details for '+data[0]+' '+data[1];
-              }
-            } ),
-            renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-              tableClass: 'table'
-            } )
-          }
-        },
-        stateSave: true,
-      } );
-    } );
 
 
-    $(document).on('change','#Bank', function(){
-      var data = $(this).val();
-    //console.log(data);
-    const obj = JSON.parse(data);
-    BankCode = obj.BankCode;
-    document.getElementById("BankName").innerHTML=obj.BankName;
-    if(BankCode){
-      $.ajax({
-        type:'POST',
-        url:'dataget.php',
-        data:{'BankCode':BankCode},
-        success:function(result){
-          $('#Zone').html(result);
+ //section added
 
-        }
-      }); 
-    }else{
-      $('#Zone').html('<option value="">Zone</option>');
-      $('#Branch').html('<option value="">Branch</option>'); 
+
+ $(document).on('click', '.Employees', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'view':'Employeelist'},
+   success:function(data){
+    $('#employeelist').html(data);
+    $('#Employees').modal('show');
+  }
+});
+});
+
+ $(document).on('click', '.SaveExecutive', function(){
+  username=document.getElementById("UserName").value;
+  usertype=document.getElementById("UserType").value;
+  if (username!='' && usertype!='') {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'NewUser':username, 'UserType':usertype},
+     success:function(data){
+      swal("success","User Created","success");
     }
   });
+  }else{
+    swal("error","Please enter all fields.","error");
+  }
+});
 
 
-    $(document).on('change','#Zone', function(){
-      var data = $(this).val();
-    //console.log(data);
-    const obj = JSON.parse(data);
-    document.getElementById("ZoneName").innerHTML=obj.ZoneName;
-    document.getElementById("Quarter").value='';
-  });
-
-
-    $(document).on('change','#Quarter', function(){
-      var Quarter = $(this).val();
-      var StartDate= document.getElementById("Sdate").value;
-      var EndDate= document.getElementById("Edate").value;
-      var data= document.getElementById("Zone").value;
-      const obj = JSON.parse(data);
-      ZoneCode = obj.ZoneCode;
-
-      const date1 = new Date(StartDate);
-      const date2 = new Date(EndDate);
-      const diffTime = Math.abs(date2 - date1);
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-      console.log(diffDays + " days");
-      if(diffDays>365){
-        swal("error","Duration between Start Date & End Date is maximum 365 days.","error");
-      }else{
-        if((Quarter!='' || StartDate!='' || EndDate!='') && (diffDays<366)){
-          $.ajax({
-            type:'POST',
-            url:'dataget.php',
-            data:{'ZoneCodeAMC':ZoneCode,'StartDate':StartDate, 'EndDate':EndDate},
-            success:function(result){
-              $('#AMCZone').html(result);
-
-              $.ajax({
-                type:'POST',
-                url:'dataget.php',
-                data:{'ZoneCode':ZoneCode, 'Quarter':Quarter, 'StartDate':StartDate, 'EndDate':EndDate},
-                success:function(result){
-                  $('#AmcData').html(result);
-
-                }
-              }); 
-
-            }
-          }); 
-
-        }
-      }
-
-    });
-
-  </script>
+</script>
 </body>
 
 </html>

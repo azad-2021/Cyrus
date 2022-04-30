@@ -73,7 +73,6 @@
             <td>'.$Zone.'</td>  
             <td>'.$Branch.'</td>
             <td>'.$Operator.'</td> 
-
             <td>'.$row["Date"].'</td>  
             <td>'.$Gadget.'</td> 
             <td>'.$Provider.'</td>
@@ -86,8 +85,6 @@
             </tr>  
             ';  
         }}  
-
-
         ?> 
-
-    </table>   
+    </tbody>
+</table>   

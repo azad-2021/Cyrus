@@ -342,3 +342,67 @@
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="AddExecutive" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New User</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">User Name:</label>
+            <input type="text" class="form-control rounded-corner" id="UserName">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">User Type:</label>
+            <select class="form-control rounded-corner" id="UserType">
+              <option value="">Select</option>
+              <option value="AMC">AMC</option>
+              <option value="Executive">Executive</option>
+              <option value="Inventory">Inventory Release</option>
+              <option value="Dataentry">Job Card Entry</option>
+              <option value="Reminders">Reminders</option>
+              <option value="Reporting">Work Reporting</option>       
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary SaveExecutive">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="Employees" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Employees</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover table-bordered border-primary">
+          <thead>
+            <th>Sr. No.</th>
+            <th>Name</th>
+            <th>Mobile Number</th>
+            <th>Reported To</th>
+            <th>Change Reporting</th>
+            <th>Reset Password</th>
+          </thead>
+          <tbody id="employeelist">
+            
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
