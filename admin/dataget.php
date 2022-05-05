@@ -93,7 +93,7 @@ if (!empty($View))
             <td scope="col" style="min-width: 150px;">'.$a['Employee Name'].'</td>
             <td scope="col" style="min-width: 150px;">'.$a['Phone'].'</td>
             <td scope="col" style="min-width: 150px;">'.$AssignTo.'</td>';
-            $query="SELECT * FROM pass Order by UserName";
+            $query="SELECT * FROM pass WHERE UserName is not null Order by UserName";
             $result3=mysqli_query($con,$query);
             ?>
             <th scope="col" style="min-width: 150px;">

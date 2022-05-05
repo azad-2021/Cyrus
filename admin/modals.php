@@ -392,16 +392,53 @@
             <th>Name</th>
             <th>Mobile Number</th>
             <th>Reported To</th>
-            <th>Change Reporting</th>
+            <th>Change Reporting To</th>
             <th>Reset Password</th>
           </thead>
           <tbody id="employeelist">
-            
+
           </tbody>
         </table>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="AddEmployees" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Employee</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="row">
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Employee Name:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeName">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Qualifications:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeQulaification">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">District:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeDistrict">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeMobile">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary SaveNewEmployee">Save</button>
       </div>
     </div>
   </div>

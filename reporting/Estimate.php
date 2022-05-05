@@ -12,7 +12,6 @@ $ApprovalID=!empty($_POST['ApprovalID'])?$_POST['ApprovalID']:'';
     <thead> 
       <tr>
         <th style="min-width:20px">SNo.</th>
-        <th style="min-width:150px">Estimate ID</th>
         <th style="min-width:500px">Item</th>
         <th style="min-width:150px">Rate</th> 
         <th style="min-width:150px">Quantity</th>
@@ -26,7 +25,7 @@ $ApprovalID=!empty($_POST['ApprovalID'])?$_POST['ApprovalID']:'';
       <?php
       if (!empty($ApprovalID))
       {  
-        $query="SELECT * FROM cyrusbilling.rates join cyrusbilling.estimates on rates.RateID=estimates.RateID WHERE estimates.ApprovalID=$ApprovalID and estimates.Qty != 0";
+        $query="SELECT Description, estimates.Rate, Qty, ApprovalID, EstimateID FROM cyrusbilling.rates join cyrusbilling.estimates on rates.RateID=estimates.RateID WHERE estimates.ApprovalID=$ApprovalID and estimates.Qty != 0";
         $result=mysqli_query($con2,$query);  
         $Sn=0;       
         
@@ -35,7 +34,6 @@ $ApprovalID=!empty($_POST['ApprovalID'])?$_POST['ApprovalID']:'';
 
           print "<tr>";
           print "<td>".$Sn."</td>";
-          print '<td>'.$row["EstimateID"]."</td>";
           print '<td>'.$row["Description"]."</td>";
           print '<td>'.$row["Rate"]."</td>";
 

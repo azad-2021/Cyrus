@@ -74,7 +74,7 @@
             </a>
           </li>
           <li>
-            <a href="/cyrus/executive/index.php?user=3" target="_blank">
+            <a href="/cyrus/executive/index.php?user=8" target="_blank">
               <i class="bi bi-circle"></i><span>Zeeshan Sayeed</span>
             </a>
           </li>
@@ -179,12 +179,6 @@
         <span>Service Engineer</span>
       </a>
     </li> 
-    <li class="nav-item">
-      <a class="nav-link collapsed" target="_blank" href="/cyrus/reporting/index.php?user=reporting">
-        <i class="bi bi-grid"></i>
-        <span>Reporting</span>
-      </a>
-    </li><!-- End Profile Page Nav -->
 
     <li class="nav-item">
       <a class="nav-link collapsed" href="/cyrus/reporting/reporting.php?user=jobcardentry" target="_blank">
@@ -203,7 +197,32 @@
         <i class="bi bi-grid"></i>
         <span>Employees</span>
       </a>
-    </li><!-- End F.A.Q Page Nav -->
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="" data-bs-toggle="modal" data-bs-target="#AddEmployees">
+        <i class="bi bi-grid"></i>
+        <span>Add Employees</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="UnassignedWork.php" target="_blank">
+        <i class="bi bi-grid"></i>
+        <span>Unassigned Work</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="PendingWork.php" target="_blank">
+        <i class="bi bi-grid"></i>
+        <span>Pending Work</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="PendingBills.php" target="_blank">
+        <i class="bi bi-grid"></i>
+        <span>Pending Payment</span>
+      </a>
+    </li>
   </ul>
 
 </aside><!-- End Sidebar-->

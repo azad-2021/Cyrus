@@ -67,7 +67,8 @@ header("location:est.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oi
     while($dataEstimate=mysqli_fetch_assoc($resultAddEstimate)){ 
       $RateID = $dataEstimate['peRateID'];
       $Quantity = $dataEstimate['peqty'];
-      $query = "INSERT INTO `estimates`(`ApprovalID`, `RateID`, `Qty`) VALUES ('$approvalID', '$RateID', '$Quantity')";
+      $Rate = $dataEstimate['peRate'];
+      $query = "INSERT INTO `estimates`(`ApprovalID`, `RateID`, `Qty`, Rate) VALUES ('$approvalID', '$RateID', '$Quantity', $Rate)";
      $queryAdd=  mysqli_query($con3,$query);
 
       if($queryAdd){
