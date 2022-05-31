@@ -3,11 +3,17 @@ include 'connection.php';
 include 'session.php';
 $Type=$_SESSION['usertype'];
 if (isset($_GET['userid'])) {
-  
+
   $EXEID=$_GET['userid'];
   $Type=$_GET['type'];
   $user=$_GET['name'];
-
+  $_SESSION['usertype2']=$Type;
+  $_SESSION['userid2']=$EXEID;
+  $_SESSION['user2']=$user;
+}elseif (isset($_SESSION['usertype2'])) {
+  $EXEID=$_SESSION['userid2'];
+  $Type=$_SESSION['usertype2'];
+  $user=$_SESSION['user'];
 }else{
   $EXEID=$_SESSION['userid'];
   $Type=$_SESSION['usertype'];
@@ -247,7 +253,7 @@ if($Type=='Reporting'){
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li>
+          <li class="breadcrumb-item active">Dashboard / <?php echo $user; ?></li>
         </ol>
       </nav>
     </div><!-- End Page Title -->

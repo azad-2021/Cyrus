@@ -32,11 +32,13 @@ if(isset($_POST["EmployeeID"]))
         <th style="min-width:150px">Bank</th>
         <th style="min-width:150px">Zone</th>
         <th style="min-width:150px">Branch</th> 
+        <th style="min-width:150px">District</th> 
         <th style="min-width:150px">Complaint ID</th>
         <th style="min-width:500px">Discription</th>
         <th style="min-width:150px">Information Date</th>
         <th style="min-width:150px">Assign Date</th>           
-        <th style="min-width:150px">Assign To</th>           
+        <th style="min-width:150px">Assign To</th> 
+        <th style="min-width:150px">Action</th>           
       </tr>                     
     </thead>                 
     <tbody>
@@ -54,6 +56,7 @@ if(isset($_POST["EmployeeID"]))
             <td><?php echo $row['BankName']; ?></td>
             <td ><?php echo $row['ZoneRegionName']; ?></td>
             <td><?php echo $row['BranchName']; ?></td>
+            <td><?php echo $row['Address3']; ?></td>
             <td><?php echo $row['ComplaintID']; ?></td>
             <td><?php echo $row['Discription']; ?></td>
             <td><?php echo date("d-m-Y", strtotime($row['DateOfInformation'])); ?></td>
@@ -73,7 +76,10 @@ if(isset($_POST["EmployeeID"]))
               }  
               ?>
             </select>
-          </td>              
+          </td> 
+
+          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["ComplaintID"]; ?>" id2="1">Add Remark</a></td>
+
         </tr>
         <?php
         $Sn++;

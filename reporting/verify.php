@@ -156,12 +156,19 @@ if($ComplaintID>0){
 
       $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ComplaintID=$ComplaintID";
       $resultupdate = mysqli_query($con,$sql);
+      $query ="SELECT * FROM `approval` WHERE ComplaintID=$ComplaintID";
+      $results = mysqli_query($con, $query);
+      while($row=mysqli_fetch_array($results)){
+        $DelCard=$row["JobCardNo"];
+        $query ="DELETE FROM jobcardmain WHERE `Card Number`='$DelCard'";
+        $res = mysqli_query($con, $query);
+      }
 
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     }else{
       $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
       $resultupdate = mysqli_query($con,$sql);
-      $sql = "UPDATE `complaints` SET `Executive Remark`='$Vremark' WHERE ComplaintID=$ComplaintID";
+      $sql = "UPDATE `complaints` SET `Verification remark`='$Vremark' WHERE ComplaintID=$ComplaintID";
       $resultupdate = mysqli_query($con,$sql);
       header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$EmployeeID");
     }
@@ -184,7 +191,7 @@ if($ComplaintID>0){
     }else{
       $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
       $resultupdate = mysqli_query($con,$sql);
-      $sql = "UPDATE `orders` SET `Executive Remark`='$Vremark' WHERE OrderID=$OrderID";
+      $sql = "UPDATE `orders` SET `Verification remark`='$Vremark' WHERE OrderID=$OrderID";
       $resultupdate = mysqli_query($con,$sql);
       $enEmployeeID=base64_encode($EmployeeID);
       header("location:/technician/copyjobcard.php?cardno=$Jobcard&empid=$enEmployeeID");

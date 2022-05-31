@@ -42,7 +42,8 @@ if(isset($exEmployeeID))
         <th style="min-width:150px">Assigned Date</th>
         <th style="min-width:150px">Reassigned Times</th>
         <th style="min-width:150px">Reassign Date</th>           
-        <th style="min-width:150px">Reassign To</th>   
+        <th style="min-width:150px">Reassign To</th> 
+        <th style="min-width:150px">Action</th>  
       </tr>                     
     </thead>                 
     <tbody>
@@ -111,7 +112,8 @@ if(isset($exEmployeeID))
               }
               ?>
             </select>
-          </td>                      
+          </td>  
+          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a></td>                    
         </tr>
         <?php
         $Sn++;

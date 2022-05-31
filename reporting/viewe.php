@@ -189,7 +189,7 @@ $Sub=0;
             $result=mysqli_query($con2,$query);
             $dataMaterial=mysqli_fetch_assoc($result);
             $Description = $dataMaterial['Description'];
-            $Rate = $data['Rate'];
+            $Rate = $data['Rates'];
 
             ?>
 

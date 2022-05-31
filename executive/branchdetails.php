@@ -227,6 +227,23 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <div class="card recent-sales overflow-auto">
         <br>
         <div class="card-body">
+
+          <div class="col-lg-12" style="margin: 12px; overflow: auto;">
+            <table class="display table table-hover table-bordered border-primary">
+              <h5 style="margin: 2px; text-align: center;">AMC</h5>
+              <thead> 
+                <tr> 
+                  <th style="min-width: 150px;">Device</th>
+                  <th style="min-width: 150px;">Start Date</th>
+                  <th style="min-width: 150px;">End date</th>
+                  <th style="min-width: 150px;">Visits</th> 
+                  <th style="min-width: 150px;">Rates</th>        
+                </tr>                     
+              </thead>                 
+              <tbody id="AMCVisit"> 
+              </tbody>
+            </table>
+          </div>
           <div class="col-lg-12" style="margin: 12px; overflow: auto;">
             <table class="table table-hover table-bordered border-primary scrolldown table-responsive"> 
               <h5 style="margin: 2px; text-align: center;">Orders</h5>
@@ -295,11 +312,10 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
           </div>
         </div>
       </div>
+      <!-- End Recent Sales -->
     </div>
-    <!-- End Recent Sales -->
   </div>
-</div>
-<!-- End Left side columns -->
+  <!-- End Left side columns -->
 
 </section>
 </main>

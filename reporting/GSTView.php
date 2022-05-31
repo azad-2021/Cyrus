@@ -10,7 +10,7 @@ if(isset($_POST["BranchCode"]))
   $query = "SELECT * FROM billbook WHERE BranchCode=$BranchCode and Cancelled=0";
   $result = $con2->query($query);
 
-  $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BranchCode and Cancelled!=1 GROUP BY BranchCode";
+  $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BranchCode and Cancelled=0 GROUP BY BranchCode";
   $resultGST= $con2->query($sqlGST);
   if (mysqli_num_rows($resultGST)>0)
   {

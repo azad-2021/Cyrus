@@ -75,6 +75,7 @@ if (!empty($Branch))
     print '<td>'.$Call."</td>";
     print '<td>'.$Employee."</td>";
     print '<td style="min-width:500px">'.$row3["Discription"]."</td>";
+    print '<td style="min-width:500px">'.$row3["Verification Remark"]."</td>";
     print '<td style="min-width:500px">'.$row3["Executive Remark"]."</td>";
 
     print "</tr>";
@@ -153,11 +154,11 @@ if (!empty($BrCode))
     print '<td >'.$Call."</td>";
     print '<td >'.$Employee."</td>"; 
     print '<td style="min-width:500px">'.$row2["Discription"]."</td>";
+    print '<td style="min-width:500px">'.$row3["Verification Remark"]."</td>";
     print '<td style="min-width:500px">'.$row2["Executive Remark"]."</td>";
 
     print "</tr>";
 }
-$con->close(); 
 }
 }
 
@@ -244,7 +245,7 @@ if (!empty($BCode))
         }
     }
 
-    $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BCode and Cancelled!=1 GROUP BY BranchCode";
+    $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BCode and Cancelled=0 GROUP BY BranchCode";
     $resultGST= $con2->query($sqlGST);
     if (mysqli_num_rows($resultGST)>0)
     {
@@ -376,6 +377,8 @@ if (mysqli_num_rows($resultsDistrict)>0)
 <?php 
 }
 }
+$con->close(); 
+$con2->close(); 
 
 ?>
 

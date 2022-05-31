@@ -33,12 +33,14 @@ if(isset($_POST["EmployeeID"]))
         <th style="min-width:150px">Bank</th>
         <th style="min-width:150px">Zone</th>
         <th style="min-width:150px">Branch</th> 
+        <th style="min-width:150px">District</th> 
         <th style="min-width:150px">AMC ID</th>
         <th style="min-width:500px">Discription</th>
         <th style="min-width:150px">Information Date</th> 
         <th style="min-width:150px">Assign Date</th>           
         <th style="min-width:150px">Assign To</th>
-                  
+        <th style="min-width:150px">Action</th> 
+        
       </tr>                     
     </thead>                 
     <tbody>
@@ -56,26 +58,29 @@ if(isset($_POST["EmployeeID"]))
             <td><?php echo $row['BankName']; ?></td>
             <td ><?php echo $row['ZoneRegionName']; ?></td>
             <td><?php echo $row['BranchName']; ?></td>
+            <td><?php echo $row['Address3']; ?></td>
             <td><?php echo $row['OrderID']; ?></td>
             <td><?php echo $row['Discription']; ?></td>
             <td><?php echo date("d-m-Y", strtotime($row['DateOfInformation'])); ?></td>
             <td><input type="date" value="<?php echo $Date; ?>" id="<?php print $row['OrderID'];?>" name="Date" class="form-control my-select3" align="center"></td>
             <td ALIGN="center">
              <select class="form-control my-select3" id="unamc">
-             <option value="">Select</option>        
-              <?php
-              if ($Type!="Executive") {
-              $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
-              $resultTech=mysqli_query($con,$queryTech);
-              while($data=mysqli_fetch_assoc($resultTech)){
-                $json = array("EmployeeID"=>$data['EmployeeCode'], "OrderID"=>$row['OrderID'], "Status"=>"Unassigned", "exEmployeeID"=>$exEmployeeID);
-                $Data=json_encode($json);
-                echo "<option value=".$Data.">".$data['Employee Name']."</option>";
-              } 
+               <option value="">Select</option>        
+               <?php
+               if ($Type!="Executive") {
+                $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
+                $resultTech=mysqli_query($con,$queryTech);
+                while($data=mysqli_fetch_assoc($resultTech)){
+                  $json = array("EmployeeID"=>$data['EmployeeCode'], "OrderID"=>$row['OrderID'], "Status"=>"Unassigned", "exEmployeeID"=>$exEmployeeID);
+                  $Data=json_encode($json);
+                  echo "<option value=".$Data.">".$data['Employee Name']."</option>";
+                } 
               } 
               ?>
             </select>
           </td>
+
+          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a></td> 
 
         </tr>
         <?php

@@ -163,6 +163,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 						<tr>
 							<th>Branch</th>
 							<th>Branch Code</th>
+							<th>District</th>
 							<th>GST No</th>
 							<th>Action</th>
 						</tr>

@@ -16,7 +16,11 @@
      <?php 
      include 'connection.php';
      include 'session.php';
-     $EXEID=$_SESSION['userid'];
+     if (isset($_SESSION['query'])) {
+       $EXEID=$_SESSION['query'];
+     }else{
+       $EXEID=$_SESSION['userid'];
+     }
      $Zone=!empty($_POST['Zone'])?$_POST['Zone']:'';
      if (!empty($Zone))
      { 
@@ -41,9 +45,7 @@
       $sub=0;
       $Total=array();
       while($row = mysqli_fetch_array($result3)){
-
         ?>
-
         <tr>
           <th><?php echo $Sn; ?></th>
           <td ><?php echo $row['BankName']; ?></td>
@@ -56,7 +58,6 @@
         <?php
         $Sn++;
         $Total[]=$row['PendingPayment'];
-
       }
     }
     $con->close();
@@ -65,8 +66,5 @@
     ?>
   </tbody>
 </table>
-
 <h5 align="right">Total: <?php echo number_format(array_sum($Total),2); ?></h5>
-
-
 </div>

@@ -79,9 +79,18 @@ if(isset($_FILES['image'])){
   $query ="SELECT * FROM `approval` where JobCardNo='$JOBCARD' and posted=0";
   $result = mysqli_query($con2, $query);
 
+  if ($OID>0) {
+    $query3 ="SELECT OrderID FROM orders where BranchCode=$BranchCode and AssignDate is not null and Attended=0";
+  }else{
+    $query3 ="SELECT ComplaintID FROM complaints where BranchCode=$BranchCode and AssignDate is not null and Attended=0";
+  }
+
+  $result3 = mysqli_query($con2, $query3);
+
   $query2 ="SELECT * FROM `jobcardmain` where `Card Number`='$JOBCARD'";
   $result2 = mysqli_query($con2, $query2);
 
+  $name='';
   if (mysqli_num_rows($result)>0){
     $dataName=mysqli_fetch_assoc($result);
     $name = $dataName['JobCardNo']; 
@@ -89,8 +98,6 @@ if(isset($_FILES['image'])){
     $dataName=mysqli_fetch_assoc($result2);
     $name = $dataName['Card Number']; 
   }
-
-
 
   $AddTech = tech();
     //echo $JOBCARD;
@@ -123,6 +130,10 @@ if(isset($_FILES['image'])){
     $errors = '<script>alert("Visit Date must be greater than Posted Date")</script>';
   }elseif($VisitDate>$LDate){
     $errors = '<script>alert("Visit Date must be less than or equal to current Date")</script>';
+  }elseif (mysqli_num_rows($result3)>0 and $OID>0){
+    $errors = '<script>alert("इस ब्रांच में AMC या Order अभी पेंडिंग है, अतः इसे पूरा करके पुनः jobcard अपलोड करे। ")</script>';
+  }elseif (mysqli_num_rows($result3)>0 and $ComplaintID>0){
+    $errors = '<script>alert("इस ब्रांच में Complaint अभी पेंडिंग है, अतः इसे पूरा करके पुनः jobcard अपलोड करे। ")</script>';
   }
 
 

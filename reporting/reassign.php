@@ -152,12 +152,34 @@ if (!empty($Data))
 		fclose($myfile);
 	}
 
-	$con->close();
+}
 
-	$con2->close();
+$ERemarkO=!empty($_POST['ERemarkO'])?$_POST['ERemarkO']:'';
+if (!empty($ERemarkO))
+{
+	$EOrderID=!empty($_POST['EOrderID'])?$_POST['EOrderID']:'';
+	$sql = "UPDATE orders SET `Executive Remark`='$ERemarkO' WHERE OrderID=$EOrderID";
+	if ($con->query($sql) === TRUE) {
+	}else {
+		echo "Error: " . $sql . "<br>" . $con->error;
 
-
+	}
 
 }
 
+$ERemarkC=!empty($_POST['ERemarkC'])?$_POST['ERemarkC']:'';
+if (!empty($ERemarkC))
+{
+	$EComplaintID=!empty($_POST['EComplaintID'])?$_POST['EComplaintID']:'';
+	$sql = "UPDATE complaints SET `Executive Remark`='$ERemarkC' WHERE ComplaintID=$EComplaintID";
+	if ($con->query($sql) === TRUE) {
+	}else {
+		echo "Error: " . $sql . "<br>" . $con->error;
+
+	}
+
+}
+
+$con->close();
+$con2->close();
 ?>

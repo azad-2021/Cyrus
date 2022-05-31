@@ -1,17 +1,15 @@
 <?php 
 include 'connection.php';
 include 'session.php';
-$Type=$_SESSION['usertype'];
-$EXEID=$_SESSION['userid'];
 
-if (isset($_GET['user'])) {
-  $QueryType=$_GET['user'];
-  $_SESSION['QueryType']=$QueryType;
-}elseif($_SESSION['QueryType']){
-  $QueryType=$_SESSION['QueryType'];
-  
+
+if (isset($_SESSION['userid2'])) {
+  $EXEID=$_SESSION['userid2'];
+  $Type='Reporting';
+}else{
+  $Type=$_SESSION['usertype'];
+  $EXEID=$_SESSION['userid'];
 }
-
 
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
@@ -33,8 +31,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
-$EXEID=$_SESSION['userid'];
-$Type=$_SESSION['usertype'];
 
 ?>
 
@@ -208,6 +204,40 @@ $Type=$_SESSION['usertype'];
         </div>
       </div>
     </div>
+
+    <div class="modal fade" data-bs-backdrop="static" id="AddRemark" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-corner">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Executive Remark</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="fE">
+              <div class="row text-centered">
+                <center>
+                  <div class="col-lg-6">
+
+                    <label >Enter Remark</label>
+                    <textarea class="form-control rounded-corner" id="ERemark" name="ERemark" required></textarea>
+
+                  </div>
+                </center>
+                <div class="col-lg-3 d-none">
+                  <input type="text" id="EOrderID" name="EOrderID" class="form-control">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary SaveRemark">Save</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
     <div class="pagetitle">
       <h1>Dashboard</h1>
       <nav>
@@ -235,13 +265,12 @@ $Type=$_SESSION['usertype'];
       </thead>
       <tbody >
         <?php 
+        //echo $EXEID;
         if ($Type=="Executive") {
           $query="SELECT DISTINCT EmployeeCode, `Employee Name` FROM employees
           join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
           join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
           WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
-        }elseif($Type=='Super User'){              
-          $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode order by `Employee Name`";
         }else{              
           $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode WHERE ExecutiveID=$EXEID order by `Employee Name`";
         }
@@ -261,7 +290,7 @@ $Type=$_SESSION['usertype'];
           $query3 = "SELECT count(unassignedorders.OrderID) FROM unassignedorders WHERE AssignDate is null and Discription not like '%AMC%' and unassignedorders.EmployeeCode=$EmployeeID";
           $result3 = mysqli_query($con, $query3);
           $row3 = mysqli_fetch_array($result3);
-          if ($row["count(ComplaintID)"]>0 or $row2["count(vallordersd.OrderID)"]>0 or $row3["count(unassignedorders.OrderID)"]>0 ) {
+          if (($row["count(ComplaintID)"]!=0) or ($row2["count(vallordersd.OrderID)"]!=0) or ($row3["count(unassignedorders.OrderID)"]!=0) ) {
 
             ?>
             <tr>
@@ -305,8 +334,6 @@ $Type=$_SESSION['usertype'];
             join cyrusbackend.districts on employees.EmployeeCode=districts.`Assign To`
             join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
             WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
-          }elseif($Type=='Super User'){              
-            $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode order by `Employee Name`";
           }else{
             $query="SELECT EmployeeCode, `Employee Name` FROM cyrusbackend.reporting join employees on reporting.EmployeeID=employees.EmployeeCode WHERE ExecutiveID=$EXEID order by `Employee Name`";
           }
@@ -386,6 +413,48 @@ $Type=$_SESSION['usertype'];
         responsive: true
       } );
     } );
+
+    var C=0;
+
+    $(document).on('click', '.AddRemark', function(){
+
+      var OrderID=$(this).attr("id");
+      C=$(this).attr("id2");
+      document.getElementById("EOrderID").value=OrderID;
+
+    });
+
+    $(document).on('click', '.SaveRemark', function(){
+      var ID=document.getElementById("EOrderID").value;
+      var Remark=document.getElementById("ERemark").value;
+      if (Remark) {
+        if (C==1) {
+          $.ajax({
+            url:"reassign.php",
+            method:"POST",
+            data:{'ERemarkC':Remark, 'EComplaintID':ID},
+            success:function(data){
+              $('#AddRemark').modal('hide');
+              $("#fE").trigger('reset');
+              swal("success","Remark Updated","success");
+            }
+          });
+        }else{
+          $.ajax({
+            url:"reassign.php",
+            method:"POST",
+            data:{'ERemarkO':Remark, 'EOrderID':ID},
+            success:function(data){
+              swal("success","Remark Updated","success");
+              $('#AddRemark').modal('hide');
+              $("#fE").trigger('reset');
+            }
+          });
+        }
+      }
+
+    });
+
 
   </script>
 </body>

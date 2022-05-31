@@ -57,8 +57,8 @@ $Sub=0;
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Bootstrap core CSS -->
-  <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
-  <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+  <link href="Challanbootstrap/css/bootstrap.css" rel="stylesheet">
+  <script src="Challanbootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/jquery-3.6.0.min.js"></script>
   <style type="text/css">
   body {
@@ -189,7 +189,7 @@ $Sub=0;
             $result=mysqli_query($con2,$query);
             $dataMaterial=mysqli_fetch_assoc($result);
             $Description = $dataMaterial['Description'];
-            $Rate = $data['Rate'];
+            $Rate = $data['Rates'];
 
             ?>
 
@@ -245,7 +245,7 @@ $Sub=0;
 </div>
 </div>
 <div align="center">
- <button id="print" onclick="printContent('invoice'); " class=" btn btn-primary">Print</button>
+ <button id="print" onclick="printContent('invoice'); " class="btn btn-primary">Print</button>
 </div>
 </fieldset>
 </div>

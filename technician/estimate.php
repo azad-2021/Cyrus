@@ -21,7 +21,7 @@
   $dataApprovalID=mysqli_fetch_assoc($resultApprovalID);
   $JOBCARD= $dataApprovalID['JobCardNo'];
 
-  $queryEstimate="SELECT * FROM rates WHERE Zone=$ZoneCode"; 
+  $queryEstimate="SELECT * FROM rates WHERE Zone=$ZoneCode and Enable=1"; 
   $resultEstimate=mysqli_query($con4,$queryEstimate);  //select all products
   $queryEstimateList= "SELECT * FROM add_estimate where EmployeeUID=$EmployeeUID";
   $resultEstimateList=mysqli_query($con3,$queryEstimateList);
@@ -35,7 +35,7 @@
     if(empty(mysqli_fetch_assoc($result1))==false){
       echo '<script>alert("Product already in list")</script>';
     }else{
-    $queryCheckStock="SELECT * From rates where RateID=$RateID";
+    $queryCheckStock="SELECT * From rates where RateID=$RateID and Enable=1";
     $resultCheckStock=mysqli_query($con4,$queryCheckStock);
     $dataCheckStock=mysqli_fetch_assoc($resultCheckStock);
     $peRateID = $dataCheckStock['RateID'];
@@ -68,7 +68,7 @@ header("location:est.php?cid=$complaintID&eid=$EmployeeUID&brcode=$BranchCode&oi
       $RateID = $dataEstimate['peRateID'];
       $Quantity = $dataEstimate['peqty'];
       $Rate = $dataEstimate['peRate'];
-      $query = "INSERT INTO `estimates`(`ApprovalID`, `RateID`, `Qty`, Rate) VALUES ('$approvalID', '$RateID', '$Quantity', $Rate)";
+      $query = "INSERT INTO `estimates`(`ApprovalID`, `RateID`, `Qty`, Rates) VALUES ('$approvalID', '$RateID', '$Quantity', $Rate)";
      $queryAdd=  mysqli_query($con3,$query);
 
       if($queryAdd){

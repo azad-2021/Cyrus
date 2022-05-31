@@ -151,7 +151,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
           </table>
         </div>
         <br>
-
         <div id="re"></div>
       </div>
       <center>
@@ -210,9 +209,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     document.getElementById("no_input").disabled = false;
   });
 
-
    $(document).on('click', '.addcolumns', function(){
-
     rows = document.getElementById("no_input").value;
 
     if (rows>0) {
@@ -227,8 +224,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       });
     }
   });
-
-
 
    $(document).on('click', '.Save', function () {
     var Desc = [];
@@ -249,11 +244,9 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         error=1;
 
       }else{
-
         Desc.push(desc);
         Rate.push(rate);
         Category.push(category);
-
         i2++;
         i3++;
       }
@@ -261,7 +254,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     console.log(Desc);
     console.log(Rate);
     console.log(Category);
-
     if(error==0){
       $.ajax({
         type:'POST',
@@ -279,8 +271,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       });
     }
   });
-
-
 </script>
 </body>
 

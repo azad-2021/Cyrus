@@ -109,6 +109,7 @@ if (!empty($rows))
 $Description=!empty($_POST['Description'])?$_POST['Description']:'';
 if (!empty($Description))
 {
+    
     $Zone=!empty($_POST['Zone'])?$_POST['Zone']:'';
     $Rate=!empty($_POST['Rate'])?$_POST['Rate']:'';
     $ItemID=!empty($_POST['Catagory'])?$_POST['Catagory']:'';

@@ -4,9 +4,9 @@ include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
 
-if (isset($_GET['user'])) {
-  $QueryType=$_GET['user'];
-  $_SESSION['QueryType']=$QueryType;
+if (isset($_SESSION['userid2'])) {
+  $EXEID=$_SESSION['userid2'];
+  $Type=$_SESSION['usertype2'];
 }elseif($_SESSION['QueryType']){
   $QueryType=$_SESSION['QueryType'];
   
@@ -32,8 +32,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
-$EXEID=$_SESSION['userid'];
-$Type=$_SESSION['usertype'];
+
 
 ?>
 
@@ -197,7 +196,9 @@ $Type=$_SESSION['usertype'];
           }elseif($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
 
             $query ="SELECT COUNT(`Card Number`) as CountData, min(VisitDate) as LastVerified,  `Employee Name` as Employee, Phone, employees.EmployeeCode  FROM `jobcardmain`
-            join employees on jobcardmain.EmployeeCode=employees.EmployeeCode Where ServiceDone is null and VisitDate>='$Date' group by employees.EmployeeCode order by Employee";
+            join employees on jobcardmain.EmployeeCode=employees.EmployeeCode
+            join dataentry on jobcardmain.EmployeeCode=dataentry.EmployeeCode
+            Where ServiceDone is null and VisitDate>='$Date' and ExecutiveID=$EXEID group by employees.EmployeeCode order by Employee";
 
           }elseif($QueryType=='reporting' and $Type=='Super User'){
 

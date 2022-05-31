@@ -8,13 +8,8 @@ date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-if (isset($_GET['user'])) {
-  $QueryType=$_GET['user'];
-  $_SESSION['QueryType']=$QueryType;
-}elseif($_SESSION['QueryType']){
-  $QueryType=$_SESSION['QueryType'];
-  
-}
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -59,12 +54,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
@@ -234,6 +223,22 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         <br>
         <div class="card-body">
           <div class="col-lg-12" style="margin: 12px; overflow: auto;">
+            <table class="display table table-hover table-bordered border-primary">
+              <h5 style="margin: 2px; text-align: center;">AMC</h5>
+              <thead> 
+                <tr> 
+                  <th style="min-width: 150px;">Device</th>
+                  <th style="min-width: 150px;">Start Date</th>
+                  <th style="min-width: 150px;">End date</th>
+                  <th style="min-width: 150px;">Visits</th> 
+                  <th style="min-width: 150px;">Rates</th>        
+                </tr>                     
+              </thead>                 
+              <tbody id="AMCVisit"> 
+              </tbody>
+            </table>
+          </div>
+          <div class="col-lg-12" style="margin: 12px; overflow: auto;">
             <table class="table table-hover table-bordered border-primary scrolldown table-responsive"> 
               <h5 style="margin: 2px; text-align: center;">Orders</h5>
               <thead> 
@@ -249,6 +254,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th >Call Verified</th>   
                   <th >Employee</th>
                   <th style="min-width:500px">Discription</th> 
+                  <th style="min-width:400px;">Verification Remark</th>
                   <th style="min-width:500px">Executive Remark</th>
 
                 </tr>                     
@@ -272,6 +278,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th >Call Verified</th>             
                   <th>Employee</th>
                   <th style="min-width: 500px;">Discription</th> 
+                  <th style="min-width:400px;">Verification Remark</th>
                   <th style="min-width: 500px;">Executive Remark</th>
 
                 </tr>                     
@@ -299,6 +306,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
               </tbody>
             </table>   
           </div>
+          
+
         </div>
       </div>
     </div>
@@ -337,10 +346,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <script src="ajax.js"></script>
 <script src="search.js"></script>
 <script src="ajax-script.js"></script>
-
-<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
 <script type="text/javascript">
 

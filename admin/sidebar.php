@@ -22,7 +22,7 @@
           </li>
           <li>
             <a href="branchdetails.php" target="_blank">
-              <i class="bi bi-circle"></i><span>Branch Details</span>
+              <i class="bi bi-circle"></i><span>Branch Detail</span>
             </a>
           </li>
           <li>
@@ -32,7 +32,7 @@
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindEmployee">
-              <i class="bi bi-circle"></i><span>Employees</span>
+              <i class="bi bi-circle"></i><span>Employee</span>
             </a>
           </li>
           <li>
@@ -42,21 +42,22 @@
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindComplaint">
-              <i class="bi bi-circle"></i><span>Complaints</span>
+              <i class="bi bi-circle"></i><span>Complaint</span>
             </a>
           </li>
           <li>
             <a href="search.php" target="blank">
-              <i class="bi bi-circle"></i><span>Job Cards</span>
+              <i class="bi bi-circle"></i><span>Job Card</span>
             </a>
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindJobcard">
-              <i class="bi bi-circle"></i><span>Job Card Details</span>
+              <i class="bi bi-circle"></i><span>Job Card Detail</span>
             </a>
           </li>
         </ul>
       </li>
+      
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
@@ -79,11 +80,11 @@
             </a>
           </li>
         </ul>
-      </li><!-- End Tables Nav -->
-
+      </li>
+      
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-bar-chart"></i><span>Work Reporting</span><i class="bi bi-chevron-down ms-auto"></i>
+          <i class="bi bi-bar-chart"></i><span>Work Verification & Jobcard Entry</span><i class="bi bi-chevron-down ms-auto"></i>
         </a>
         <ul id="charts-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
@@ -92,137 +93,127 @@
             </a>
           </li>
           <li>
-            <a href="/cyrus/reporting/index.php?userid=23&name=Sanjay Singh&type=Reporting" target="_blank">
+            <a href="/cyrus/reporting/index.php?userid=23&name=Shreyansh&type=Reporting" target="_blank">
               <i class="bi bi-circle"></i><span>Shreyansh Awasthi</span>
             </a>
           </li>
-        </ul>
-      </li><!-- End Charts Nav -->
-      <!--
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-bar-chart"></i><span>Jobcard Entry</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
           <li>
-            <a href="icons-bootstrap.html">
+            <a href="/cyrus/reporting/index.php?userid=26&name=Shreyansh&type=Dataentry" target="_blank">
               <i class="bi bi-circle"></i><span>Rahul</span>
             </a>
           </li>
           <li>
-            <a href="icons-remix.html">
-              <i class="bi bi-circle"></i><span>Varsha</span>
-            </a>
-          </li>
-          <li>
-            <a href="icons-boxicons.html">
+            <a href="/cyrus/reporting/index.php?userid=12&name=Shreyansh&type=Dataentry" target="_blank">
               <i class="bi bi-circle"></i><span>Tarun Singh</span>
             </a>
           </li>
+          <li>
+            <a href="/cyrus/reporting/index.php?userid=32&name=Shreyansh&type=Dataentry" target="_blank">
+              <i class="bi bi-circle"></i><span>Varsha</span>
+            </a>
+          </li>
         </ul>
-      </li> -->
+      </li>
+      
+      
 
       <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-grid"></i><span>SaaS</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-grid"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
         <li>
-          <a href="/cyrus/SaaS/index.php?user=Order" target="_blank">
-            <i class="bi bi-circle"></i><span>Order</span>
+          <a href="" data-bs-toggle="modal" data-bs-target="#AddEmployees">
+            <i class="bi bi-circle"></i><span>Add Service Engineer</span>
           </a>
         </li>
         <li>
-          <a href="/cyrus/SaaS/index.php?user=Sim" target="_blank">
-            <i class="bi bi-circle"></i><span>Sim Provider</span>
+          <a href="" data-bs-toggle="modal" data-bs-target="#AddExecutive">
+            <i class="bi bi-circle"></i><span>Add Executive</span>
           </a>
         </li>
         <li>
-          <a href="/cyrus/SaaS/index.php?user=Production" target="_blank">
-            <i class="bi bi-circle"></i><span>Production</span>
+          <a href="" data-bs-toggle="modal" data-bs-target="Employees" class="Employees">
+            <i class="bi bi-circle"></i><span>Service Engineer</span>
           </a>
         </li>
+
         <li>
-          <a href="/cyrus/SaaS/index.php?user=Store" target="_blank">
-            <i class="bi bi-circle"></i><span>Store</span>
-          </a>
-        </li>
-        <li>
-          <a href="/cyrus/SaaS/index.php?user=Installation" target="_blank">
-            <i class="bi bi-circle"></i><span>Installation</span>
+          <a href="" data-bs-toggle="modal" data-bs-target="Executive" class="Executive">
+            <i class="bi bi-circle"></i><span>Executuive</span>
           </a>
         </li>
       </ul>
     </li>
+  
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/amc/" target="_blank">
+      <i class="bi bi-grid"></i>
+      <span>AMC Report</span>
+    </a>
+  </li><!-- End Contact Page Nav -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/reception/" target="_blank">
+      <i class="bi bi-grid"></i>
+      <span>Reception</span>
+    </a>
+  </li><!-- End Contact Page Nav -->
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/inventory/" target="_blank">
+      <i class="bi bi-card-list"></i>
+      <span>Inventory Release</span>
+    </a>
+  </li>
+  <!-- End Forms Nav -->
+  <!--
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="">
+      <i class="bi bi-card-list"></i>
+      <span>Service Engineer</span>
+    </a>
+  </li> 
 
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="/cyrus/amc/" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>AMC Report</span>
-      </a>
-    </li><!-- End Contact Page Nav -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="/cyrus/reception/" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>Reception</span>
-      </a>
-    </li><!-- End Contact Page Nav -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="/cyrus/inventory/" target="_blank">
-        <i class="bi bi-card-list"></i>
-        <span>Inventory Release</span>
-      </a>
-    </li>
-    <!-- End Forms Nav -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="">
-        <i class="bi bi-card-list"></i>
-        <span>Service Engineer</span>
-      </a>
-    </li> 
+  
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/reporting/reporting.php?user=jobcardentry" target="_blank">
+      <i class="bi bi-grid"></i>
+      <span>Jobacrd Entry</span>
+    </a>
+  </li>
+-->
 
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="/cyrus/reporting/reporting.php?user=jobcardentry" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>Jobacrd Entry</span>
-      </a>
-    </li><!-- End F.A.Q Page Nav -->
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="" data-bs-toggle="modal" data-bs-target="#AddExecutive">
-        <i class="bi bi-grid"></i>
-        <span>Add User</span>
-      </a>
-    </li><!-- End F.A.Q Page Nav -->
-    <li class="nav-item">
-      <a class="nav-link collapsed Employees" href="" data-bs-toggle="modal" data-bs-target="Employees">
-        <i class="bi bi-grid"></i>
-        <span>Employees</span>
-      </a>
-    </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="UnassignedWork.php" target="_blank">
+    <i class="bi bi-grid"></i>
+    <span>Unassigned Work</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingWork.php" target="_blank">
+    <i class="bi bi-grid"></i>
+    <span>Pending Work</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingBills.php" target="_blank">
+    <i class="bi bi-grid"></i>
+    <span>Pending Payment</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="district.php">
+    <i class="bi bi-grid"></i>
+    <span>Work Region Details</span>
+  </a>
+</li>
 
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="" data-bs-toggle="modal" data-bs-target="#AddEmployees">
-        <i class="bi bi-grid"></i>
-        <span>Add Employees</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="UnassignedWork.php" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>Unassigned Work</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="PendingWork.php" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>Pending Work</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="PendingBills.php" target="_blank">
-        <i class="bi bi-grid"></i>
-        <span>Pending Payment</span>
-      </a>
-    </li>
-  </ul>
+<!--
+<li class="nav-item">
+  <a class="nav-link collapsed DataentryAllotment" href="" data-bs-toggle="modal" data-bs-target="#DataentryAllotment">
+    <i class="bi bi-grid"></i>
+    <span>Jobcard Entry Assigning</span>
+  </a>
+</li>
+-->
+</ul>
 
 </aside><!-- End Sidebar-->

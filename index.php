@@ -56,6 +56,8 @@ if (isset($_POST['submit'])) {
         header("location: accounts/");
     }elseif ($_SESSION['usertype']=="Super User") {
         header("location: admin/");
+    }elseif ($_SESSION['usertype']=="Supervisor") {
+        header("location: supervisor/");
     }       
 }else{  
     echo '<script>alert("Invalid Username or Password")</script>';  

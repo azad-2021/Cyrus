@@ -20,7 +20,7 @@ $jobcard = base64_decode($_GET['cardno']);
 $BranchCode = base64_decode($_GET['brcode']);
 //echo "$jobcard";
 $JOBCARD=$jobcard;
-
+$Job=$jobcard;
 
 $query ="SELECT * FROM `jobcardmain`
 join gadget on jobcardmain.GadgetID=gadget.GadgetID
@@ -230,9 +230,9 @@ if(isset($_POST['submit'])){
             <td><?php echo $Bank ?></td>
             <td><?php echo $Zone ?></td>
             <td><?php echo $Branch ?></td>
-            <td><a href="/technician/view.php?card=<?php echo base64_encode($jobcard);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
+            <td><a href="/technician/view.php?card=<?php echo base64_encode($Job);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
             <td><?php echo $Gadget ?></td>
-            <td><?php echo $VisitDate ?></td>
+            <td><?php echo date('d-m-Y',strtotime($VisitDate)) ?></td>
             <td><?php echo $EmployeeName ?></td>
           </tr>
           <tbody>
@@ -304,9 +304,9 @@ if(isset($_POST['submit'])){
               <td><?php echo $Bank ?></td>
               <td><?php echo $Zone ?></td>
               <td><?php echo $Branch ?></td>
-              <td><a href="/technician/view.php?card=<?php echo base64_encode($jobcard);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
+              <td><a href="/technician/view.php?card=<?php echo base64_encode($Job);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
               <td><?php echo $Gadget ?></td>
-              <td><?php echo $VisitDate ?></td>
+              <td><?php echo date('d-m-Y',strtotime($VisitDate)) ?></td>
               <td><?php echo $EmployeeName ?></td>
             </tr>
             <tbody>

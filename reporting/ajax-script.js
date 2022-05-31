@@ -27,7 +27,17 @@
         $('#Branch').html(result);
         
       }
-    }); 
+    });
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'ZoneCodeAMC':ZoneCode},
+      success:function(result){
+        $('#AMCVisit').html(result);
+
+      }
+    });
+    
   }else{
 
     $('#Branch').html('<option value=""> Branch </option>'); 
@@ -299,7 +309,7 @@
 });
 });
 
-   $(document).on('click', '.material', function(){
+ $(document).on('click', '.material', function(){
   //$('#dataModal').modal();
   var OrderID = $(this).attr("id");
   var ZoneCode=document.getElementById(OrderID).value;

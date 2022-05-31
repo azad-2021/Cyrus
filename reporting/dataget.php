@@ -67,4 +67,31 @@ if (!empty($EmployeeCode))
  }
 }
 
+
+$ZoneCodeAMC=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
+
+if (!empty($ZoneCodeAMC))
+{   
+    $myfile = fopen("ZoneCodeAMC.txt", "w") or die("Unable to open file!");
+    fwrite($myfile, $ZoneCodeAMC);
+    fclose($myfile);
+    $ZoneAMC="SELECT * from amcs WHERE ZoneRegionCode=$ZoneCodeAMC";
+    $result=mysqli_query($conn,$ZoneAMC);
+    if (mysqli_num_rows($result)>0)
+    {
+
+        while ($row=mysqli_fetch_assoc($result))
+        {
+            print "<tr>";
+            print '<td style="min-width: 150px;">'.$row["Device"]."</td>";
+            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["StartDate"]))."</td>";
+            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["EndDate"]))."</td>";
+            print '<td style="min-width: 150px;">'.$row["Visits"]."</td>";
+            print '<td style="min-width: 150px;">'.$row["Rate"]."</td>";
+            print '</tr>';
+        }
+        
+    }
+}
+
 ?>

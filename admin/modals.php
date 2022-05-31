@@ -259,72 +259,6 @@
 </div>
 <!-- END Find Employee Details -->
 
-<!-- Work Details -->
-<div class="modal fade" id="WorkReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-    <div class="modal-content rounded-corner">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Work Report</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-4">
-            <label for="validationCustom01" class="form-label " align="center">Select Employee</label>
-            <select class="form-select rounded-corner" aria-label="Default select example" id="EmployeeCodeW">
-              <option value="">Select</option>
-              <?php 
-              $query="SELECT * FROM employees WHERE Inservice=1";
-              $result=mysqli_query($con,$query);
-              if (mysqli_num_rows($result)>0)
-              {
-               while ($a=mysqli_fetch_assoc($result))
-               {
-
-                echo "<option value='".$a['EmployeeCode']."'>".$a['Employee Name']."</option><br>";
-              }
-            }
-            ?>
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustom01" class="form-label " align="center">Start Date</label>
-          <input type="date" class="form-control rounded-corner" name="" id="Sdate">
-        </div>
-        <div class="col-md-4">
-          <label for="validationCustom01" class="form-label " align="center">End Date</label>
-          <input type="date" class="form-control rounded-corner" name="" id="Edate">
-        </div>
-      </div>
-      <div class="col-lg-12" style="margin: 12px;">
-        <table class="container table table-hover table-bordered border-primary table-responsive"> 
-          <thead> 
-            <tr> 
-              <th style="min-width:150px">Visit Date</th>
-              <th style="min-width:150px">Bank</th>   
-              <th style="min-width:150px">Zone</th> 
-              <th style="min-width:150px">Branch</th>  
-              <th style="min-width:150px">Service Done</th> 
-              <th style="min-width:150px">Remark</th> 
-              <th style="min-width:150px">Jobcard</th>
-              <th style="min-width:150px">FOrder</th>
-              <th style="min-width:150px">FComplaint</th>                 
-            </tr>                     
-          </thead>                 
-          <tbody id="EmployeeWorkData">
-          </tbody>
-        </table>
-      </div>
-
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-    </div>
-  </div>
-</div>
-</div>
-
-
 <!-- Inventory Pending -->
 <div class="modal fade" id="InventoryPending" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -362,6 +296,7 @@
               <option value="">Select</option>
               <option value="AMC">AMC</option>
               <option value="Executive">Executive</option>
+              <option value="Supervisor">Supervisor</option>
               <option value="Inventory">Inventory Release</option>
               <option value="Dataentry">Job Card Entry</option>
               <option value="Reminders">Reminders</option>
@@ -386,14 +321,33 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <table class="table table-hover table-bordered border-primary">
+        <center>
+          <div class="row">
+
+            <div class="col-lg-6">
+              <input type="text" id="myInput2" onkeyup="myFunction2()" placeholder="Search for Name" class="form-control rounded-corner" style="margin-bottom:20px">
+            </div>
+            <div class="col-lg-6">
+              <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for Inservice" class="form-control rounded-corner" style="margin-bottom:20px">
+            </div>
+
+          </div>
+        </center>
+        <table class="table table-hover table-bordered border-primary" id="myTable">
           <thead>
             <th>Sr. No.</th>
             <th>Name</th>
             <th>Mobile Number</th>
+            <th>Inservice</th>
             <th>Reported To</th>
             <th>Change Reporting To</th>
+            <th>Jobcard Entry</th>
+            <th>Change Jobcard Entry</th>
+            <th>Total District</th>
+            <th>Reset Jobcard Entry</th>
             <th>Reset Password</th>
+            <th>Change Inservice</th>
+            <th>Action</th>
           </thead>
           <tbody id="employeelist">
 
@@ -415,7 +369,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form>
+        <form id="NewEmployeeF">
           <div class="row">
             <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Employee Name:</label>
@@ -443,3 +397,132 @@
     </div>
   </div>
 </div>
+
+
+<div class="modal fade" id="UpdateEmployees" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="NewEmployeeF">
+          <div class="row">
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Employee Name:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeNameU">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Qualifications:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeQulaificationU">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">District:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeDistrictU">
+            </div>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Mobile Number:</label>
+              <input type="text" class="form-control rounded-corner" id="EmployeeMobileU">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary SaveNewEmployeeU">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="modal fade" id="DataentryAllotment" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Employees</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-hover table-bordered border-primary">
+          <thead>
+            <th>Sr. No.</th>
+            <th>Service Engineer Name</th>
+            <th>Alloted To</th>
+            <th>Change Alloted To</th>
+            <th>Reset</th>
+          </thead>
+          <tbody id="employeelistD">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+
+<div class="modal fade" id="Executive" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Executive</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <center>
+          <div class="row">
+
+            <div class="col-lg-6">
+              <input type="text" id="myInput3" onkeyup="myFunction3()" placeholder="Search for Name" class="form-control rounded-corner" style="margin-bottom:20px">
+            </div>
+            <div class="col-lg-6">
+              <input type="text" id="myInput4" onkeyup="myFunction4()" placeholder="Search for User Type" class="form-control rounded-corner" style="margin-bottom:20px">
+            </div>
+
+          </div>
+        </center>
+        <table class="table table-hover table-bordered border-primary" id="ExecutiveTable">
+          <thead>
+            <th>Sr. No.</th>
+            <th>Name</th>
+            <th>Total Service Engineer</th>
+            <th>Total District</th>
+            <th>Region</th>
+            <th>User Type</th>
+            <th>Reset Password</th>
+            <!--<th>Action</th>-->
+          </thead>
+          <tbody id="executivelist">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="WorkReport" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="work_data">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END Search Jobcard -->

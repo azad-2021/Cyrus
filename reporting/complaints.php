@@ -39,6 +39,7 @@ if(isset($_POST["EmployeeID"]))
         <th style="min-width:150px">Reassigned Times</th>            
         <th style="min-width:150px">Reassign Date</th>
         <th style="min-width:150px">Reassign To</th>
+        <th style="min-width:150px">Action</th>
         <!--<th>Action</th> -->          
       </tr>                     
     </thead>                 
@@ -107,7 +108,7 @@ if(isset($_POST["EmployeeID"]))
               ?>
             </select>
           </td>
-          <!--<td><button type="buttun" class="btn btn-primary" id="ReAssignC" value="Reassign" name="Assign">Reassign</button></td> -->            
+          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["ComplaintID"]; ?>" id2="1">Add Remark</a></td>           
         </tr>
       </td>              
     </tr>

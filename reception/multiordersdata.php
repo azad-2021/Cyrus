@@ -57,6 +57,7 @@ if (!empty($ZoneCodeGST))
     <tr>
       <td><?php print $row["BranchName"]; ?></td>
       <td><?php print $row["Branch_code"]; ?></td>
+      <td><?php print $row["Address3"]; ?></td>
       <td><?php print $row["GSTNo"]; ?></td>
       <td><input class="form-check-input checkb" name="select" type="checkbox" value="<?php echo $row["BranchCode"]; ?>"></td>
     </tr>

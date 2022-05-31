@@ -7,7 +7,6 @@ $_SESSION['user']='Accounts';
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
-
 $Hour = date('G');
 
 if ( $Hour >= 1 && $Hour <= 11 ) {
@@ -206,7 +205,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }
   }
 }
-
 
 $(document).on('change', '#Category', function(){
   var ItemID = $(this).val();
