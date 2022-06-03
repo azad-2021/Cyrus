@@ -22,7 +22,7 @@ if(isset($_POST['submit'])){
 
   $sql = "UPDATE simprovider SET ActivationDate='$Date', ExpDate='$ExpDate' WHERE ID=$ID";
   if ($con->query($sql) === TRUE) {
-    header("location:simtable.php?");
+    header("location:index.php?");
     echo '<script>alert("Sim Activated")</script>';
   }else{
     echo "Error updating record: " . $con->error;

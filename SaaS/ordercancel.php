@@ -50,7 +50,7 @@ if(isset($_POST['submit'])){
 
     $sql = "UPDATE orders SET Installed='2', Remark='$Remark' WHERE OrderID=$ID";
     if ($con3->query($sql) === TRUE) {
-     header("location:ordertable.php?");
+     header("location:index.php?");
    }else {
     echo "Error updating record: " . $con->error;
   }

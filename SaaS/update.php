@@ -21,7 +21,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 $ID = $_GET['id'];
 
 if (isset($_GET['Type'])) {
-$type=$_GET['Type'];
+  $type=$_GET['Type'];
 }else{
   $type='';
 }
@@ -80,7 +80,7 @@ if(isset($_POST['submit'])){
 
     if ($con->query($queryAdd) === TRUE) {
       echo '<script>alert("Your response recorded successfully")</script>';
-      header("location:instable.php?user=$username");
+      header("location:index.php?");
     }else {
       echo  $con->error;
     }
@@ -172,51 +172,62 @@ if(isset($_POST['submit'])){
 
             <center>
               <div class="form-group col-md-3">
-               <select class="form-control rounded-corner" name="SimID">
-                <option value="">Select Number</option>
-                <?php
-                while ($arr=mysqli_fetch_assoc($results)){
-                  ?>
-                  <option value="<?php echo $arr['ID']; ?>"><?php echo $arr['MobileNumber']; ?></option>
+                <label><span style="color: red;">* </span>Select Number</label>
+                <input type="text" id="input" class="form-control rounded-corner" placeholder="search number">
+                <br>
+                <select class="form-control rounded-corner" name="SimID" id="phone" required>
+                  <option value="">Select Number</option>
+                  <?php
+                  while ($arr=mysqli_fetch_assoc($results)){
+                    ?>
+                    <option value="<?php echo $arr['ID']; ?>"><?php echo $arr['MobileNumber']; ?></option>
 
-                <?php } ?>                
-              </select>
+                  <?php } ?>                
+                </select>
 
-            </div>
-          </center>
-          <div class="form-group col-md-12" align="center">
+              </div>
+            </center>
+            <div class="form-group col-md-12" align="center">
 
-            <label for="Remark">Remark</label>
-            <textarea class="form-control rounded-corner" cols="4" rows="4" name="Remark"></textarea>
-          </div>  
-          <br><br>
-          <center>
-            <input type="submit"  class=" btn btn-primary" value="submit" name="submit"></input>
-          </center>      
-        </form>
+              <label for="Remark">Remark</label>
+              <textarea class="form-control rounded-corner" cols="4" rows="4" name="Remark"></textarea>
+            </div>  
+            <br><br>
+            <center>
+              <input type="submit"  class=" btn btn-primary" value="submit" name="submit"></input>
+            </center>      
+          </form>
+        </div>
       </div>
+    </section>
+  </main>
+  <!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
     </div>
-  </section>
-</main>
-<!-- End #main -->
+  </footer>
+  <!-- End Footer -->
 
-<!-- ======= Footer ======= -->
-<footer id="footer" class="footer">
-  <div class="copyright">
-    &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
-  </div>
-</footer>
-<!-- End Footer -->
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-<!-- Vendor JS Files -->
-
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/quill/quill.min.js"></script>
-<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="assets/vendor/tinymce/tinymce.min.js"></script>
-<script src="assets/vendor/php-email-form/validate.js"></script>
+  <!-- Vendor JS Files -->
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  
+  <script  src="livesearch/select_search.js"></script>
+  <script type="text/javascript">
+    $('#input').keyup(function () {
+      select_search($('#input').val(),$('#phone option'));
+    });
+  </script>
 </body>
 </html>
 

@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 include 'connection.php';
 include 'session.php';
 $Type=$_SESSION['usertype'];
@@ -8,6 +7,9 @@ $EXEID=$_SESSION['userid'];
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
+
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -21,44 +23,9 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 } else if ( $Hour >= 19 || $Hour <= 23 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
-$ID = $_GET['id'];
-
-date_default_timezone_set('Asia/Kolkata');
-$timestamp =date('y-m-d H:i:s');
-//$Date = date('Y-m-d',strtotime($timestamp));
-
-$query ="SELECT * FROM `employees` WHERE Inservice='1' ORDER by `Employee Name`";
-$results = mysqli_query($con2,$query);  
-
-
-if(isset($_POST['submit'])){
-
-
-
-  $IssueTo=$_POST['EmployeeCode'];
-  $Remark=$_POST['Remark'];
-  $Date=$_POST['Date'];
-//echo $IssueTo;
-      //$IssueTo = (int)$IssueTo;
-  $queryAdd="INSERT INTO `store`( `OrderID`, `ReleaseDate`, `EmployeeCode`, `Remark` ) VALUES ('$ID', '$Date','$IssueTo', '$Remark')" ;
-  $resultAdd = mysqli_query($con,$queryAdd);
-  if ($resultAdd) {
-    echo '<script>alert("Your response recorded successfully")</script>';
-
-    $sql = "UPDATE orders SET Status='2' WHERE OrderID=$ID";
-
-    if ($con->query($sql) === TRUE) {
-     header("location:index.php?");
-   }else {
-    echo "Error updating record: " . $con->error;
-  }
-
-}else{
-  echo $con->error;
-}
-}
-
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +34,7 @@ if(isset($_POST['submit'])){
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Update Date</title>
+  <title>Home</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -90,6 +57,9 @@ if(isset($_POST['submit'])){
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="datatable/css/dataTables.bootstrap5.min.css">
+  <link rel="stylesheet" type="text/css" href="datatable/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="datatable/css/responsive.bootstrap5.min.css"/>
 
 </head>
 
@@ -127,7 +97,7 @@ if(isset($_POST['submit'])){
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Update Date</li>
+          <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -137,41 +107,49 @@ if(isset($_POST['submit'])){
       <!-- Left side columns -->
       <div class="col-lg-12">
         <div class="row">
-          <form method="POST" action="">
-            <center>
-              <div class="form-group col-md-3">
-                <label for="IssueDate"><span style="color: red;">* </span>Release To</label>
-                <select class="form-control rounded-corner" name="EmployeeCode" required="">
-                  <option>Select</option>
-                  <?php 
-                  while ($arr=mysqli_fetch_assoc($results))
-                  {
-                    ?>
-                    <option value="<?php echo $arr['EmployeeCode']; ?>"><?php echo $arr['Employee Name']; ?></option>
-                    <?php
-                  }?>      
-                </select>
-              </div>
-              <div class="form-group col-md-3">
-                <label for="ADate"><span style="color: red;">* </span>Release Date</label>
-                <br>
-                <input type="date" name="Date" placeholder="dd/mm/yy" class="form-control rounded-corner" required>
-              </div>
-            </center>
 
-            <div class="form-group col-md-12" align="center">
-              <label for="Remark">Remark</label>
-              <textarea class="form-control rounded-corner" id="exampleFormControlTextarea1" cols="4" rows="2" name="Remark"></textarea>
-            </div>
+          <!-- Left side columns -->
 
+          <div class="col-lg-12">
+            <!-- Start -->
+            <div class="table-responsive">
+              <table class="table table-hover table-bordered border-primary nowrap" id="myTable" width="100%"> 
+              <thead> 
+                <tr> 
+                  <th>Bank</th> 
+                  <th>Zone</th> 
+                  <th>Branch</th> 
+                  <th>Order Id</th>
+                  <th>Order Date</th> 
+                  <th>Action</th>
+                </tr>                     
+              </thead>                 
+              <tbody> 
+
+                <?php  
+                $query ="SELECT * FROM saas.orders
+                join cyrusbackend.branchdetails on orders.BranchCode=branchdetails.BranchCode
+                WHERE Executive='$user' and Installed=0 and SimProvider is null order by OrderID;";
+                $results = mysqli_query($con, $query);
+                while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){  
+
+                  echo '  
+                  <tr>
+                  <td>'.$row["BankName"].'</td> 
+                  <td>'.$row["ZoneRegionName"].'</td>  
+                  <td>'.$row["BranchName"].'</td>  
+                  <td>'.$row["OrderID"].'</td>
+                  <td>'.$row["Date"].'</td>  
+                  <td> <a href="orders.php?oid='.$row["OrderID"].'">Enter Details</a></td> 
+                  </tr>  
+                  ';  
+                } 
+                ?> 
+              </tbody>
+            </table>  
           </div>  
-          <br><br>
-          <center>
-
-            <input type="submit"  class=" btn btn-primary" value="submit" name="submit"></input>
-          </center>      
-        </form>
-
+          <!-- END-->
+        </div>
       </div>
     </div>
   </section>
@@ -198,5 +176,39 @@ if(isset($_POST['submit'])){
 <!-- Template Main JS File -->
 <script src="assets/js/jquery-3.6.0.min.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="datatable/js/jquery.dataTables.min.js"></script>]
+<script src="datatable/js/dataTables.bootstrap5.min.js"></script>
+<script src="datatable/js/dataTables.responsive.min.js"></script>
+<script src="datatable/js/responsive.bootstrap5.min.js"></script>
+
+<script type="text/javascript">
+
+  $(document).ready(function() {
+    $('#myTable').DataTable( {
+      responsive: {
+        details: {
+          display: $.fn.dataTable.Responsive.display.modal( {
+            header: function ( row ) {
+              var data = row.data();
+              return 'Details for '+data[0]+' '+data[1];
+            }
+          } ),
+          renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
+            tableClass: 'table'
+          } )
+        }
+      },
+
+    } );
+  } );
+
+</script>
 </body>
+
 </html>
+
+<?php 
+$con->close();
+$con2->close();
+$con3->close();
+?>

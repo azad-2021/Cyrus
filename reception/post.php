@@ -17,8 +17,13 @@ if(isset($_POST["Data"]))
   $ExpDate = $obj->Expected;
   $Discription = $obj->Discription;
 
+
+
   if ($Type=='AMC') {
     $Type='Order';
+    $S=1;
+  }else{
+    $S=0;
   }
 
 
@@ -41,8 +46,11 @@ if(isset($_POST["Data"]))
     if ($con->query($sql2) === TRUE) {
       if(strpos($Discription, 'AMC') !== false){
         $Status=5;   
+        
+
       }else{
         $Status=1;
+
       }
       $OrderID=$con->insert_id;
       $sql = "INSERT INTO demandbase (StatusID, OrderID, GeneratedByID, DemandGenDate)
@@ -59,6 +67,36 @@ if(isset($_POST["Data"]))
 
 
   if ($con->query($sql) === TRUE) {
+
+    if ($S==0) {
+
+      $Device="SELECT UserName FROM cyrusbackend.branchs
+      join districts on branchs.Address3=districts.District
+      join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+      join pass on `cyrus regions`.ControlerID=pass.ID
+      WHERE BranchCode=$BranchCode";
+
+      $result=mysqli_query($con,$Device);
+      if (mysqli_num_rows($result)>0)
+      {
+        $arr=mysqli_fetch_assoc($result);
+
+        $Executive=$arr['UserName'];
+
+
+        $sqlSaaS = "INSERT INTO orders (BranchCode, Executive, RefID)
+        VALUES ($BranchCode, '$Executive', $OrderID)";
+
+
+        if ($con3->query($sqlSaaS) === TRUE) {
+
+        }else {
+          $myfile = fopen("errorSaaS.txt", "w") or die("Unable to open file!");
+          fwrite($myfile, $con3->error);
+          fclose($myfile);
+        }
+      }
+    }
 
   }else {
     echo "Error: " . $sql . "<br>" . $con->error;

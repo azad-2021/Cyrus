@@ -4,6 +4,8 @@ include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
 
+$OrderID=$_GET['oid'];
+
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
@@ -35,15 +37,19 @@ $resultOperator = mysqli_query($con, $query);
 $query2 ="SELECT * FROM `operators`";
 $results2 = mysqli_query($con, $query2);
 
+$query3 ="SELECT * FROM saas.orders
+join cyrusbackend.branchdetails on orders.BranchCode=branchdetails.BranchCode WHERE OrderID=$OrderID";
+$result3 = mysqli_query($con, $query3);
+$arr3=mysqli_fetch_assoc($result3);
+
 if(isset($_POST['submit'])){
-  $Branch=$_POST['Branch'];
+
   $GadgetID=$_POST['GadgetID'];
   $Validity=$_POST['Validity'];
   $SimType=$_POST['SimType'];
   $OperatorID=$_POST['OperatorID'];
   $Remark=$_POST['Remark'];
   $Provider=$_POST['Provider'];
-  $RefID=$_POST['RefID'];
   $errors='';
 
   if($Provider=='Cyrus'){
@@ -97,18 +103,20 @@ if(isset($_POST['submit'])){
       if (empty($SimType)==true) {
         echo '<script>alert("Please select Sim Type")</script>';
       }else{
-        $queryAdd="INSERT INTO `orders`(`BranchCode`, `GadgetID`, `SimProvider`,  `SimType`, `OperatorID`, `ValidityRecharge`, `Executive`, `VoiceMessage`, `Remark`, `RefID`) VALUES ('$Branch', '$GadgetID', '$Provider', '$SimType', '$OperatorID', '$Validity', '$username', '$Category', '$Remark', '$RefID')";
-        $resultAdd = mysqli_query($con3,$queryAdd);
-        if ($resultAdd) {
-          header("location:index.php?");
+        $sql="UPDATE orders SET GadgetID='$GadgetID', SimProvider='$Provider', SimType='$SimType', OperatorID=$OperatorID, ValidityRecharge=$Validity, VoiceMessage='$Category', Remark='$Remark' WHERE OrderID=$OrderID";
+
+        if ($con3->query($sql) === TRUE) {
+          header("location:ReceivedOrders.php?");
+        } else {
+          echo "Error: " . $sql . "<br>" . $con3->error;
         }
       }
     }else{
 
-      $queryAdd="INSERT INTO `orders`(`BranchCode`, `SimProvider`, `GadgetID`, `ValidityRecharge`, `Executive`, `VoiceMessage`, `Remark`, `RefID`) VALUES ('$Branch', '$Provider', '$GadgetID', '$Validity', '$username', '$Category', '$Remark', '$RefID')";
+      $queryAdd="UPDATE orders SET GadgetID='$GadgetID', SimProvider='$Provider', ValidityRecharge=$Validity, VoiceMessage='$Category', Remark='$Remark' WHERE OrderID=$OrderID";
       $resultAdd = mysqli_query($con3,$queryAdd);
       if ($resultAdd) {
-        header("location:index.php?");
+        header("location:ReceivedOrders.php?");
       }
     }
 
@@ -195,37 +203,21 @@ if(isset($_POST['submit'])){
       <form method="POST" action="" class="form-control rounded-corner">
         <div class="row">
 
-          <div class="form-group col-lg-3">
-            <select id="Bank" class="form-control rounded-corner" name="Bank" required>
-              <option value="">Select Bank</option>
-              <?php
-              $BankData="Select BankCode, BankName from bank order by BankName";
-              $result=mysqli_query($con2,$BankData);
-              if (mysqli_num_rows($result)>0)
-              {
-                while ($arr=mysqli_fetch_assoc($result))
-                {
-                  ?>
-                  <option value="<?php echo $arr['BankCode']; ?>"><?php echo $arr['BankName']; ?></option>
-                  <?php
-                }
-              }
-              ?>
-            </select>
+          <div class="form-group col-lg-4">
+            <label>Bank</label>
+            <input type="text" class="form-control rounded-corner" name="Bank" value="<?php echo $arr3['BankName'] ?>" disabled>
           </div>
-          <div class="form-group col-lg-3">
-            <select id="Zone" class="form-control rounded-corner" name="Zone" required>
-              <option value="">Zone</option>
-            </select>
-
+          <div class="form-group col-lg-4">
+            <label>Zone</label>
+            <input type="text" class="form-control rounded-corner" name="Zone" value="<?php echo $arr3['ZoneRegionName'] ?>" disabled>
           </div>
-          <div class="form-group col-lg-3">
-            <select id="Branch" class="form-control rounded-corner" name="Branch" required>
-              <option value="">Branch</option>
-            </select>
+          <div class="form-group col-lg-4">
+            <label>Branch</label>
+            <input type="text" class="form-control rounded-corner" name="Branch" value="<?php echo $arr3['BranchName'] ?>" disabled>
           </div>
 
           <div class="col-lg-3">
+            <label><span style="color: red;">* </span>Gadget</label>
             <select class="form-control rounded-corner" name="GadgetID" required onchange="yesnoCheck(this);">
               <option value="">Select Gadget</option>
               <?php 
@@ -239,7 +231,7 @@ if(isset($_POST['submit'])){
           </div>
 
           <div class="form-group col-lg-3">
-            <label for="SimType">Sim Provider</label>
+            <label for="SimType"><span style="color: red;">* </span>Sim Provider</label>
             <select class="form-control rounded-corner" id="provider" name="Provider" required>
               <option value="">Select</option>
               <option value="Bank">Bank</option>
@@ -271,7 +263,7 @@ if(isset($_POST['submit'])){
             </select>
           </div>
 
-          <div class="form-group col-lg-3">
+          <div class="form-group col-lg-4">
             <label for="Validity of Recharge">Validity of Recharge in Months</label>
             <select class="form-control rounded-corner" name="Validity">
               <option value="">Select</option>
@@ -361,9 +353,9 @@ if(isset($_POST['submit'])){
               <input class="form-check-input" type="checkbox" value="1" id="flexCheckDefault" name="Other">
             </div>
           </div>
-          <div class="form-group col-lg-3">
-            <label for="Branch">Reference order ID</label>
-            <input class="form-control rounded-corner" type="number" name="RefID" required>
+          <div class="form-group col-lg-4">
+            <label>Reference ID</label>
+            <input type="text" class="form-control rounded-corner" name="Branch" value="<?php echo $arr3['RefID'] ?>" disabled>
           </div>
 
           <div class="form-group col-md-12">

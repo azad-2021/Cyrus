@@ -145,7 +145,7 @@ if(empty($error)==true){
       }
 
       if ($con->query($sql2) === TRUE) {
-       header("location:instable.php?");
+       header("location:index.php?");
           //echo '<script>alert("Your response recorded successfully")</script>';
      }else {
       echo "Error updating record: " . $con->error;
@@ -312,15 +312,15 @@ if(empty($error)==true){
 
               <div class="row">
                 <div class="form-group col-md-4">
-                  <label for="Branch">Mobile No.</label>
+                  <label for="Branch"><span style="color: red;">* </span>Mobile No.</label>
                   <input type="number" class="form-control rounded-corner" placeholder="Mobile No" name="Mobile" onkeydown="limit2(this);" onkeyup="limit2(this);" required minlength="10">
                 </div>
                 <div class="form-group col-md-4">
-                  <label for="Bank ID">Sim No.</label>
+                  <label for="Bank ID"><span style="color: red;">* </span>Sim No.</label>
                   <input type="number" class="form-control rounded-corner" placeholder="Sim No" name="SimNo" onkeydown="limit1(this);" onkeyup="limit1(this);">
                 </div>
                 <div class="form-group col-md-4">
-                  <label for="IssueDate">Sim Type</label>
+                  <label for="IssueDate"><span style="color: red;">* </span>Sim Type</label>
                   <select class="form-control rounded-corner" name="SimType" required>
                     <option value="">Select</option>
                     <option value="Prepaid">Prepaid</option>
@@ -329,7 +329,7 @@ if(empty($error)==true){
 
                 </div>
                 <div class="form-group col-md-4">
-                  <label for="operator">Operator</label>
+                  <label for="operator"><span style="color: red;">* </span>Operator</label>
                   <select class="form-control rounded-corner" name="Operator">
                     <option value="">Select</option>
                     <?php
@@ -398,7 +398,7 @@ if(empty($error)==true){
                 </tbody>
               </table>
               <div class="form-group col-md-3">
-                <label for="IssueDate">Installed By</label>
+                <label for="IssueDate"><span style="color: red;">* </span>Installed By</label>
                 <select class="form-control rounded-corner" name="EmployeeCode" required>
                   <option value="">Select</option>
                   <?php 
@@ -412,7 +412,7 @@ if(empty($error)==true){
 
               </div>
               <div class="form-group col-md-3">
-                <label for="InstDate">Installation Date</label>
+                <label for="InstDate"><span style="color: red;">* </span>Installation Date</label>
                 <br>
                 <input type="date" name="InstDate" placeholder="dd/mm/yy" class="form-control rounded-corner" required>
               </div>

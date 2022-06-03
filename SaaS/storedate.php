@@ -34,7 +34,7 @@ if(isset($_POST['submit'])){
   $sql2 = "UPDATE store SET ReleaseDate='$Date' WHERE ReleaseID=$ID";
 
   if ($con->query($sql2) === TRUE) {
-   header("location:viewstore.php?");
+   header("location:index.php?");
           //echo '<script>alert("Your response recorded successfully")</script>';
  }else {
   echo "Error updating record: " . $con->error;
@@ -126,7 +126,7 @@ if(isset($_POST['submit'])){
             <center>
 
               <div class="form-group col-md-3" align="center">
-                <label>Update Release Date</label>
+                <label><span style="color: red;">* </span>Update Release Date</label>
                 <input type="date" name="Date" class="form-control rounded-corner" required>
               </div>
             </center> 

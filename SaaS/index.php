@@ -5,7 +5,7 @@ include 'session.php';
 if (isset($_GET['user'])) {
   $QueryType=$_GET['user'];
   $_SESSION['QueryType']=$QueryType;
-}elseif($_SESSION['QueryType']){
+}elseif(isset($_SESSION['QueryType'])){
   $QueryType=$_SESSION['QueryType'];
   
 }else{
@@ -36,7 +36,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   //unassigned work
 if($Type=='Executive'){
 
-  $query="SELECT count(OrderID) FROM saas.orders WHERE Executive ='$user' and Installed=0 and Status=0";
+  $query="SELECT count(OrderID) FROM saas.orders WHERE Executive ='$user' and Installed=0 and Status=0 and SimProvider";
   $result=mysqli_query($con3,$query);
   $row = mysqli_fetch_array($result);
   $ProductionPending=$row["count(OrderID)"];
@@ -53,12 +53,18 @@ if($Type=='Executive'){
 }elseif($Type=='Sim Provider' or $QueryType=='Sim'){
 
 
-  $query="SELECT count(MobileNumber) FROM saas.simprovider where DATEDIFF(ExpDate, current_date())<0 ";
+  $query="SELECT count(MobileNumber) FROM saas.simprovider
+  join production on simprovider.ID=production.SimID
+  join orders on production.OrderID=orders.OrderID
+  where DATEDIFF(ExpDate, current_date())<0 and orders.SimProvider='Cyrus' and Installed=1";
   $result=mysqli_query($con3,$query);
   $row = mysqli_fetch_array($result);
   $RechargeExp=$row["count(MobileNumber)"];
 
-  $query="SELECT count(MobileNumber) FROM saas.simprovider where DATEDIFF(ExpDate, current_date())>0 ";
+  $query="SELECT count(MobileNumber) FROM saas.simprovider
+  join production on simprovider.ID=production.SimID
+  join orders on production.OrderID=orders.OrderID
+  where DATEDIFF(ExpDate, current_date())>0 and orders.SimProvider='Cyrus' and Installed=1";
   $result=mysqli_query($con3,$query);
   $row = mysqli_fetch_array($result);
   $Recharged=$row["count(MobileNumber)"];

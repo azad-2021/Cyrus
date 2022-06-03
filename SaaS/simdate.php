@@ -16,7 +16,7 @@ if(isset($_POST['submit'])){
   $sql2 = "UPDATE simprovider SET ReleaseDate='$Date' WHERE ID=$ID";
 
   if ($con->query($sql2) === TRUE) {
-   header("location:simtable.php?");
+   header("location:index.php?");
           //echo '<script>alert("Your response recorded successfully")</script>';
  }else {
   echo "Error updating record: " . $con->error;

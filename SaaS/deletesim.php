@@ -7,7 +7,7 @@ $sql = "DELETE FROM simprovider WHERE ID=$SimID";
 
 if ($con->query($sql) === TRUE) {
   echo "Record deleted successfully";
-  header("location:simtable.php");
+  header("location:index.php?");
 } else {
   echo "Error deleting record: " . $con->error;
   

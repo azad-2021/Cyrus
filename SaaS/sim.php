@@ -65,7 +65,7 @@ if(isset($_POST['submit'])){
     $resultAdd = mysqli_query($con3,$queryAdd);
     if ($resultAdd) {
       echo '<script>alert("Your response recorded successfully")</script>';
-      header("location:simtable.php?user=$username");
+      header("location:index.php?");
     }else {
       echo "Error updating record: " . $con3->error;
     }

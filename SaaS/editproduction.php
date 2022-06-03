@@ -34,7 +34,7 @@ if(isset($_POST['submit'])){
     $queryAdd = "UPDATE `sirius_simcard_details` SET  Panel_Issue_Date='$IssueDate',  CurrentStatus='$Status',  ProductionRemark='$Remark' WHERE ID=$ID";
     $resultAdd = mysqli_query($con,$queryAdd);
     if ($resultAdd) {
-      header("location:protable.php?");
+      header("location:index.php?");
     }
   }
 }
@@ -99,7 +99,7 @@ if(isset($_POST['submit'])){
           <div class="form-group col-md-4">
             <label for="IssueDate">Panel issue Date: <?php echo $prevIssue; ?></label>
             <br>
-            <input type="date" name="IssueDate" placeholder="dd/mm/yy">
+            <input type="date" name="IssueDate" placeholder="dd/mm/yy" required>
           </div>
           <div class="form-group col-md-4">
             <label for="Current Status">Current Status: <?php echo $PrevStatus  ?></label>

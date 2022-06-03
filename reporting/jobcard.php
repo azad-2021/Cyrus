@@ -70,6 +70,13 @@ if ($s == 'C') {
   }
 }
 
+if (strpos(base64_decode($_GET['cardno']), 'AMC') == true) {
+
+  $jobcard = base64_decode($_GET['cardno']);
+
+
+}
+
 if(isset($_POST['submit'])){
 
   $Arrival=$_POST['Arrival'];
@@ -230,7 +237,7 @@ if(isset($_POST['submit'])){
             <td><?php echo $Bank ?></td>
             <td><?php echo $Zone ?></td>
             <td><?php echo $Branch ?></td>
-            <td><a href="/technician/view.php?card=<?php echo base64_encode($Job);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
+            <td><a href="/technician/view.php?card=<?php echo base64_encode($jobcard);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
             <td><?php echo $Gadget ?></td>
             <td><?php echo date('d-m-Y',strtotime($VisitDate)) ?></td>
             <td><?php echo $EmployeeName ?></td>
@@ -304,7 +311,7 @@ if(isset($_POST['submit'])){
               <td><?php echo $Bank ?></td>
               <td><?php echo $Zone ?></td>
               <td><?php echo $Branch ?></td>
-              <td><a href="/technician/view.php?card=<?php echo base64_encode($Job);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
+              <td><a href="/technician/view.php?card=<?php echo base64_encode($jobcard);?>" target="_blank"><?php echo $JOBCARD;?></a></td>
               <td><?php echo $Gadget ?></td>
               <td><?php echo date('d-m-Y',strtotime($VisitDate)) ?></td>
               <td><?php echo $EmployeeName ?></td>
@@ -470,12 +477,12 @@ if(isset($_POST['submit'])){
       <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
       <script type="text/javascript">
-     </script>
-   </body>
+      </script>
+    </body>
 
-   </html>
+    </html>
 
-   <?php 
-   $con->close();
-   $con2->close();
- ?>
+    <?php 
+    $con->close();
+    $con2->close();
+  ?>

@@ -112,7 +112,7 @@ include "sidebar.php";
       <div class="col-lg-12">
         <!-- Start -->
         <div class="table-responsive">
-           <table class="table table-hover table-bordered border-primary nowrap" id="myTable"> 
+           <table class="table table-hover table-bordered border-primary nowrap" id="myTable" width="100%"> 
               <thead> 
                   <tr> 
                       <th>Bank</th> 

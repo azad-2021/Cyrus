@@ -100,7 +100,7 @@ if(isset($_POST['submit'])){
     }
 
     if ($con->query($sql2) === TRUE) {
-     header("location:protable.php?");
+     header("location:index.php?");
           //echo '<script>alert("Your response recorded successfully")</script>';
    }else {
     echo "Error updating record: " . $con->error;
@@ -217,7 +217,7 @@ if(isset($_POST['submit'])){
             </table>  
           </div>  
 
-          <legend style="text-align: center;" class="my-select">Select Number</legend>
+          <legend style="text-align: center;" class="my-select"><span style="color: red;">* </span>Select Number </legend>
 
             <form method="POST" action="">
 
@@ -238,7 +238,7 @@ if(isset($_POST['submit'])){
                 </div>
 
                 <div class="form-group col-md-3" align="center">
-                  <label>Production Date</label>
+                  <label><span style="color: red;">* </span>Production Date</label>
                   <input type="date" name="Date" class="form-control rounded-corner" required>
                 </div>
               </center>

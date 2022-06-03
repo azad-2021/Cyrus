@@ -22,7 +22,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
-$query ="SELECT BankName, ZoneRegionName, BranchName, Gadget, orders.OrderID, simprovider.SimProvider, simprovider.SimType, MobileNumber, SimNo, Operator, ReleaseDate as SimReleaseDate, production.IssueDate as InuseDate, ActivationDate, ExpDate, simprovider.ID as SimID, ProductionID, DATEDIFF(ExpDate,ActivationDate) as leftDays FROM saas.simprovider
+$query ="SELECT BankName, ZoneRegionName, BranchName, Gadget, orders.OrderID, simprovider.SimProvider, simprovider.SimType, MobileNumber, SimNo, Operator, ReleaseDate as SimReleaseDate, production.IssueDate as InuseDate, ActivationDate, ExpDate, simprovider.ID as SimID, ProductionID, DATEDIFF(ExpDate, current_date()) as leftDays FROM saas.simprovider
 join production on simprovider.ID=production.SimID
 join orders on production.OrderID=orders.OrderID
 join gadget on orders.GadgetID=gadget.GadgetID
@@ -255,7 +255,7 @@ if (isset($_POST['changesim'])) {
               <?php  
 
               while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){ 
-                if ($row["leftDays"]<0) {
+                if ($row["leftDays"]<=0) {
                   $Action='<a id="'.$row["SimID"].'" data-bs-toggle="modal" data-bs-target="#exampleModal" class="Recharge">Recharge Now</a>
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <a id="'.$row["SimID"].'" data-bs-toggle="modal" data-bs-target="#suspension" class="Suspend">Suspend Number</a>

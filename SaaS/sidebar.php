@@ -1,7 +1,9 @@
   <?php 
   if (isset($_SESSION['QueryType'])) {
     $QueryType=$_SESSION['QueryType'];
-  }
+  }else{
+  $QueryType='';
+}
   
   ?>
 
@@ -23,9 +25,9 @@
        ?>
 
        <li class="nav-item">
-        <a class="nav-link collapsed" href="orders.php">
+        <a class="nav-link collapsed" href="ReceivedOrders.php">
           <i class="bi bi-grid"></i>
-          <span>Add Orders</span>
+          <span>Received Orders</span>
         </a>
       </li>
 
@@ -75,7 +77,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="viewproduction.php">
           <i class="bi bi-grid"></i>
-          <span>Production Details</span>
+          <span>Material in store</span>
         </a>
       </li>
 
@@ -86,7 +88,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="viewstore.php?">
           <i class="bi bi-grid"></i>
-          <span>Store Details</span>
+          <span>Pending for installation</span>
         </a>
       </li>
 
@@ -97,7 +99,7 @@
       <li class="nav-item">
         <a class="nav-link collapsed" href="viewinst.php">
           <i class="bi bi-grid"></i>
-          <span>Installation Details</span>
+          <span>Completed Installations</span>
         </a>
       </li>
       <?php 

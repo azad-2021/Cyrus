@@ -55,12 +55,11 @@ if(isset($_POST['submit'])){
       echo "Error updating record: " . $con->error;
     }
     if ($con->query($sql2) === TRUE) {
-      header("location:instable.php?");
     }else {
       echo "Error updating record: " . $con->error;
     }
     if ($con->query($sql3) === TRUE) {
-      header("location:instable.php?");
+      header("location:index.php?");
     }else {
       echo "Error updating record: " . $con->error;
     }

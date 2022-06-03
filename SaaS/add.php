@@ -108,7 +108,7 @@ if(isset($_POST['submit'])){
     }
 
     if ($con->query($sql3) === TRUE) {
-     header("location:instable.php?");
+     header("location:index.php?");
      echo '<script>alert("Your response recorded successfully")</script>';
    }else {
     echo "Error updating record: " . $con->error;
@@ -221,15 +221,15 @@ if(isset($_POST['submit'])){
           <form method="POST" action="" align="center">
             <div class="row">
               <div class="form-group col-md-4">
-                <label for="Branch">Mobile No.</label>
+                <label for="Branch"><span style="color: red;">* </span>Mobile No.</label>
                 <input type="text" maxlength="13" class="form-control rounded-corner" placeholder="Mobile No" name="Mobile" onkeydown="limit2(this);" onkeyup="limit2(this);" required>
               </div>
               <div class="form-group col-md-4">
-                <label for="Bank ID">Sim No.</label>
+                <label for="Bank ID"><span style="color: red;">* </span>Sim No.</label>
                 <input type="number" class="form-control rounded-corner" placeholder="Sim No" name="SimNo" onkeydown="limit1(this);" onkeyup="limit1(this);">
               </div>
               <div class="form-group col-md-4">
-                <label for="IssueDate">Sim Type</label>
+                <label for="IssueDate"><span style="color: red;">* </span>Sim Type</label>
                 <select class="form-control rounded-corner" name="SimType" required>
                   <option value="">Select</option>
                   <option value="Prepaid">Prepaid</option>
@@ -237,7 +237,7 @@ if(isset($_POST['submit'])){
                 </select>
               </div>
               <div class="form-group col-md-4">
-                <label for="IssueDate">Sim Provider</label>
+                <label for="IssueDate"><span style="color: red;">* </span>Sim Provider</label>
                 <select class="form-control rounded-corner" name="Provider" required>
                   <option value="">Select</option>
                   <option value="Cyrus">Cyrus</option>
@@ -245,7 +245,7 @@ if(isset($_POST['submit'])){
                 </select>
               </div>
               <div class="form-group col-md-4">
-                <label for="operator">Operator</label>
+                <label for="operator"><span style="color: red;">* </span>Operator</label>
                 <select class="form-control rounded-corner" name="Operator">
                   <option value="">Select</option>
                   <?php
