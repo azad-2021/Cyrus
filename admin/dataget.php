@@ -1,5 +1,8 @@
 <?php
 include ('connection.php');
+include ('session.php');
+$userid=$_SESSION['userid'];
+//ECHO $userid;
 $BankCode=!empty($_POST['BankCode'])?$_POST['BankCode']:'';
 if (!empty($BankCode))
 {
@@ -121,6 +124,7 @@ if (!empty($View))
             <td scope="col" style="min-width: 150px;">'.$a['Employee Name'].'</td>
             <td scope="col" style="min-width: 150px;">'.$a['Phone'].'</td>
             '.$Inservice.'</td>
+            <td scope="col" style="min-width: 150px;">'.$a['TargetAmounts'].'</td>
             <td scope="col" style="min-width: 150px;">'.$AssignTo.'</td>';
             $query="SELECT * FROM pass WHERE UserName is not null and UserType='Reporting' Order by UserName";
             $result3=mysqli_query($con,$query);
@@ -166,7 +170,7 @@ if (!empty($View))
             </select>
             <?php 
             echo '</td>
-            <td scope="col" style="min-width: 150px;"><button class="btn btn-primary UEmployee" id="'.$EmployeeID.'" id2="'.$a['Employee Name'].'" id3="'.$a['Qualification'].'" id4="'.$a['Address3'].'" id5="'.$a['Phone'].'">Edit Detail</button></td>
+            <td scope="col" style="min-width: 150px;"><button class="btn btn-primary UEmployee" id="'.$EmployeeID.'" id2="'.$a['Employee Name'].'" id3="'.$a['Qualification'].'" id4="'.$a['Address3'].'" id5="'.$a['Phone'].'" id6="'.$a['TargetAmounts'].'">Edit Detail</button></td>
             </tr>';
             $Sr++;
 
@@ -261,8 +265,9 @@ if (!empty($EmployeeNameU)){
     $EmployeeQulaification=!empty($_POST['EmployeeQulaificationU'])?$_POST['EmployeeQulaificationU']:'';
     $EmployeeDistrict=!empty($_POST['EmployeeDistrictU'])?$_POST['EmployeeDistrictU']:'';
     $EmployeeMobile=!empty($_POST['EmployeeMobileU'])?$_POST['EmployeeMobileU']:'';
+    $Target=!empty($_POST['EmployeeTargetU'])?$_POST['EmployeeTargetU']:'';
 
-    $sql = "UPDATE employees SET `Employee Name`='$EmployeeNameU', Qualification='$EmployeeQulaification', Address3='$EmployeeDistrict', Phone='$EmployeeMobile' WHERE EmployeeCode=$EmployeeCodeU";
+    $sql = "UPDATE employees SET `Employee Name`='$EmployeeNameU', Qualification='$EmployeeQulaification', Address3='$EmployeeDistrict', Phone='$EmployeeMobile', TargetAmounts=$Target WHERE EmployeeCode=$EmployeeCodeU";
 
     if ($con->query($sql) === TRUE) {
     } else {
@@ -520,6 +525,113 @@ if (!empty($CRegionExecutive))
     if ($con->query($sql) === TRUE) {
     } else {
       echo "Error: " . $sql . "<br>" . $con->error;
+  }
+}
+
+
+$BankReminders=!empty($_POST['BankReminders'])?$_POST['BankReminders']:'';
+if (!empty($BankReminders))
+{
+    $query="SELECT * FROM bank join zoneregions on bank.BankCode=zoneregions.BankCode order by `BankName`";
+    $result=mysqli_query($con,$query);
+    if (mysqli_num_rows($result)>0)
+    {
+        $Sr=1;
+        
+        while($a=mysqli_fetch_assoc($result)){
+            $ZoneCode=$a['ZoneRegionCode'];
+            $query="SELECT * FROM `reminder bank`
+            join pass on `reminder bank`.ExecutiveID=pass.ID WHERE ZoneRegionCode=$ZoneCode";
+            $result2=mysqli_query($con,$query);
+            if (mysqli_num_rows($result2)>0)
+            {   
+                $row=mysqli_fetch_assoc($result2);
+                $AssignTo=$row['UserName'];
+            }else{
+                $AssignTo='';
+            }
+            echo '<tr>
+            <td scope="col" style="min-width: 50px;">'.$Sr.'</th>
+            <td scope="col" style="min-width: 150px;">'.$a['BankName'].'</td>
+            <td scope="col" style="min-width: 150px;">'.$a['ZoneRegionName'].'</td>
+            <td scope="col" style="min-width: 150px;">'.$AssignTo.'</td>';
+            $query="SELECT * FROM pass WHERE UserName is not null and UserType='Reminders' Order by UserName";
+            $result3=mysqli_query($con,$query);
+            ?>
+            <th scope="col" style="min-width: 150px;">
+                <select class="form-control rounded-corner" id="ChangeReminder" id2="<?php echo $ZoneCode?>">
+                    <option value="">Select</option>
+                    <?php 
+                    while($row=mysqli_fetch_assoc($result3)){
+                        echo "<option value='".$row['ID']."'>".$row['UserName']."</option><br>";
+                    }
+                    ?>
+                </select>
+            </th>
+            <?php 
+            //echo '<td scope="col" style="min-width: 150px;"><button class="btn btn-primary ResetReminder" id="'.$BankCode.'">Reset Assigning</button></td>
+            '</tr>';
+            $Sr++;
+
+        }
+    }
+}
+
+
+$NewReminder=!empty($_POST['NewReminder'])?$_POST['NewReminder']:'';
+if (!empty($NewReminder))
+{
+    $ZoneCode=!empty($_POST['ZoneCode'])?$_POST['ZoneCode']:'';
+
+    $query="SELECT * FROM `reminder bank` WHERE ZoneRegionCode=$ZoneCode";
+    $result2=mysqli_query($con,$query);
+    if (mysqli_num_rows($result2)>0)
+    {  
+
+        $sql = "UPDATE `reminder bank` SET ExecutiveID=$NewReminder WHERE ZoneRegionCode=$ZoneCode";
+    }else{
+
+
+        $sql = "INSERT INTO `reminder bank` (ExecutiveID, ZoneRegionCode)
+        VALUES ($NewReminder, $ZoneCode)";
+
+    }
+
+    if ($con->query($sql) === TRUE) {
+    } else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+
+      $myfile = fopen("bankerr.txt", "w") or die("Unable to open file!");
+      fwrite($myfile, $con->error);
+      fclose($myfile);
+  }
+}
+
+
+$ReminderU=!empty($_POST['ReminderU'])?$_POST['ReminderU']:'';
+if (!empty($ReminderU))
+{
+    $Jobcard=!empty($_POST['Jobcard'])?$_POST['Jobcard']:'';
+
+    $query="SELECT * FROM `jobcard reminder` WHERE `Card Number`='$Jobcard'";
+    $result2=mysqli_query($con3,$query);
+    if (mysqli_num_rows($result2)>0)
+    {  
+        $sql = "UPDATE `jobcard reminder` SET Description='$ReminderU' WHERE `Card Number`='$Jobcard'";
+    }else{
+
+        $sql = "INSERT INTO `jobcard reminder` (`Card Number`, Description, UserID)
+        VALUES ('$Jobcard', '$ReminderU', $userid)";
+
+    }
+
+    if ($con3->query($sql) === TRUE) {
+    } else {
+      echo "Error: " . $sql . "<br>" . $con3->error;
+
+      $myfile = fopen("bankerr.txt", "w") or die("Unable to open file!");
+      fwrite($myfile, $con3->error);
+      fclose($myfile);
   }
 }
 

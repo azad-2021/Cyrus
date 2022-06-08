@@ -1092,12 +1092,13 @@ $(document).on('click', '.UEmployee', function(){
   var Qualification=$(this).attr("id3");
   var District=$(this).attr("id4");
   var Phone=$(this).attr("id5");
+  var Target=$(this).attr("id6");
   
   document.getElementById("EmployeeNameU").value=EmployeeName;
   document.getElementById("EmployeeQulaificationU").value=Qualification;
   document.getElementById("EmployeeDistrictU").value=District;
   document.getElementById("EmployeeMobileU").value=Phone;
-
+  document.getElementById("EmployeeTargetU").value=Target
   $('#UpdateEmployees').modal('show');
 });
 
@@ -1107,11 +1108,12 @@ $(document).on('click', '.SaveNewEmployeeU', function(){
   EmployeeQulaification=document.getElementById("EmployeeQulaificationU").value;
   EmployeeDistrict=document.getElementById("EmployeeDistrictU").value;
   EmployeeMobile=document.getElementById("EmployeeMobileU").value;
+  Target=document.getElementById("EmployeeTargetU").value;
   if (EmployeeName!='' && EmployeeQulaification!='' && EmployeeDistrict!='' && EmployeeMobile!='') {
     $.ajax({
      url:"dataget.php",
      method:"POST",
-     data:{'EmployeeNameU':EmployeeName, 'EmployeeQulaificationU':EmployeeQulaification, 'EmployeeDistrictU':EmployeeDistrict,'EmployeeMobileU':EmployeeMobile,'EmployeeCodeU':EmployeeCodeU},
+     data:{'EmployeeNameU':EmployeeName, 'EmployeeQulaificationU':EmployeeQulaification, 'EmployeeDistrictU':EmployeeDistrict,'EmployeeMobileU':EmployeeMobile,'EmployeeCodeU':EmployeeCodeU, 'EmployeeTargetU':Target},
      success:function(data){
       swal("success","New employee added","success");
       $('#UpdateEmployees').modal('hide');
@@ -1259,3 +1261,87 @@ $(document).on('click', '.Executive', function(){
   }
 });
 });
+
+$(document).on('click', '.BankReminders', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'BankReminders':'BankReminders'},
+   success:function(data){
+    $('#BankReminderData').html(data);
+    $('#BankReminders').modal('show');
+  }
+});
+});
+
+
+$(document).on('change', '#ChangeReminder', function(){
+  var ExecutiveID= $(this).val();
+  var ZoneCode=$(this).attr("id2");
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'NewReminder':ExecutiveID, 'ZoneCode':ZoneCode},
+   success:function(data){
+
+   }
+ });
+
+  var delayInMilliseconds = 1000; 
+
+  setTimeout(function() {
+
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'BankReminders':'BankReminders'},
+     success:function(data){
+      $('#BankReminderData').html(data);
+      $('#BankReminders').modal('show');
+    }
+  });
+
+  }, delayInMilliseconds);
+
+
+});
+
+
+
+function myFunction5() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput5");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable6");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function myFunction6() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput6");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable6");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}

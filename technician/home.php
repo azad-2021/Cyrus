@@ -17,7 +17,34 @@ $Password=$_SESSION['pass'];
 //echo $password;
 include 'sheet.php';
 
+$con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+$con2 = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbilling");
 
+
+// Billing Target 
+$sqlB ="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook where EmployeeCode=$UID and Cancelled=0 and month(BillDate)=month(current_date()) and year(BillDate)=year(current_date())";
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
+}
+$resultsB = $con->query($sqlB);
+$rowB=mysqli_fetch_array($resultsB,MYSQLI_ASSOC);
+$BilledAmount=$rowB["sum(TotalBilledValue)"];
+
+$sqlE ="SELECT * FROM employees where EmployeeCode=$UID";
+if ($con->connect_error) {
+    die("Connection failed: " . $con->connect_error);
+}
+$resultsE = $con->query($sqlE);
+$rowE=mysqli_fetch_array($resultsE,MYSQLI_ASSOC);
+$Target=$rowE["TargetAmounts"];
+
+if ($Target>0) {
+
+    $PendingTarget=$Target-$BilledAmount;
+    if ($PendingTarget<0) {
+        $PendingTarget=0;
+    }
+}
 ?>
 <!DOCTYPE html>
 
@@ -56,6 +83,7 @@ include 'sheet.php';
   }
 </style>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
 
@@ -84,12 +112,21 @@ include 'sheet.php';
             <li class="nav-item">
                 <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
             </li>
-        </ul>
-    </div>
+        </li>
+    </ul>
+</div>
 </div>
 </nav>
 <br>
 <div class="container" style="resize: both;">
+
+    <div class="row">
+        <div class="col-lg-12">
+
+            <div id="piechart" align="center"></div>
+        </div>
+    </div>
+
     <table class="table-hover table-sm table-bordered border-primary" id="example" class="display nowrap">
         <br>
         <h4 class="font-weight-bold text-center text-xl-center"<?php $sheet ?> >Total pending work report for <?php  print $name; ?> </h4>
@@ -108,8 +145,7 @@ include 'sheet.php';
         </thead>                 
         <tbody> 
             <?php
-            $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
-            $con2 = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+            
 
             $sql ="SELECT * FROM `pendingwork` where EmployeeCode=".$UID ." AND (`pending Order` is not null OR `Pending Complaints` is not null OR `pending AMC` is not null) ORDER by BranchName";
             if ($con->connect_error) {
@@ -118,6 +154,7 @@ include 'sheet.php';
 
 
             $results = $con->query($sql); 
+
             while ($row=mysqli_fetch_array($results,MYSQLI_ASSOC)){
                 $BranchCode=$row["BranchCode"];
 
@@ -175,7 +212,7 @@ include 'sheet.php';
         $timestamp =date('y-m-d H:i:s');
         $newtimestamp = date('Y-m-d',strtotime($timestamp));
                     //echo $newtimestamp;
-        $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+        
         $sql ="SELECT * FROM `vpendingamc` where `EmployeeCode`=".$UID." and Attended=0 and `AssignDate` is not null Order by BranchName";
         if ($con->connect_error) {
             die("Connection failed: " . $con->connect_error);
@@ -242,7 +279,7 @@ include 'sheet.php';
     </thead>                 
     <tbody> 
         <?php
-        $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+        
         $sql ="SELECT * FROM `vpendingorders` where `EmployeeCode`=".$UID." and Attended=0 and `AssignDate` is not null Order by BranchName";
         if ($con->connect_error) {
             die("Connection failed: " . $con->connect_error);
@@ -318,7 +355,7 @@ include 'sheet.php';
     </thead>                 
     <tbody> 
         <?php
-        $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+        
         $sql ="SELECT * FROM `vpendingcomplaints` where `EmployeeCode`=".$UID." and Attended=0 and `AssignDate` is not null Order by BranchName";
         if ($con->connect_error) {
             die("Connection failed: " . $con->connect_error);
@@ -403,7 +440,7 @@ include 'sheet.php';
         </thead>                 
         <tbody> 
             <?php
-            $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+            
             $sql ="SELECT * FROM cyrusbackend.approval
             left join orders on approval.OrderID=orders.OrderID
             join branchdetails on orders.BranchCode=branchdetails.BranchCode
@@ -491,7 +528,7 @@ include 'sheet.php';
             </thead>                 
             <tbody> 
                 <?php
-                $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
+                
                 $sql ="SELECT * FROM cyrusbackend.approval
                 left join complaints on approval.ComplaintID=complaints.ComplaintID
                 join branchdetails on complaints.BranchCode=branchdetails.BranchCode
@@ -562,6 +599,7 @@ include 'sheet.php';
             </table>
 
         </div>
+
         <!-- Bootstrap core JavaScript
             ================================================== -->
             <!-- Placed at the end of the document so the pages load faster -->
@@ -629,6 +667,47 @@ include 'sheet.php';
                 } );
             </script>
 
+            <script type="text/javascript">
+            // Load google charts
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(drawChart);
 
-        </body>
-        </html>
+            // Draw the chart and set the chart values
+            function drawChart() {
+              var data = google.visualization.arrayToDataTable([
+                  ['Pending', 'Achieved'],
+                  ['Pending : '+ <?php echo $PendingTarget?>, <?php echo $PendingTarget?>],
+                  ['Billed : '+<?php echo $BilledAmount?>, <?php echo $BilledAmount?>]
+                  ]);
+
+            // Optional; add a title and set the width and height of the chart
+            var options = {
+                'title':'Billing Target : ' + <?php echo $Target?>,
+                colors: ['red', 'green', ],
+                fontSize: 15,
+                chartArea: {
+                    left: "10%",
+                    top: "20%",
+                    bottom: "10%",
+                    height: "90%",
+                    width: "90%",
+
+                }
+                //pieSliceText: 'none',
+                /*tooltip: {
+                    text: 'none'
+                }*/
+            };
+
+            // Display the chart inside the <div> element with id="piechart"
+            var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+            chart.draw(data, options);
+        }
+    </script>
+</body>
+</html>
+
+<?php 
+$con->close();
+$con2->close();
+?>

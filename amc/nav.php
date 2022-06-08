@@ -23,7 +23,7 @@
 
           <a class="dropdown-item d-flex align-items-center" href="profile.php">
             <i class="bi bi-gear"></i>
-            <span>Account Settings</span>
+            <span>Account Setting</span>
           </a>
         </li>
         <li>

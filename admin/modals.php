@@ -1,5 +1,8 @@
 <!-- Find Orders -->
 <!--END Find Orders -->
+
+
+
 <div class="modal fade" id="ReleasedMaterials" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content rounded-corner" style="background-color:#f0f0f0">
@@ -339,6 +342,7 @@
             <th>Name</th>
             <th>Mobile Number</th>
             <th>Inservice</th>
+            <th>Target Amount</th>
             <th>Reported To</th>
             <th>Change Reporting To</th>
             <th>Jobcard Entry</th>
@@ -425,6 +429,12 @@
               <label for="recipient-name" class="col-form-label">Mobile Number:</label>
               <input type="text" class="form-control rounded-corner" id="EmployeeMobileU">
             </div>
+            <center>
+              <div class="col-lg-6">
+                <label for="recipient-name" class="col-form-label">Target Amount:</label>
+                <input type="text" class="form-control rounded-corner" id="EmployeeTargetU">
+              </div>
+            </center>
           </div>
         </form>
       </div>
@@ -521,6 +531,64 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="BankReminders" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Banks details for payment follow-up</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-lg-6">
+            <input type="text" id="myInput5" onkeyup="myFunction5()" placeholder="Search for Bank Name" class="form-control rounded-corner" style="margin-bottom:20px">
+          </div>
+          <div class="col-lg-6">
+            <input type="text" id="myInput6" onkeyup="myFunction6()" placeholder="Search for Zone" class="form-control rounded-corner" style="margin-bottom:20px">
+          </div>
+        </div>
+        <table class="table table-hover table-bordered border-primary" id="myTable6">
+          <thead>
+            <th>Sr. No.</th>
+            <th>Bank</th>
+            <th>Zone</th>
+            <th>Assign To</th>
+            <th>Change Assign To</th>
+          </thead>
+          <tbody id="BankReminderData">
+
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="JobcardReminder" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-corner" style="background-color:#f0f0f0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Reminder</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="jobcardR">
+          <input type="text" class="d-none" name="" id="cardnumber">
+          <textarea class="form-control rounded-corner" id="JobcardReminderData"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary SaveReminder">Save</button>
+        <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </form>
       </div>
     </div>
   </div>

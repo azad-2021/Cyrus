@@ -113,7 +113,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
           <center>
             <div class="pagetitle">
-              <h1>Service engineer performance report this month</h1>
+              <h1>Service engineer performance report <?php echo date('M-y',strtotime($timestamp)); ?></h1>
             </div>
           </center>
           <div class="table-responsive container">

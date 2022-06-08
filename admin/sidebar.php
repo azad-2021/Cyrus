@@ -206,14 +206,19 @@
   </a>
 </li>
 
-<!--
 <li class="nav-item">
-  <a class="nav-link collapsed DataentryAllotment" href="" data-bs-toggle="modal" data-bs-target="#DataentryAllotment">
+  <a class="nav-link collapsed BankReminders" href="" data-bs-toggle="modal" data-bs-target="#BankReminders">
     <i class="bi bi-grid"></i>
-    <span>Jobcard Entry Assigning</span>
+    <span>Banks</span>
   </a>
 </li>
--->
+
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingWorkJobcard.php">
+    <i class="bi bi-grid"></i>
+    <span>Pending Work from Jobcard</span>
+  </a>
+</li>
 </ul>
 
 </aside><!-- End Sidebar-->
