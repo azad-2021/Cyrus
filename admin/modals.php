@@ -577,7 +577,7 @@
   <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content rounded-corner" style="background-color:#f0f0f0">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Reminder</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Remark</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

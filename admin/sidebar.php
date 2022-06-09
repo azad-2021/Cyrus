@@ -115,8 +115,6 @@
         </ul>
       </li>
       
-      
-
       <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
         <i class="bi bi-grid"></i><span>Employees</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
@@ -145,22 +143,26 @@
       </ul>
     </li>
   
-  <li class="nav-item">
-    <a class="nav-link collapsed" href="/cyrus/amc/" target="_blank">
-      <i class="bi bi-grid"></i>
-      <span>AMC Report</span>
-    </a>
-  </li><!-- End Contact Page Nav -->
+
   <li class="nav-item">
     <a class="nav-link collapsed" href="/cyrus/reception/" target="_blank">
       <i class="bi bi-grid"></i>
       <span>Reception</span>
     </a>
   </li><!-- End Contact Page Nav -->
+
+
+  <li class="nav-heading" style="font-size:15px">Inventory</li>
   <li class="nav-item">
     <a class="nav-link collapsed" href="/cyrus/inventory/" target="_blank">
       <i class="bi bi-card-list"></i>
       <span>Inventory Release</span>
+    </a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/InventoryRates/" target="_blank">
+      <i class="bi bi-card-list"></i>
+      <span>Item & Material add / update</span>
     </a>
   </li>
   <!-- End Forms Nav -->
@@ -180,7 +182,7 @@
     </a>
   </li>
 -->
-
+<li class="nav-heading" style="font-size:15px">Work</li>
 <li class="nav-item">
   <a class="nav-link collapsed" href="UnassignedWork.php" target="_blank">
     <i class="bi bi-grid"></i>
@@ -193,12 +195,12 @@
     <span>Pending Work</span>
   </a>
 </li>
-<li class="nav-item">
-  <a class="nav-link collapsed" href="PendingBills.php" target="_blank">
-    <i class="bi bi-grid"></i>
-    <span>Pending Payment</span>
-  </a>
-</li>
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/amc/" target="_blank">
+      <i class="bi bi-grid"></i>
+      <span>AMC Report</span>
+    </a>
+  </li><!-- End Contact Page Nav -->
 <li class="nav-item">
   <a class="nav-link collapsed" href="district.php">
     <i class="bi bi-grid"></i>
@@ -206,13 +208,19 @@
   </a>
 </li>
 
+<li class="nav-heading" style="font-size:15px">Payment</li>
 <li class="nav-item">
   <a class="nav-link collapsed BankReminders" href="" data-bs-toggle="modal" data-bs-target="#BankReminders">
     <i class="bi bi-grid"></i>
-    <span>Banks</span>
+    <span>Assign Zone</span>
   </a>
 </li>
-
+<li class="nav-item">
+  <a class="nav-link collapsed" href="PendingBills.php" target="_blank">
+    <i class="bi bi-grid"></i>
+    <span>Pending Payment</span>
+  </a>
+</li>
 <li class="nav-item">
   <a class="nav-link collapsed" href="PendingWorkJobcard.php">
     <i class="bi bi-grid"></i>
