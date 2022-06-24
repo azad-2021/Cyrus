@@ -142,7 +142,6 @@
         </li>
       </ul>
     </li>
-  
 
   <li class="nav-item">
     <a class="nav-link collapsed" href="/cyrus/reception/" target="_blank">

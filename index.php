@@ -34,31 +34,39 @@ if (isset($_POST['submit'])) {
         $queryAdd="INSERT INTO `userlog`( `Name`, `EmployeeID`) VALUES ('$username', '$ID')";
         $resultAdd = mysqli_query($con3,$queryAdd); 
 
-        if ($_SESSION['usertype']=="Reporting" or $_SESSION['usertype']=='Dataentry' or $_SESSION['userid']==32) {
+        if (($_SESSION['usertype']=="Reporting" or $_SESSION['usertype']=='Dataentry' or $_SESSION['userid']==32) and ($_SESSION['userid']!=26)) {
            header("location: reporting/?");
        }elseif ($_SESSION['usertype']=="Reception") {
         header("location: reception/");
     }elseif ($_SESSION['usertype']=="Executive") {
         header("location: executive/");
     }elseif ($_SESSION['usertype']=="Production") {
-        header("location: SaaS/");
+        header("location: SaaS/protable.php");
     }elseif ($_SESSION['usertype']=="Store") {
-        header("location: SaaS/");
+        header("location: SaaS/storetable.php");
     }elseif ($_SESSION['usertype']=="Installation") {
-        header("location: SaaS/");
+        header("location: SaaS/instable.php");
     }elseif ($_SESSION['usertype']=="Sim Provider") {
-        header("location: SaaS/");
-    }elseif ($_SESSION['usertype']=="Inventory") {
+        header("location: SaaS/simtable.php");
+    }elseif ($_SESSION['usertype']=="Inventory" and $_SESSION['userid']!=27) {
         header("location: inventory/");
     }elseif ($_SESSION['usertype']=="Reminders") {
         header("location: reminders/");
     }elseif ($_SESSION['usertype']=="Accounts") {
         header("location: accounts/");
+    }elseif ($_SESSION['usertype']=="Inventory" and $_SESSION['userid']==27) {
+        header("location: InventoryRates/");
+    }elseif ($_SESSION['usertype']=="AMC" or $_SESSION['userid']==26) {
+        header("location: amc/");
     }elseif ($_SESSION['usertype']=="Super User") {
         header("location: admin/");
     }elseif ($_SESSION['usertype']=="Supervisor") {
         header("location: supervisor/");
-    }       
+    }elseif ($_SESSION['usertype']=="Executive Projects") {
+        header("location: projects/");
+    }elseif ($_SESSION['usertype']=="Sr Executive") {
+        header("location: srexecutive/");
+    }          
 }else{  
     echo '<script>alert("Invalid Username or Password")</script>';  
 } 

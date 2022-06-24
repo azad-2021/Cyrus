@@ -124,15 +124,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
               <table class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
                 <thead>
                   <tr class="text-dark">
-                    <th scope="col" style="min-width:150px">Bank</th>
-                    <th scope="col" style="min-width:150px">Zone</th>
-                    <th scope="col" style="min-width:150px">Branch</th>
-                    <th scope="col" style="min-width:150px">Employee</th>
-                    <th scope="col" style="min-width:150px">Jobcard No</th>
-                    <th scope="col" style="min-width:150px">Gadget</th>
-                    <th scope="col" style="min-width:150px">Service Done</th>
+                    <th scope="col" style="min-width:200px">Employee</th>
                     <th scope="col" style="min-width:200px">Pending Work</th>
-                    <th scope="col" style="min-width:150px">Visit Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -153,10 +146,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                     $GadgetID=$rowC['GadgetID'];
                     $BranchCode=$rowB['BranchCode'];
 
-                    $query4="SELECT * FROM cyrusbackend.jobcardmain
-                    join branchdetails on jobcardmain.BranchCode=branchdetails.BranchCode
-                    join employees on jobcardmain.EmployeeCode=employees.EmployeeCode
-                    WHERE length(WorkPending)>1 and jobcardmain.BranchCode=$BranchCode and GadgetID=$GadgetID and VisitDate>='2022-01-01'
+                    $query4="SELECT * FROM cyrusbackend.jobcardmain WHERE length(WorkPending)>1 and BranchCode=$BranchCode and GadgetID=$GadgetID and VisitDate>='2022-01-01'
                     order by Job_Card_No desc limit 1";
                     $result4=mysqli_query($con,$query4);
                     while($rowD = mysqli_fetch_array($result4)){
@@ -164,15 +154,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                       ?>
 
                       <tr>
-                        <td ><?php echo $rowD['BankName']; ?></td>
-                        <td ><?php echo $rowD['ZoneRegionName']; ?></td>
-                        <td ><?php echo $rowD['BranchName']; ?></td>
-                        <td ><?php echo $rowD['Employee Name']; ?></td>
+                        <td ><?php echo $rowD['BranchCode']; ?></td>
                         <td ><?php echo $rowD['Card Number']; ?></td>
-                        <td ><?php echo $rowC['Gadget']; ?></td>
-                        <td ><?php echo $rowD['ServiceDone']; ?></td>
-                        <td ><?php echo $rowD['WorkPending']; ?></td>
-                        <td ><?php echo $rowD['VisitDate']; ?></td>
                       </tr>
                       <?php
                     }

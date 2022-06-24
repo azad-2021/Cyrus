@@ -5,7 +5,7 @@ include ('session.php');
 $UserID=$_SESSION['userid'];
 date_default_timezone_set('Asia/Kolkata');
 $Date =date('y-m-d H:i:s');
-
+$date =date('y-m-d');
 $BankCode=!empty($_POST['BankCode'])?$_POST['BankCode']:'';
 if (!empty($BankCode))
 {
@@ -61,9 +61,44 @@ if (!empty($Data))
   } else {
       echo "Error: " . $sql . "<br>" . $con->error;
   }
-
-  $con->close();
-   $con2->close();
-
 }
+
+$ReminderU=!empty($_POST['ReminderU'])?$_POST['ReminderU']:'';
+$myfile = fopen("rmd.txt", "w") or die("Unable to open file!");
+fwrite($myfile, $ReminderU);
+fclose($myfile);
+if (!empty($ReminderU))
+{
+    $Jobcard=!empty($_POST['Jobcard'])?$_POST['Jobcard']:'';
+
+    $myfile = fopen("rmd.txt", "w") or die("Unable to open file!");
+    fwrite($myfile, $ReminderU.'.....'.$Jobcard);
+    fclose($myfile);
+
+    $query="SELECT * FROM `jobcard reminder` WHERE `Card Number`='$Jobcard'";
+    $result2=mysqli_query($con,$query);
+    if (mysqli_num_rows($result2)>0)
+    {  
+        $sql = "UPDATE `jobcard reminder` SET Description='$ReminderU' WHERE `Card Number`='$Jobcard'";
+    }else{
+
+        $sql = "INSERT INTO `jobcard reminder` (`Card Number`, Description, UserID)
+        VALUES ('$Jobcard', '$ReminderU', $UserID)";
+
+    }
+
+    if ($con->query($sql) === TRUE) {
+    } else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+
+      $myfile = fopen("bankerr.txt", "w") or die("Unable to open file!");
+      fwrite($myfile, $con->error);
+      fclose($myfile);
+  }
+}
+
+
+$con->close();
+$con2->close();
+
 

@@ -13,7 +13,7 @@
     
     $db_2 = "cyrusbackend";
     $db_3 = "cyrusbilling";
-    $db_3 = "sim";  
+    $db_3 = "saas";  
 
     $con = mysqli_connect($host, $user, $password, $db_2);  
     if(mysqli_connect_errno()) {  

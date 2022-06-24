@@ -75,11 +75,12 @@ $EmployeeName = $row2["Employee Name"];
 
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-   <script src="assets/js/jquery-3.6.0.min.js"></script>
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
 </head>
 
 <body>
@@ -122,7 +123,7 @@ $EmployeeName = $row2["Employee Name"];
       </div><!-- End Page Title -->
 
       <div class="table-responsive container">
-        <table class="table table-hover table-bordered border-primary" id="example"> 
+        <table class="table table-hover table-bordered border-primary" id="example" width="100%"> 
           <thead> 
             <tr> 
               <th>Branch</th>
@@ -172,8 +173,8 @@ $EmployeeName = $row2["Employee Name"];
                 <td>'.$row1["BranchName"].'</td>
                 <td>'.$row["OrderID"].'</td>
                 <td>'.$row["ComplaintID"].'</td>
-                <td>'.$Visit.'</td>
-                <td>'.date("d-M-Y h:i:sa", strtotime($row3["TimeStamp"])).'</td> 
+                <td>'.'<span class="d-none">'.$row['VisitDate'].'</span>'.$Visit.'</td>
+                <td>'.'<span class="d-none">'.$row3['TimeStamp'].'</span>'.date("d-M-Y h:i:sa", strtotime($row3["TimeStamp"])).'</td> 
                 <td>'.$Status.'</td>                                
                 <td><a target="blank" href=verify.php?apid='.base64_encode($row["ApprovalID"]).'>Verify Details</a></td> 
                 </tr>  
@@ -210,7 +211,7 @@ $EmployeeName = $row2["Employee Name"];
       <script src="assets/vendor/php-email-form/validate.js"></script>
 
       <!-- Template Main JS File -->
-     
+
       <script src="assets/js/main.js"></script>
       <script src="ajax.js"></script>
       <script src="ajax-script.js"></script>
@@ -218,6 +219,8 @@ $EmployeeName = $row2["Employee Name"];
       <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
       <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
       <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
+      <script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
+      <script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
 
       <script type="text/javascript">
 
@@ -227,6 +230,7 @@ $EmployeeName = $row2["Employee Name"];
             selector: 'td:nth-child(2)'
           },
           "lengthMenu": [[10, 50, 100, -1], [10, 25, 50, "All"]],
+          //dom: 'Plfrtip',
           responsive: true
 
         } );

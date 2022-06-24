@@ -1000,4 +1000,42 @@
     </div>
   </div>
 
+  <div class="modal" id="Reference" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content rounded-corner">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Generate Reference ID</h5>
+        </div>
+        <div class="modal-body">
 
+          <form class="form-control rounded-corner" method="POST" action="">
+            <center>
+              <div class="col-lg-6">
+                <label for="validationCustom01" class="form-label ">Reassign To</label>
+                <select class="form-control rounded-corner" name="ReassignTo" id="ReassignGen">
+                 <option value="">Select</option>        
+                 <?php
+
+                 $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
+                 $resultTech=mysqli_query($con,$queryTech);
+                 while($data=mysqli_fetch_assoc($resultTech)){
+
+                  echo "<option value=".$data['EmployeeCode'].">".$data['Employee Name']."</option>"; 
+                }
+                ?>
+              </select>
+              <input class="d-none" type="text" name="TypeGen" id="TypeGen">
+              <input class="d-none" type="number" name="ID" id="QID">
+            </div>
+          </center>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary GenerateRefID" data-bs-dismiss="modal">Save</button>
+        <input class="btn btn-secondary" type="reset"  data-bs-dismiss="modal" value="Close">
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -63,8 +63,13 @@ if (!empty($EstimateID) or !empty($Data))
 	$Qty=$obj->Qty;
 	$ApprovalID=$obj->ApprovalID;
 
-	$sql = "INSERT INTO estimates (ApprovalID, RateID, Qty, ExecutiveID)
-	VALUES ('$ApprovalID', '$RateID', '$Qty', '$ID')";
+	$query="SELECT * FROM cyrusbilling.rates WHERE RateID=$RateID";
+	$result=mysqli_query($con2,$query);
+	$row = mysqli_fetch_array($result);
+	$Rate=$row['Rate'];
+
+	$sql = "INSERT INTO estimates (ApprovalID, RateID, Qty, ExecutiveID, Rates)
+	VALUES ('$ApprovalID', '$RateID', '$Qty', '$ID', $Rate)";
 }
 
 

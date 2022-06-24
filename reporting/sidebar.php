@@ -36,7 +36,7 @@
       </li>
       <li>
         <a href="branchdetails.php" target="_blank">
-          <i class="bi bi-circle"></i><span>Branch Details</span>
+          <i class="bi bi-circle"></i><span>Branch Detail</span>
         </a>
       </li>
       <li>
@@ -46,7 +46,7 @@
       </li>
       <li>
         <a href="" data-bs-toggle="modal" data-bs-target="#FindEmployee">
-          <i class="bi bi-circle"></i><span>Employees</span>
+          <i class="bi bi-circle"></i><span>Employee</span>
         </a>
       </li>
       <li>
@@ -56,17 +56,17 @@
       </li>
       <li>
         <a href="" data-bs-toggle="modal" data-bs-target="#FindComplaint">
-          <i class="bi bi-circle"></i><span>Complaints</span>
+          <i class="bi bi-circle"></i><span>Complaint</span>
         </a>
       </li>
       <li>
         <a href="/cyrus/reporting/search.php" target="blank">
-          <i class="bi bi-circle"></i><span>Job Cards</span>
+          <i class="bi bi-circle"></i><span>Job Card</span>
         </a>
       </li>
       <li>
         <a href="" data-bs-toggle="modal" data-bs-target="#FindJobcard">
-          <i class="bi bi-circle"></i><span>Job Card Details</span>
+          <i class="bi bi-circle"></i><span>Job Card Detail</span>
         </a>
       </li>
     </ul>
@@ -82,7 +82,7 @@
   <li class="nav-item">
     <a class="nav-link collapsed" href="rejectedData.php" target="_blank">
       <i class="bi bi-grid"></i>
-      <span>Rejected Verifications</span>
+      <span>Rejected Verification</span>
     </a>
   </li>
 
@@ -90,6 +90,20 @@
     <a class="nav-link collapsed" href="Work.php">
       <i class="bi bi-grid"></i>
       <span>Unassigned & Pending Work</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="delaywork.php">
+      <i class="bi bi-grid"></i>
+      <span>Delayed Work</span>
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="abouttodelay.php">
+      <i class="bi bi-grid"></i>
+      <span>About to Delay</span>
     </a>
   </li>
 
@@ -143,6 +157,20 @@
       <span>Unassigned & Pending Work</span>
     </a>
   </li>
+
+  <li class="nav-item">
+    <a class="nav-link collapsed" href="delaywork.php">
+      <i class="bi bi-grid"></i>
+      <span>Delayed Work</span>
+    </a>
+  </li>
+    <li class="nav-item">
+    <a class="nav-link collapsed" href="abouttodelay.php">
+      <i class="bi bi-grid"></i>
+      <span>About to Delay</span>
+    </a>
+  </li>
+
   <?php 
 }
 ?>

@@ -187,12 +187,12 @@
   var Expected = document.getElementById("ExpectedAdd").value;
   var Discription = document.getElementById("DiscriptionAdd").value;
 
- console.log(BranchCode);
- console.log(Device);
- console.log(Type);
- console.log(ReceivedBy);
- console.log(MadeBy);
- console.log(Discription);
+  console.log(BranchCode);
+  console.log(Device);
+  console.log(Type);
+  console.log(ReceivedBy);
+  console.log(MadeBy);
+  console.log(Discription);
 // Returns successful data submission message when the entered information is stored in database.
 //var dataString = 'branch=' + BranchCode + '&device=' + Device + '&type=' + Type + '&receivedby=' + ReceivedBy + '&madeby=' + MadeBy + '&infodate=' + InfoDate + '&expected=' + Expected + '&discription=' + Discription;
 if (BranchCode == '') {
@@ -1222,7 +1222,7 @@ $(document).on('click', '.update_madebyC', function(){
 });
 
 
- $(document).on('click','.exp', function(){
+$(document).on('click','.exp', function(){
   var BCode = $(this).attr("bcc");
   var OID = $(this).attr("oid");
   var ExDate = $(this).attr("expdate");
@@ -1233,7 +1233,7 @@ $(document).on('click', '.update_madebyC', function(){
 });
 
 
- $(document).on('click','.expC', function(){
+$(document).on('click','.expC', function(){
   var BCode = $(this).attr("bccC");
   var CID = $(this).attr("cid");
   var ExDate = $(this).attr("expdateC");
@@ -1374,4 +1374,94 @@ $(document).on('click', '.update_ExpectedDate', function(){
 
 }
 
+});
+
+$(document).on('click', '.gen', function(){
+
+  var ID=$(this).attr("id");
+  Type=$(this).attr("id2");
+  document.getElementById("QID").value=ID;
+  document.getElementById("TypeGen").value=Type;
+});
+
+
+
+$(document).on('click', '.GenerateRefID', function(){
+
+  var ID=document.getElementById("QID").value;
+  var Type=document.getElementById("TypeGen").value;
+  var ReassignGen=document.getElementById("ReassignGen").value;
+if (ReassignGen) {
+  $.ajax({
+    url:"dataget.php",
+    method:"POST",
+    data:{"QID":ID, "GenType":Type, "ReassignGen":ReassignGen},
+    success:function(data){
+      swal("success","Reference ID Generated", "success");
+    }
+  });
+}else{
+  swal("error","Please select employee","error");
+}
+
+  if (Type=='Order') {
+
+    let interval = setInterval(function(){
+
+      $.ajax({
+       url:"ordersView.php",
+       method:"POST",
+       data:{OrderID:ID},
+       success:function(data){
+        $('#OrdersData').html(data);
+        $('#dataModal').modal('show');
+      }
+    });
+      clearInterval(interval); 
+    }, 1000);
+  }else{
+
+    let interval = setInterval(function(){
+      $.ajax({
+       url:"complaintsView.php",
+       method:"POST",
+       data:{ComplaintID:ID},
+       success:function(data){
+        $('#ComplaintsData').html(data);
+        $('#dataModal2').modal('show');
+      }
+    });
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  var BranchCode = document.getElementById("Branch").value;
+
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BranchCode':BranchCode},
+        success:function(result){
+          $('#Order').html(result);        
+
+
+        }
+      }); 
+
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BrCode':BranchCode},
+        success:function(result){
+          $('#Complaints').html(result);
+
+        }
+      }); 
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
 });

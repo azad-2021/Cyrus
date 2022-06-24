@@ -10,7 +10,7 @@ if(isset($_POST["EmployeeID"]))
 {   
   $exEmployeeID=$_POST["EmployeeID"];
   //echo $EmployeeID;
-  $query="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%' and EmployeeCode=$exEmployeeID";
+  $query="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription not like '%AMC%' and EmployeeCode=$exEmployeeID Order By OrderID";
   $result=mysqli_query($con,$query);
   $rowN = mysqli_fetch_array($result);
   /*

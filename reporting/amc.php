@@ -52,7 +52,7 @@ if(isset($exEmployeeID))
       if (mysqli_num_rows($result)>0)
       {
         $Sn=1;
-        $query2="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$exEmployeeID";
+        $query2="SELECT * FROM cyrusbackend.allorders WHERE AssignDate is not null and Attended=0 and Discription like '%AMC%' and EmployeeCode=$exEmployeeID Order By OrderID";
         $result2=mysqli_query($con,$query2);
         while($row = mysqli_fetch_array($result2)){
           $OrderID=$row['OrderID'];

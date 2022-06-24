@@ -5,6 +5,9 @@ $Employee='';
 $Gadget='';
 $AssignDate='';
 $AttendDate= '';
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($timestamp));
 $BankCode=!empty($_POST['Bank'])?$_POST['Bank']:'';
 if (!empty($BankCode))
 {
@@ -136,7 +139,7 @@ if (!empty($BrCode))
            }else{
             $AssignDate='';
         }
-        if ($row2["Attended"]==1) {
+        if (($row2["Attended"]==1) or ($row2["Attended"]==-1)) {
             $Attended='Yes';
             if (!empty($row2["AttendDate"])) {
                $AttendDate= date("d-m-Y", strtotime($row2["AttendDate"]));
@@ -213,7 +216,7 @@ if (!empty($Branch))
          }else{
             $AssignDate='';
         }
-        if ($row3["Attended"]==1) {
+        if (($row3["Attended"]==1) or ($row3["Attended"]==-1)) {
             $Attended='Yes';
             if (!empty($row3["AttendDate"])) {
              $AttendDate= date("d-m-Y", strtotime($row3["AttendDate"]));
@@ -310,7 +313,7 @@ if (!empty($BCode))
         }
     }
 
-    $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM billbook WHERE BranchCode=$BCode and Cancelled!=1 and Cancelled!=-1 GROUP BY BranchCode";
+    $sqlGST = "SELECT BranchCode, SUM(TotalBilledValue), Sum(ReceivedAmount) FROM cyrusbilling.billbook WHERE BranchCode=$BCode and Cancelled=0 GROUP BY BranchCode";
     $resultGST= $con2->query($sqlGST);
     if (mysqli_num_rows($resultGST)>0)
     {
@@ -341,6 +344,12 @@ if (mysqli_num_rows($resultsBranch)>0)
  $Email="";
  $GST="";
  $Employee="";
+}
+
+if (!empty($District)) {
+    echo '<script>document.getElementById("d").style.display="block"</script>';
+}else{
+     echo '<script>document.getElementById("d").style.display="none"</script>';
 }
 ?>
 
@@ -460,6 +469,161 @@ if (!empty($ZoneCodeAMC))
         
     }
 }
+
+$QID=!empty($_POST['QID'])?$_POST['QID']:'';
+if (!empty($QID)) {
+  //$QID=$_POST['ID'];
+  $Type=$_POST['GenType'];
+
+  $EmployeeCode=$_POST['ReassignGen'];
+  if ($Type=='Order') {
+
+    $query = "SELECT * FROM cyrusbackend.orders WHERE OrderID=$QID";
+    $result = mysqli_query($con, $query);
+    $row = mysqli_fetch_array($result); 
+
+    $BranchCode=$row["BranchCode"];
+    $Description=$row["Discription"];
+    $Description='New Reference ID '.$QID.' '.$Description;
+    $DateofInfo=$row["DateOfInformation"];
+    //$ExpDate = date('Y-m-d', strtotime($row["DateOfInformation"]. ' + 6 days'));
+    $ExpDate =$row["ExpectedCompletion"];
+    $ReceivedBy=$row["ReceivedBy"];
+    $OrderBy=$row["OrderedBy"];
+    $GadgetID=$row["GadgetID"];
+
+    $query1 = "SELECT * FROM cyrusbackend.demandbase WHERE OrderID=$QID";
+    $result1 = mysqli_query($con, $query1);
+    if(mysqli_num_rows($result1)>0)
+    {
+      $row1 = mysqli_fetch_array($result1);
+      $StatusID=$row1["StatusID"];
+      $GenID=$row1["GeneratedByID"];
+    }else{
+      $StatusID='';
+    }
+    $sql = "INSERT INTO orders (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBy, OrderedBy, EmployeeCode, AssignDate, GadgetID)
+    VALUES ($BranchCode, '$Description', '$DateofInfo', '$ExpDate', '$ReceivedBy', '$OrderBy', $EmployeeCode, '$Date', $GadgetID)";
+
+    if ($con->query($sql) === TRUE) {
+
+      $last_id = $con->insert_id;
+
+      $Description='Reference ID '.$last_id.' '.$row["Discription"];
+
+      $sql = "UPDATE orders SET AttendDate='$Date', Attended=1, Discription='$Description' WHERE OrderID=$QID";
+
+      if ($con->query($sql) === TRUE) {
+        //echo '<meta http-equiv="refresh" content="0">';
+      }else {
+        echo "Error: " . $sql2 . "<br>" . $con->error;
+
+      }
+
+
+      if (!empty($StatusID) and $StatusID<4) {
+
+        $sql2 = "UPDATE demandbase SET OrderID=$last_id WHERE OrderID=$QID";
+        $sql3 = "UPDATE demandextended SET OrderID=$last_id WHERE OrderID=$QID";
+
+        if ($con->query($sql2) === TRUE) {
+          //echo '<meta http-equiv="refresh" content="0">';
+        }else {
+          echo "Error: " . $sql2 . "<br>" . $con->error;
+
+        }
+
+        if ($con->query($sql3) === TRUE) {
+          //echo '<meta http-equiv="refresh" content="0">';
+        }else {
+          echo "Error: " . $sql3. "<br>" . $con->error;
+
+        }
+
+
+      }elseif(!empty($StatusID) and $StatusID==4){
+
+        $sql2 = "INSERT INTO demandbase (StatusID, OrderID, GeneratedByID, DemandGenDate, ConfirmedByID, ConfirmationDate)
+        VALUES (2, $last_id, $GenID, '$Date', $EXEID, '$Date')";
+
+        if ($con->query($sql2) === TRUE) {
+          //echo '<meta http-equiv="refresh" content="0">';
+        }else {
+          echo "Error: " . $sql2 . "<br>" . $con->error;
+
+        }
+
+        $query2 = "SELECT * from demandextended WHERE OrderID=$QID";
+
+        $result2 = mysqli_query($con, $query2);
+        if(mysqli_num_rows($result2)>0)
+        {
+          while($row2 = mysqli_fetch_array($result2)){
+            $ItemID=$row2["ItemID"];
+            $RateID=$row2["RateID"];
+            $Qty=$row2["ItemQty"];
+
+            $sql3 = "INSERT INTO demandextended (OrderID, ItemID, ItemQty, RateID)
+            VALUES ($last_id, $ItemID, $Qty, $RateID)";
+            if ($con->query($sql3) === TRUE) {
+            }else {
+              echo "Error: " . $sql3. "<br>" . $con->error;
+
+            }
+          }
+        }
+
+        echo '<script>alert("Materials already given to service engineer")</script>';
+      }
+    }else {
+      echo "Error: " . $sql. "<br>" . $con->error;
+
+    }
+    echo '<meta http-equiv="refresh" content="0">';
+    
+  }elseif ($Type=='Complaint'){
+
+    $sql ="SELECT * FROM complaints WHERE ComplaintID=$QID";
+    $result = mysqli_query($con,$sql);
+    $row = mysqli_fetch_array($result); 
+
+    $BranchCode=$row["BranchCode"];
+    $Description=$row["Discription"];
+    $Description='New Reference ID '.$QID.$Description;
+    $DateofInfo=$row["DateOfInformation"];
+    //$ExpDate = date('Y-m-d', strtotime($row["DateOfInformation"]. ' + 6 days'));
+    $ExpDate =$row["ExpectedCompletion"];
+    $ReceivedBy=$row["ReceivedBY"];
+    $MadeBy=$row["MadeBy"];
+    $GadgetID=$row["GadgetID"];
+
+    //$sql = "UPDATE complaints SET `Executive Remark`='$Remark', AttendDate='$Date', Attended=1 WHERE ComplaintID=$ID";
+
+    $sql = "INSERT INTO complaints (BranchCode, Discription, DateOfInformation, ExpectedCompletion, ReceivedBY, MadeBy, EmployeeCode, AssignDate, GadgetID)
+    VALUES ($BranchCode, '$Description', '$DateofInfo', '$ExpDate', '$ReceivedBy', '$MadeBy', $EmployeeCode, '$Date', $GadgetID)";
+
+    if ($con->query($sql) === TRUE) {
+      $last_id = $con->insert_id;
+      $Description='Reference ID '.$last_id.' '.$row["Discription"];
+      $sql = "UPDATE complaints SET AttendDate='$Date', Attended=1, Discription='$Description' WHERE ComplaintID=$QID";
+      if ($con->query($sql) === TRUE) {
+        echo '<meta http-equiv="refresh" content="0">';
+      }else {
+        echo "Error: " . $sql . "<br>" . $con->error;
+
+      }
+    }else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+
+    }
+
+
+  }
+
+
+}
+
+
 
 ?>
 

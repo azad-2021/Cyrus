@@ -3,7 +3,7 @@ include 'connection.php';
 include 'session.php';
 $Type=$_SESSION['usertype'];
 $EXEID=$_SESSION['userid'];
-
+$QueryType='';
 if (isset($_SESSION['userid2'])) {
   $EXEID=$_SESSION['userid2'];
   $Type=$_SESSION['usertype2'];
@@ -75,6 +75,9 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
 
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/searchpanes/2.0.1/css/searchPanes.dataTables.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.4.0/css/select.dataTables.min.css">
+
 </head>
 
 <body>
@@ -117,7 +120,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     </div><!-- End Page Title -->
 
     <div class="table-responsive container">
-      <table id="userTable2" class="table table-hover table-bordered border-primary">
+      <table id="userTable2" class="table table-hover table-bordered border-primary" width="100%">
         <thead>
           <tr>
             <th scope="col">Name</th>
@@ -132,128 +135,83 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
           $Date="2021-10-07 00:00:00";
           if ($Type=="Executive") {
 
-            $query="SELECT `Employee Name` as Employee, Phone, employees.EmployeeCode FROM cyrusbackend. `cyrus regions`
+            $query="SELECT DISTINCT `Assign To` as EmployeeCode, `Employee Name` as Employee, Phone FROM cyrusbackend. `cyrus regions`
             join districts on districts.RegionCode=`cyrus regions`.RegionCode
             join employees on districts.`Assign To`=employees.EmployeeCode
-            WHERE ControlerID=$EXEID and `Assign To`!=0
-            group by `Assign To`";
+            WHERE ControlerID=$EXEID and `Assign To`!=0";
 
-            $resultE=mysqli_query($con,$query);
-            while($dataE=mysqli_fetch_assoc($resultE)){
-              $EmployeeID=base64_encode($dataE['EmployeeCode']);
-              $EmployeeCode=$dataE['EmployeeCode'];
-              $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified  FROM approval WHERE EmployeeID=$EmployeeCode and posted=0";
+          }elseif ($Type=="Reporting" or $QueryType=='reporting'){
 
-              $result=mysqli_query($con,$query);
-              while($data=mysqli_fetch_assoc($result)){
-
-                if ($data['CountData']>0) {
-
-                  ?>
-                  <tr>
-                    <td >
-                      <?php echo $dataE['Employee']; ?>
-                    </td>
-                    <td >
-                      <?php echo $dataE['Phone']; ?>
-                    </td>
-
-                    <td >
-                      <?php
-                      $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
-
-                      echo $toatalCards =$data['CountData'];
-
-                      ?>
-                    </td>
-                    <td> 
-                      <?php
-                      if (!empty($data['LastVerified'])) {
-                       echo date("d-M-Y", strtotime($data['LastVerified']));
-                     }else{
-                      echo 'N/A';
-                    }
-                    ?>
-
-                  </td>
-                  <td>
-                    <?php echo $Action ?>
-                  </td>
-                </tr>
-              <?php }
-            }
-
-          }
-        }elseif ($Type=="Reporting" or $Type=='Dataentry' or $Type=='Super User') {
-
-          if ($Type=="Reporting" ){
-            $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified, `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.approval
-            join reporting on approval.EmployeeID=reporting.EmployeeID
-            join employees on approval.EmployeeID=employees.EmployeeCode
-            WHERE ExecutiveID=$EXEID and posted=0
-            group by EmployeeCode order by Employee";
+            $query= "SELECT `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.reporting
+            join employees on reporting.EmployeeID=employees.EmployeeCode
+            WHERE ExecutiveID=$EXEID order by Employee";
 
           }elseif($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
 
-            $query ="SELECT COUNT(`Card Number`) as CountData, min(VisitDate) as LastVerified,  `Employee Name` as Employee, Phone, employees.EmployeeCode  FROM `jobcardmain`
-            join employees on jobcardmain.EmployeeCode=employees.EmployeeCode
-            join dataentry on jobcardmain.EmployeeCode=dataentry.EmployeeCode
-            Where ServiceDone is null and VisitDate>='$Date' and ExecutiveID=$EXEID group by employees.EmployeeCode order by Employee";
+            $query ="SELECT  `Employee Name` as Employee, Phone, employees.EmployeeCode  FROM employees
+            join dataentry on employees.EmployeeCode=dataentry.EmployeeCode
+            Where ExecutiveID=$EXEID order by Employee";
 
-          }elseif($QueryType=='reporting' and $Type=='Super User'){
-
-           $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified, `Employee Name` as Employee, Phone, EmployeeCode FROM cyrusbackend.approval
-           join reporting on approval.EmployeeID=reporting.EmployeeID
-           join employees on approval.EmployeeID=employees.EmployeeCode
-           WHERE posted=0
-           group by EmployeeCode order by Employee";
-         }
-
-         $result=mysqli_query($con,$query);
-         while($data=mysqli_fetch_assoc($result)){
-
-          $EmployeeID=base64_encode($data['EmployeeCode']);
-          ?>
-          <tr>
-            <td >
-              <?php echo $data['Employee']; ?>
-            </td>
-            <td >
-              <?php echo $data['Phone']; ?>
-            </td>
-
-            <td >
-              <?php
-              if ($Type=='Reporting' or $Type=='Executive') {
-
-                $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
-              }elseif ($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')) {
-                $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
-              }elseif (($Type=='Super User' and $QueryType=='reporting')) {
-               $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
-             }
-
-             echo $toatalCards =$data['CountData'];
-
-             ?>
-           </td>
-           <td> 
-            <?php
-            if (!empty($data['LastVerified'])) {
-             echo date("d-M-Y", strtotime($data['LastVerified']));
-           }else{
-            echo 'N/A';
           }
-          ?>
 
-        </td>
-        <td>
-          <?php echo $Action ?>
-        </td>
-      </tr>
-    <?php } }?>
-  </tbody>
-</table>  
+          $result=mysqli_query($con,$query);
+          while($data2=mysqli_fetch_assoc($result)){
+
+            $EmployeeID=base64_encode($data2['EmployeeCode']);
+            $EmployeeCode=$data2['EmployeeCode'];
+
+            if ($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')){
+
+              $query ="SELECT COUNT(`Card Number`) as CountData, min(VisitDate) as LastVerified  FROM jobcardmain Where ServiceDone is null and VisitDate>='$Date' and EmployeeCode=$EmployeeCode";
+            }elseif($Type=="Reporting" or $QueryType=='reporting' or $Type=="Executive"){
+
+             $query= "SELECT COUNT(approvalID) as CountData, min(VisitDate) as LastVerified FROM cyrusbackend.approval WHERE posted=0 and EmployeeID=$EmployeeCode";
+           }
+
+           $result2=mysqli_query($con,$query);
+           while($data=mysqli_fetch_assoc($result2)){
+
+            ?>
+            <tr>
+              <td >
+                <?php echo $data2['Employee']; ?>
+              </td>
+              <td >
+                <?php echo $data2['Phone']; ?>
+              </td>
+
+              <td >
+                <?php
+                if ($Type=='Reporting' or $Type=='Executive') {
+
+                  $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
+                }elseif ($Type=='Dataentry' or ($Type=='Super User' and $QueryType=='jobcardentry')) {
+                  $Action='<a target="blank" href=jobcardentry.php?empid='.$EmployeeID.'>See Details</a>';
+                }elseif (($Type=='Super User' and $QueryType=='reporting')) {
+                 $Action='<a target="blank" href=vexecutive.php?empid='.$EmployeeID.'>See Details</a>';
+               }
+
+               echo $toatalCards =$data['CountData'];
+
+               ?>
+             </td>
+             <td> 
+              <?php
+              if (!empty($data['LastVerified'])) {
+               echo '<span class="d-none">'.$data['LastVerified'].'</span>'.date("d-M-Y", strtotime($data['LastVerified']));
+             }else{
+              echo 'N/A';
+            }
+            ?>
+
+          </td>
+          <td>
+            <?php echo $Action ?>
+          </td>
+        </tr>
+      <?php } }?>
+    </tbody>
+  </table>  
 </div>
 </main>
 <!-- End #main -->
@@ -286,6 +244,10 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
 
+<script src="https://cdn.datatables.net/searchpanes/2.0.1/js/dataTables.searchPanes.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.4.0/js/dataTables.select.min.js"></script>
+
+
 <script type="text/javascript">
 
   $(document).ready(function() {
@@ -293,6 +255,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     rowReorder: {
       selector: 'td:nth-child(2)'
     },
+    //dom: 'Plfrtip',
     "lengthMenu": [[10, 50, 100, -1], [10, 25, 50, "All"]],
     responsive: true
 

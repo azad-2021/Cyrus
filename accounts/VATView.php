@@ -27,7 +27,9 @@ if(isset($_POST["BranchCode"]))
 ?>
 <br>
 <div class="col-lg-12" style="margin: 12px;">
+  <h5 style="float: right;">Cyrus Code: <?php echo $BranchCode; ?></h5>
   <h5 align="center">VAT Bill Details</h5>
+
   <table class="table table-hover table-bordered border-primary table-responsive"> 
     <thead> 
       <tr> 

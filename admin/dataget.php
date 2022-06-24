@@ -635,6 +635,109 @@ if (!empty($ReminderU))
   }
 }
 
+$EmployeeCodeP=!empty($_POST['EmployeeCodeP'])?$_POST['EmployeeCodeP']:'';
+if (!empty($EmployeeCodeP))
+{
+
+    $SDate=!empty($_POST['SDate'])?$_POST['SDate']:'';
+    $EDate=!empty($_POST['EDate'])?$_POST['EDate']:'';
+
+    $query="SELECT EmployeeCode, `Employee Name` from cyrusbackend.employees WHERE Inservice=1 ORDER BY `Employee Name`";
+
+    $result=mysqli_query($con,$query);
+
+    while($row = mysqli_fetch_array($result)){
+
+      $EmployeeCode=$row["EmployeeCode"];
+
+      $query1="SELECT count(OrderID) as AttendedOrders FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription not like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate'";
+      $result1=mysqli_query($con2,$query1);
+      $row1 = mysqli_fetch_array($result1);
+
+
+
+      $query2="SELECT count(OrderID) as AttendedAMC FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate'";
+      $result2=mysqli_query($con2,$query2);
+      $row2 = mysqli_fetch_array($result2);
+
+      $query3="SELECT count(ComplaintID) as AttendedComplaints FROM cyrusbackend.allcomplaint
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and AttendDate between '$SDate' and '$EDate'";
+      $result3=mysqli_query($con2,$query3);
+      $row3 = mysqli_fetch_array($result3);
+
+      $query4="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+      WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and BillDate between '$SDate' and '$EDate'";
+      $result4=mysqli_query($con2,$query4);
+      $row4 = mysqli_fetch_array($result4);
+
+      $query5="SELECT count(Distinct VisitDate) as WorkingDays FROM cyrusbackend.jobcardmain WHERE EmployeeCode=$EmployeeCode and VisitDate between '$SDate' and '$EDate'";
+      $result5=mysqli_query($con2,$query5);
+      $row5 = mysqli_fetch_array($result5);
+
+
+      $query9="SELECT count(ComplaintID) FROM cyrusbackend.complaints
+      join branchdetails on complaints.BranchCode=branchdetails.BranchCode
+      Where EmployeeCode=$EmployeeCode and AssignDate is not null and Attended=1 and Address3 not like '%reserved%' and datediff(AttendDate, AssignDate)>2 and AttendDate between '$SDate' and '$EDate'";
+      $result9=mysqli_query($con,$query9);
+      $row9 = mysqli_fetch_array($result9);
+
+      $query10="SELECT count(ComplaintID) FROM cyrusbackend.complaints
+      join branchdetails on complaints.BranchCode=branchdetails.BranchCode
+      Where EmployeeCode=$EmployeeCode and AssignDate is not null and Attended=1 and Address3 not like '%reserved%' and datediff(AttendDate, AssignDate)<=2 and AttendDate between '$SDate' and '$EDate'";
+      $result10=mysqli_query($con,$query10);
+      $row10 = mysqli_fetch_array($result10);
+
+
+
+      $query11="SELECT count(OrderID) FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription not like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate' and datediff(AttendDate, AssignDate)<=10";
+      $result11=mysqli_query($con,$query11);
+      $row11 = mysqli_fetch_array($result11);
+
+      $query12="SELECT count(OrderID) FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription not like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate' and datediff(AttendDate, AssignDate)>10";
+      $result12=mysqli_query($con,$query12);
+      $row12 = mysqli_fetch_array($result12);
+
+
+
+      $query13="SELECT count(OrderID) FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate' and datediff(AttendDate, AssignDate)<=60";
+      $result13=mysqli_query($con,$query13);
+      $row13 = mysqli_fetch_array($result13);
+
+      $query14="SELECT count(OrderID) FROM cyrusbackend.orders
+      WHERE EmployeeCode=$EmployeeCode and Attended=1 and Discription like '%AMC%' and
+      AttendDate between '$SDate' and '$EDate' and datediff(AttendDate, AssignDate)>60";
+      $result14=mysqli_query($con,$query14);
+      $row14 = mysqli_fetch_array($result14);
+
+
+      if ($row1["AttendedOrders"]!=0 or $row2["AttendedAMC"]!=0 or $row3["AttendedComplaints"]!=0) {
+        ?>
+        <tr>
+          <td><?php echo $row["Employee Name"]; ?></td>
+          <td> <a class="view_WorkReportOP" id="<?php print $EmployeeCode ?>" data-bs-target="#WorkReport"><?php echo $row1["AttendedOrders"]; ?></a></td>
+          <td> <a class="view_WorkReportCP" id="<?php print $EmployeeCode ?>" data-bs-target="#ReportC"><?php echo $row3["AttendedComplaints"]; ?></a></td>
+          <td> <a class="view_WorkReportAP" id="<?php print $EmployeeCode ?>" data-bs-target="#ReportAMC"><?php echo $row2["AttendedAMC"]; ?></a></td>
+          <td><?php echo $row5["WorkingDays"]; ?></td>
+          <td><?php echo $row10["count(ComplaintID)"]+$row11["count(OrderID)"]+$row13["count(OrderID)"]; ?></td>
+          <td><?php echo $row9["count(ComplaintID)"]+$row12["count(OrderID)"]+$row14["count(OrderID)"]; ?></td>
+          <td> <a class="view_WorkReportBP" id="<?php print $EmployeeCode ?>" data-bs-target="#ReportAMC"><?php echo number_format($row4["sum(TotalBilledValue)"],2); ?></a></td>
+
+
+      </tr>
+      <?php 
+  }
+}
+}
 
 $con->close();
 $con2->close();

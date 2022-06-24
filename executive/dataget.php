@@ -1,5 +1,11 @@
 <?php 
 include 'connection.php';
+include "session.php";
+if (isset($_SESSION['query'])) {
+  $EXEID=$_SESSION['query'];
+}else{
+  $EXEID=$_SESSION['userid'];
+}
 
 $BankCode=!empty($_POST['BankCode'])?$_POST['BankCode']:'';
 if (!empty($BankCode))
@@ -62,26 +68,50 @@ $ZoneCodeAMC=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
 
 if (!empty($ZoneCodeAMC))
 {   
-    $myfile = fopen("ZoneCodeAMC.txt", "w") or die("Unable to open file!");
-    fwrite($myfile, $ZoneCodeAMC);
-    fclose($myfile);
-    $ZoneAMC="SELECT * from amcs WHERE ZoneRegionCode=$ZoneCodeAMC";
-    $result=mysqli_query($con,$ZoneAMC);
-    if (mysqli_num_rows($result)>0)
-    {
+  $myfile = fopen("ZoneCodeAMC.txt", "w") or die("Unable to open file!");
+  fwrite($myfile, $ZoneCodeAMC);
+  fclose($myfile);
+  $ZoneAMC="SELECT * from amcs WHERE ZoneRegionCode=$ZoneCodeAMC";
+  $result=mysqli_query($con,$ZoneAMC);
+  if (mysqli_num_rows($result)>0)
+  {
 
-        while ($row=mysqli_fetch_assoc($result))
-        {
-            print "<tr>";
-            print '<td style="min-width: 150px;">'.$row["Device"]."</td>";
-            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["StartDate"]))."</td>";
-            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["EndDate"]))."</td>";
-            print '<td style="min-width: 150px;">'.$row["Visits"]."</td>";
-            print '<td style="min-width: 150px;">'.$row["Rate"]."</td>";
-            print '</tr>';
-        }
-        
+    while ($row=mysqli_fetch_assoc($result))
+    {
+      print "<tr>";
+      print '<td style="min-width: 150px;">'.$row["Device"]."</td>";
+      print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["StartDate"]))."</td>";
+      print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["EndDate"]))."</td>";
+      print '<td style="min-width: 150px;">'.$row["Visits"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["Rate"]."</td>";
+      print '</tr>';
     }
+
+  }
+}
+
+$Regiondata=!empty($_POST['Regiondata'])?$_POST['Regiondata']:'';
+
+if (!empty($Regiondata))
+{   
+
+  $Region="SELECT * FROM cyrusbackend.districts
+  join `cyrus regions`on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE ControlerID=$EXEID 
+  order by RegionName";
+  $result=mysqli_query($con,$Region);
+  if (mysqli_num_rows($result)>0)
+  {
+
+    while ($row=mysqli_fetch_assoc($result))
+    {
+      print "<tr>";
+      print '<td>'.$row["RegionName"]."</td>";
+      print '<td>'.$row["District"]."</td>";
+      print '</tr>';
+    }
+
+  }
 }
 
 ?>

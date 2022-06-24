@@ -3,7 +3,9 @@
 include 'connection.php';
 include 'session.php';
 $User=$_SESSION['user'];
-
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$DateR = date('d-M-y h:i A',strtotime($timestamp));
 $Data=!empty($_POST['Data'])?$_POST['Data']:'';
 //$Data='{"EmployeeID":"176","ComplaintID":"89524","Date":"2021-12-20","Status":"Unassigned"}';
 //$Data='{"EmployeeID":"176","OrderID":"186261","Date":"2021-12-22","Status":"Unassigned"}';
@@ -158,6 +160,20 @@ $ERemarkO=!empty($_POST['ERemarkO'])?$_POST['ERemarkO']:'';
 if (!empty($ERemarkO))
 {
 	$EOrderID=!empty($_POST['EOrderID'])?$_POST['EOrderID']:'';
+
+	$sql ="SELECT `Executive Remark` FROM orders WHERE OrderID=$EOrderID";
+
+	$result = mysqli_query($con,$sql);
+
+	if (mysqli_num_rows($result)>0)
+	{ 
+		$row = mysqli_fetch_array($result);
+		$exRemark=$row["Executive Remark"];
+	}else{
+		$exRemark='';
+	}
+	$ERemarkO=$_SESSION['user'].' - '.$DateR.' - '.$ERemarkO.' '.$exRemark;
+
 	$sql = "UPDATE orders SET `Executive Remark`='$ERemarkO' WHERE OrderID=$EOrderID";
 	if ($con->query($sql) === TRUE) {
 	}else {
@@ -171,6 +187,20 @@ $ERemarkC=!empty($_POST['ERemarkC'])?$_POST['ERemarkC']:'';
 if (!empty($ERemarkC))
 {
 	$EComplaintID=!empty($_POST['EComplaintID'])?$_POST['EComplaintID']:'';
+
+	$sql ="SELECT `Executive Remark` FROM complaints WHERE ComplaintID=$EComplaintID";
+
+	$result = mysqli_query($con,$sql);
+
+	if (mysqli_num_rows($result)>0)
+	{ 
+		$row = mysqli_fetch_array($result);
+		$exRemark=$row["Executive Remark"];
+	}else{
+		$exRemark='';
+	}
+	$ERemarkC=$_SESSION['user'].' - '.$DateR.' - '.$ERemarkC.' '.$exRemark;
+
 	$sql = "UPDATE complaints SET `Executive Remark`='$ERemarkC' WHERE ComplaintID=$EComplaintID";
 	if ($con->query($sql) === TRUE) {
 	}else {

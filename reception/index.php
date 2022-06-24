@@ -61,12 +61,32 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
+  <style type="text/css">
+  .overlay{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.8) url("assets/img/loader.gif") center no-repeat;
+  }
 
+  /* Turn off scrollbar when body element has the loading class */
+  body.loading{
+    overflow: hidden;   
+  }
+  /* Make spinner image visible when body element has the loading class */
+  body.loading .overlay{
+    display: block;
+  }
+</style>
 
 </head>
 
 <body>
-
+<div class="overlay"></div>
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -545,6 +565,97 @@ $(document).on('change','#Type', function(){
   document.getElementById("MadeBy").value = "";
 }
 });
+
+$(document).on('click', '.GenerateRefID', function(){
+
+  var ID=document.getElementById("QID").value;
+  var Type=document.getElementById("TypeGen").value;
+  var ReassignGen=document.getElementById("ReassignGen").value;
+if (ReassignGen) {
+  $.ajax({
+    url:"dataget.php",
+    method:"POST",
+    data:{"QID":ID, "GenType":Type, "ReassignGen":ReassignGen},
+    success:function(data){
+      swal("success","Reference ID Generated", "success");
+    }
+  });
+}else{
+  swal("error","Please select employee","error");
+}
+
+  if (Type=='Order') {
+
+    let interval = setInterval(function(){
+
+      $.ajax({
+       url:"ordersView.php",
+       method:"POST",
+       data:{OrderID:ID},
+       success:function(data){
+        $('#OrdersData').html(data);
+        $('#dataModal').modal('show');
+      }
+    });
+      clearInterval(interval); 
+    }, 1000);
+  }else{
+
+    let interval = setInterval(function(){
+      $.ajax({
+       url:"complaintsView.php",
+       method:"POST",
+       data:{ComplaintID:ID},
+       success:function(data){
+        $('#ComplaintsData').html(data);
+        $('#dataModal2').modal('show');
+      }
+    });
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+  var BranchCode = document.getElementById("Branch").value;
+
+  if(BranchCode){
+    let interval = setInterval(function(){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BranchCode':BranchCode},
+        success:function(result){
+          $('#Order').html(result);        
+
+
+        }
+      }); 
+
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'BrCode':BranchCode},
+        success:function(result){
+          $('#Complaints').html(result);
+
+        }
+      }); 
+
+      clearInterval(interval); 
+    }, 1000);
+
+  }
+});
+
+$(document).on({
+  ajaxStart: function(){
+    $("body").addClass("loading"); 
+  },
+  ajaxStop: function(){ 
+    $("body").removeClass("loading"); 
+  }    
+});
+
+
 </script>
 </body>
 

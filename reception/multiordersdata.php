@@ -10,7 +10,7 @@ $ZoneCodeGST=!empty($_POST['ZoneCodeGST'])?$_POST['ZoneCodeGST']:'';
 if (!empty($ZoneCode))
 {  
   $query="SELECT * FROM cyrusbackend.branchdetails
-  WHERE ZoneRegionCode=$ZoneCode and BankCode=$BankCode order by BranchName";
+  WHERE ZoneRegionCode=$ZoneCode and BankCode=$BankCode and Address3!='Reserved' order by BranchName";
   $result=mysqli_query($con,$query);
   while($row=mysqli_fetch_assoc($result)){
 

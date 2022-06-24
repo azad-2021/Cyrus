@@ -65,32 +65,29 @@ $Site = site();
 
 if(isset($_FILES['image'])){
 
-
-
-  if ((empty($AMCID)==false)) {
-      // code...
-    $OID=$AMCID;
-  }
-  $errors='';
   $JOBCARD = getjobcard();
+  $errors='';
+  if ((empty($AMCID)==false)) {
+    $JOBCARD=$JOBCARD.'AMC';
+    $OID=$AMCID;
+  }else{
+    $query ="SELECT * FROM orders where Discription like '%AMC%' and AssignDate is not null and Attended=0 and BranchCode=$BranchCode";
+    $resultAMC = mysqli_query($con2, $query);
+    if (mysqli_num_rows($resultAMC)>0){
+      $AMCR=1;
+    }else{
+      $AMCR=0;
+    }
+  }
   $GadgetID = $_POST['GadgetID'];
   $VisitDate=$_POST['VisitDate'];
 
   $query ="SELECT * FROM `approval` where JobCardNo='$JOBCARD' and posted=0";
   $result = mysqli_query($con2, $query);
 
-  if ($OID>0) {
-    $query3 ="SELECT OrderID FROM orders where BranchCode=$BranchCode and AssignDate is not null and Attended=0";
-  }else{
-    $query3 ="SELECT ComplaintID FROM complaints where BranchCode=$BranchCode and AssignDate is not null and Attended=0";
-  }
-
-  $result3 = mysqli_query($con2, $query3);
-
   $query2 ="SELECT * FROM `jobcardmain` where `Card Number`='$JOBCARD'";
   $result2 = mysqli_query($con2, $query2);
 
-  $name='';
   if (mysqli_num_rows($result)>0){
     $dataName=mysqli_fetch_assoc($result);
     $name = $dataName['JobCardNo']; 
@@ -100,7 +97,6 @@ if(isset($_FILES['image'])){
   }
 
   $AddTech = tech();
-    //echo $JOBCARD;
   $file_name = $_FILES['image']['name'];
     //$file_name = 'data';
   $file_size =$_FILES['image']['size'];
@@ -130,17 +126,17 @@ if(isset($_FILES['image'])){
     $errors = '<script>alert("Visit Date must be greater than Posted Date")</script>';
   }elseif($VisitDate>$LDate){
     $errors = '<script>alert("Visit Date must be less than or equal to current Date")</script>';
-  }elseif (mysqli_num_rows($result3)>0 and $OID>0){
-    $errors = '<script>alert("इस ब्रांच में AMC या Order अभी पेंडिंग है, अतः इसे पूरा करके पुनः jobcard अपलोड करे। ")</script>';
-  }elseif (mysqli_num_rows($result3)>0 and $ComplaintID>0){
-    $errors = '<script>alert("इस ब्रांच में Complaint अभी पेंडिंग है, अतः इसे पूरा करके पुनः jobcard अपलोड करे। ")</script>';
+  }elseif($AMCR==1){
+    $errors = '<script>alert("AMC Visit is due on this branch, Please complete it")</script>';
   }
 
 
 
   if(empty($errors)==true){
     $JOBCARD = getjobcard();
-
+    if ((empty($AMCID)==false)) {
+      $JOBCARD=$JOBCARD.'AMC';
+    }
 
     if (isset($_POST['VisitDate'])) {
       $Date = $_POST['VisitDate'];

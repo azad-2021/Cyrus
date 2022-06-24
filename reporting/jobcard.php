@@ -43,7 +43,10 @@ $BankCode=$row["BankCode"];
 $Bank=$row["BankName"];
 
 if (strpos($jobcard, 'AMC') == true) {
-
+  $s=substr($jobcard,-1) ;
+  if ($s!='C') {
+    $jobcard=substr($jobcard, 0,-1) ;
+  }
   $s=substr($jobcard, 0,-1) ;
   $s=substr($s, 0,-1) ;
   $jobcard=substr($s, 0,-1) ;
@@ -73,7 +76,10 @@ if ($s == 'C') {
 if (strpos(base64_decode($_GET['cardno']), 'AMC') == true) {
 
   $jobcard = base64_decode($_GET['cardno']);
-
+  $s=substr($jobcard, -1) ;
+  if ($s!='C') {
+    $jobcard=substr($jobcard, 0,-1) ;
+  }
 
 }
 
@@ -220,7 +226,7 @@ if(isset($_POST['submit'])){
     if ($link=='Alarm') {
      ?>
      <div class="table-responsive container">
-      <table class="table table-hover table-bordered border-primary">
+      <table class="table table-hover table-bordered border-primary" width="100%">
         <thead>
           <tr>
             <th style="text-align:center">Bank</th>

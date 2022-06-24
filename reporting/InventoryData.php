@@ -109,59 +109,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
     <section class="section dashboard">
 
-     <div class="modal fade" data-bs-backdrop="static" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-corner">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Materials</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div id="material">
-
-            </div>
-            <br>
-            <form id="f1">
-              <div class="col-lg-3">
-                <input type="number" name="" id="order_id" class="d-none form-control">
-              </div>
-              <div class="col-lg-3">
-                <input type="number" name="" id="zone_code" class="d-none form-control">
-              </div>
-              <div class="row text-centered">
-                <div class="col-lg-5">
-                  <center>
-                    <label >Select Items</label>
-                  </center>
-                  <select id="ItemID" class="form-control rounded-corner" name="Items" required>
-                    <option value="">Select</option>
-                  </select>
-                </div>
-                <div class="col-lg-5">
-                  <center>
-                    <label>Enter Quantity</label>
-                  </center>
-                  <input type="number" name="" id="qty" class="form-control rounded-corner" onkeydown="limit(this);" onkeyup="limit(this);">
-                </div>
-                <div class="col-lg-2">
-                  <center>
-                    <label></label>
-                    <br>
-                  </center>
-                  <button type="button" class="btn btn-primary btn-lg addUpdateItems">Add</button>
-                </div>
-
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary confirmUpdate cl">Confirm</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Recent Sales -->
     <div class="col-12">
       <div class="card recent-sales overflow-auto">

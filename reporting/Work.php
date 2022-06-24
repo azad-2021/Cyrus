@@ -15,8 +15,6 @@ date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -72,7 +70,12 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
-
+<style type="text/css">
+a {
+  cursor: pointer;
+  margin: 15px 0;
+}
+</style>
 </head>
 
 <body>
@@ -399,6 +402,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/main.js"></script>
   <script src="ajax.js"></script>
+  <script src="search.js"></script>
+  <script src="ajax-script.js"></script>
   <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
   <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>

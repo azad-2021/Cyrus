@@ -4,6 +4,7 @@ include('connection.php');
 include 'session.php';
 $card = base64_decode($_GET['card']);
 
+
 echo $card;
 
 $fileImg='jobcard/'.$card.'.jpg';

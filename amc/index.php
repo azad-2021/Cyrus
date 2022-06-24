@@ -53,11 +53,40 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
 
+  <style type="text/css">
+  table{
+    font-size: 14px;
+  }
+  th,a {
+    cursor: pointer;
+  }
+
+
+  .overlay{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    background: rgba(255,255,255,0.8) url("assets/img/loader.gif") center no-repeat;
+  }
+  /* Turn off scrollbar when body element has the loading class */
+  body.loading{
+    overflow: hidden;   
+  }
+  /* Make spinner image visible when body element has the loading class */
+  body.loading .overlay{
+    display: block;
+  }
+</style>
 
 </head>
 
 <body>
 
+  <div class="overlay"></div>
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -239,25 +268,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
 
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('table.display').DataTable( {
-      responsive: false,
-      responsive: {
-        details: {
-          display: $.fn.dataTable.Responsive.display.modal( {
-            header: function ( row ) {
-              var data = row.data();
-              return 'Details for '+data[0]+' '+data[1];
-            }
-          } ),
-          renderer: $.fn.dataTable.Responsive.renderer.tableAll( {
-            tableClass: 'table'
-          } )
-        }
-      },
-      stateSave: true,
-    } );
-  } );
+
 
 
   $(document).on('change','#Bank', function(){
@@ -337,6 +348,15 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     document.body.innerHTML = originalContents;
   }
 
+
+    $(document).on({
+      ajaxStart: function(){
+        $("body").addClass("loading"); 
+      },
+      ajaxStop: function(){ 
+        $("body").removeClass("loading"); 
+      }    
+    });
 </script>
 </body>
 

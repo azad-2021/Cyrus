@@ -380,3 +380,34 @@
 
 
 <!-- End released Materails-->
+
+
+<div class="modal fade" id="AssignedRegion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Region and District</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div style="margin: 12px;">
+          <table class="container table table-hover table-bordered border-primary table-responsive"> 
+            <thead> 
+              <tr> 
+                <th style="min-width:150px">Region</th>
+                <th style="min-width:150px">District</th>                   
+              </tr>                     
+            </thead>                 
+            <tbody id="RegionData">
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

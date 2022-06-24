@@ -304,7 +304,7 @@ function numberTowords($num)
         Invoice No.: <strong><?php echo ' '.$BookNo ?></strong>
       </p>
       <p style="font-size:10px; color: black; margin-top: -12px;">
-        Date: <strong><?php echo ' '.$Date ?></strong>
+        Date: <strong><?php echo ' '.date('d-M-Y',strtotime($Date)) ?></strong>
       </p>
     </div>
 

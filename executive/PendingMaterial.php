@@ -13,9 +13,8 @@ if (isset($_GET['user'])) {
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
+$DateR = date('d-M-y h:i A',strtotime($timestamp));
 
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -29,6 +28,32 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
+if (isset($_POST['submit'])) {
+  $OrderID=$_POST['EOrderID'];
+  $Remark=$_POST['ERemark'];
+
+  $sql ="SELECT `Executive Remark` FROM orders WHERE OrderID=$OrderID";
+
+  $result = mysqli_query($con,$sql);
+  
+  if (mysqli_num_rows($result)>0)
+  { 
+    $row = mysqli_fetch_array($result);
+    $exRemark=$row["Executive Remark"];
+  }else{
+    $exRemark='';
+  }
+  $Remark=$_SESSION['user'].' - '.$DateR.' - '.$Remark.' '.$exRemark;
+  $sql = "UPDATE orders SET `Executive Remark`='$Remark' WHERE OrderID=$OrderID";
+  if ($con->query($sql) === TRUE) {
+    echo '<meta http-equiv="refresh" content="0">';
+  }else {
+    echo "Error: " . $sql . "<br>" . $con->error;
+
+  }
+}
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,13 +63,13 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Home</title>
+  <title>Pending Material Confirmation</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
   <link href="assets/img/cyrus logo.png" rel="icon">
-  
+
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -165,6 +190,39 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         </div>
       </div>
 
+
+      <div class="modal fade" data-bs-backdrop="static" id="AddRemark" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content rounded-corner">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Executive Remark</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="f1" method="POST" action="">
+                <div class="row text-centered">
+                  <center>
+                    <div class="col-lg-6">
+
+                      <label >Enter Remark</label>
+                      <textarea class="form-control rounded-corner" name="ERemark" required></textarea>
+
+                    </div>
+                  </center>
+                  <div class="col-lg-3 d-none">
+                    <input type="text" id="EOrderID" name="EOrderID" class="form-control">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary cl" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
       <!-- Recent Sales -->
       <div class="col-12">
         <div class="card recent-sales overflow-auto">
@@ -182,12 +240,14 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                     <th scope="col" style="min-width:100px">Order ID</th>
                     <th scope="col" style="min-width:300px">Description</th>
                     <th scope="col" style="min-width:150px">Order Date</th>
+                    <th scope="col" style="min-width:150px">Remark</th>
+                    <th scope="col" style="min-width:150px">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php 
-                  $sql ="SELECT orders.OrderID, StatusID, Discription, DateOfInformation, orders.BranchCode, DemandGenDate, BankName, ZoneRegionName, ZoneRegionCode, BranchName
-                  FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
+                  $sql ="SELECT orders.OrderID, StatusID, Discription, DateOfInformation, orders.BranchCode, DemandGenDate, BankName, ZoneRegionName, ZoneRegionCode, BranchName, `Executive Remark` FROM cyrusbackend.orders 
+                  join demandbase on orders.OrderID=demandbase.OrderID
                   join branchdetails on orders.BranchCode=branchdetails.BranchCode
                   join districts on branchdetails.Address3=districts.district
                   join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
@@ -206,6 +266,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
                     <td><?php echo $row["Discription"]; ?></td>
                     <td><?php echo $row["DateOfInformation"]; ?></td>
+                    <td><?php echo $row["Executive Remark"]; ?></td>
+                    <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>">Add Remark</a></td>
                   </tr>
                 <?php } ?>
               </tbody>
@@ -305,6 +367,13 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }
   }
 
+
+  $(document).on('click', '.AddRemark', function(){
+  //$('#dataModal').modal();
+  var OrderID=$(this).attr("id");
+  document.getElementById("EOrderID").value=OrderID;
+  //console.log(OrderID);
+});
 
 </script>
 </body>

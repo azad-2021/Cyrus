@@ -66,7 +66,7 @@ if(isset($_POST["BranchCode"]))
         print '<td><a target="blank" href=/cyrus/reporting/billView.php?billno='.$enBillNo.'>'.$BillNo.'</a></td>';
         print "<td>".$BillDate."</td>";
 
-        print '<td style="color:blue" data-bs-toggle="modal" data-bs-billdate="'.$BillDate.'" data-bs-SGST="'.$SGST.'" data-bs-CGST="'.$CGST.'" data-bs-IGST="'.$IGST.'"  data-bs-Billno="'.$BillNo.'" data-bs-Totalamount="'.$BillAmount.'" data-bs-Receiveamount="'.$ReceiveAmount.'" data-bs-DD="'.$row['DD/Online'].'" data-bs-SAmount="'.$row['SecurityAmt'].'" data-bs-SDt="'.$row['SecurityDt'].'" data-bs-SRAmount="'.$row['SecurityRcdAmt'].'" data-bs-SRDt="'.$row['SecurityRcdDt'].'" data-bs-Remark="'.$row['Remark'].'" data-bs-ReceiveDate="'.$ReceiveDate.'" " data-bs-target="#GSTPayment">&#x20B9 '.$BillAmount."</td>"; 
+        print '<td style="color:blue" class="PaymentUpdate" data-bs-toggle="modal" data-bs-target="#GSTPayment" BillDate="'.$BillDate.'" SGST="'.$SGST.'" CGST="'.$CGST.'" IGST="'.$IGST.'"  Billno="'.$BillNo.'" Totalamount="'.$BillAmount.'" Receiveamount="'.$ReceiveAmount.'" DD="'.$row['DD/Online'].'" SAmount="'.$row['SecurityAmt'].'" SDt="'.$row['SecurityDt'].'" SRAmount="'.$row['SecurityRcdAmt'].'" SRDt="'.$row['SecurityRcdDt'].'" Remark="'.$row['Remark'].'" ReceiveDate="'.$ReceiveDate.'" " >&#x20B9 '.$BillAmount."</td>"; 
 
         print "<td>&#x20B9 ".$ReceiveAmount."</td>";             
         print "<td>".$ReceiveDate."</td>";

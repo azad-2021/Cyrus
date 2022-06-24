@@ -29,6 +29,20 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
+if (isset($_POST['submit'])) {
+  $OrderID=$_POST['EOrderID'];
+  $Remark=$_POST['ERemark'];
+
+  $sql = "UPDATE orders SET `Executive Remark`='$Remark' WHERE OrderID=$OrderID";
+  if ($con->query($sql) === TRUE) {
+    echo '<meta http-equiv="refresh" content="0">';
+  }else {
+    echo "Error: " . $sql . "<br>" . $con->error;
+
+  }
+}
+
+
 ?>
 
 
@@ -167,6 +181,39 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       </div>
     </div>
 
+
+    <div class="modal fade" data-bs-backdrop="static" id="AddRemark" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content rounded-corner">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Executive Remark</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="f1" method="POST" action="">
+              <div class="row text-centered">
+                <center>
+                  <div class="col-lg-6">
+
+                    <label >Enter Remark</label>
+                    <textarea class="form-control rounded-corner" name="ERemark" required></textarea>
+
+                  </div>
+                </center>
+                <div class="col-lg-3 d-none">
+                  <input type="text" id="EOrderID" name="EOrderID" class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary cl" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
     <!-- Recent Sales -->
     <div class="col-12">
       <div class="card recent-sales overflow-auto">
@@ -182,6 +229,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th scope="col" style="min-width:200px">Zone</th>
                   <th scope="col" style="min-width:200px">Branch</th>                       
                   <th scope="col" style="min-width:300px">Description</th>
+                  <th scope="col" style="min-width:120px">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -209,6 +257,9 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                     <td ><?php echo $row['ZoneRegionName']; ?></td>
                     <td ><?php echo $row['BranchName']; ?></td>
                     <td><?php echo $row['Discription']; ?></td>
+
+                    <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>">Add Remark</a></td>
+                  </tr>
 
                   </tr>
                   <?php
@@ -323,6 +374,13 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     element.value = element.value.substr(0, max_chars);
   }
 }
+
+  $(document).on('click', '.AddRemark', function(){
+  //$('#dataModal').modal();
+  var OrderID=$(this).attr("id");
+  document.getElementById("EOrderID").value=OrderID;
+  //console.log(OrderID);
+});
 
 </script>
 </body>

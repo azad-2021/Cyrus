@@ -39,7 +39,8 @@ if(isset($_POST["EmployeeID"]))
           <th style="min-width:20px">SNo.</th>
           <th style="min-width:150px">Bank</th>
           <th style="min-width:150px">Zone</th>
-          <th style="min-width:150px">Branch</th> 
+          <th style="min-width:150px">Branch</th>
+          <th style="min-width:150px">District</th>  
           <th style="min-width:150px">Complaint ID</th>
           <th style="min-width:500px">Discription</th>
           <th style="min-width:150px">Information Date</th>
@@ -91,6 +92,7 @@ if(isset($_POST["EmployeeID"]))
               <td><?php echo $BANK; ?></td>
               <td ><?php echo $row['ZoneRegionName']; ?></td>
               <td><?php echo $row['BranchName']; ?></td>
+              <td><?php echo $row['Address3']; ?></td>
               <td><?php echo $row['ComplaintID']; ?></td>
               <td><?php echo $row['Discription']; ?></td>
               <td><?php echo date("d-M-Y", strtotime($row['DateOfInformation'])); ?></td>

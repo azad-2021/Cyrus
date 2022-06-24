@@ -238,7 +238,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         <thead>
           <tr>
             <th scope="col">Approval ID</th>
-            <th scope="col">Emplyee</th>
+            <th scope="col">Employee</th>
             <th scope="col">Action</th>
             <th scope="col">Print</th> 
           </tr>

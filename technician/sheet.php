@@ -35,10 +35,10 @@ switch ($UID){
         $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vQiv5igMbtJlaAUlq6W0Brn5PTFjcCNXXmTv6a0TexSJcA03dVq39XSQDFR90p2zg/pubhtml' target = '_blank'";
         break;
     case 70:
-        $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSKfZEGXRT1Z6RrtDuPB7IexB8cEsL3KQU2b4fqn1W4GMvM8Ps6_mzsvN2-Hl77g/pubhtml' target = '_blank'";
+        $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQ1A5OfHP2baE62CUbNKPqSY2HfVkja9JzL7Fib9RTNd4Eju0LuuDJUVuCcH6xTQ/pubhtml' target = '_blank'";
         break;
     case 73:
-        $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vTaASyTLzuh8RI5aGuuwBrwvqtXUMYnh7-zjPkpnbtyKuuAvmpZmDBnxA0TphgfUQ/pubhtml' target = '_blank'";
+        $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQ1A5OfHP2baE62CUbNKPqSY2HfVkja9JzL7Fib9RTNd4Eju0LuuDJUVuCcH6xT1/pubhtml' target = '_blank'";
         break;
     case 81:
         $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vSvem9NuSvxkwPM2w0EnScW49tah5CVeKhHCa2q70nzPAP6KAyuswDsgNJk3UkcJA/pubhtml' target = '_blank'";
@@ -180,6 +180,9 @@ switch ($UID){
         break;
     case 289:
         $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7IFhxPI9QlW1w_EIh13awubm1cJJjb_44HQXU16pEF0FxM6ZzWUJ-dfSMNiCybQ/pubhtml' target = '_blank'";
+        break;
+	case 295:
+        $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vTUOYLvgICIk0Hn55kNJTsc-3zaPi2lcoK4jgEYxH2kXKgj6PSLQ6GCoGe7H9m-9w/pubhtml' target = '_blank'";
         break;
     case 2224:
         $sheet = "'https://docs.google.com/spreadsheets/d/e/2PACX-1vRSsO7eFgXXiflUOoJtt4N0lkaPouH-hQA0u8AG60GUB7NRwBKNVFicWRErQpO7jA/pubhtml' target = '_blank'";

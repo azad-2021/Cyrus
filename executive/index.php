@@ -67,6 +67,7 @@ join cyrusbackend.`cyrus regions` on districts.RegionCode=`cyrus regions`.Region
 WHERE Inservice=1 and ControlerID=$EXEID Order By `Employee Name`";
 $resultTech=mysqli_query($con,$query);
 $TotalPendingWork=0;
+
 while($rowE=mysqli_fetch_assoc($resultTech)){
  $Employee=$rowE["Employee Name"];
  $EmployeeID=$rowE["EmployeeCode"];
@@ -101,6 +102,7 @@ while($rowE=mysqli_fetch_assoc($resultTech)){
 
  $TotalPendingWork=$TotalPendingWork+$PendingWork;
 }
+
 
 rsort($data);
 
@@ -156,6 +158,79 @@ while ($row = mysqli_fetch_array($result)) {
 }
 rsort($data3);
 
+
+$queryT="SELECT TargetAmounts, EmployeeCode FROM cyrusbackend.employees
+join districts on employees.EmployeeCode=districts.`Assign To`
+join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+WHERE ControlerID=$EXEID
+group by EmployeeCode";
+$resultT=mysqli_query($con,$queryT);
+
+$TargetArray=array();
+$AceivedArray=array();
+
+while ($rowT=mysqli_fetch_assoc($resultT)){
+
+  $EmployeeCode=$rowT["EmployeeCode"];
+  $query4="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+  WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and month(BillDate)=month(current_date()) and year(BillDate)=year(current_date())";
+  $result4=mysqli_query($con2,$query4);
+  $row4 = mysqli_fetch_array($result4);
+
+  $TargetArray[]=$rowT["TargetAmounts"];
+  $AceivedArray[]=$row4["sum(TotalBilledValue)"];
+
+  $query5="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+  WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and month(BillDate)=(month(current_date())-1) and year(BillDate)=year(current_date())";
+  $result5=mysqli_query($con2,$query5);
+  $row5 = mysqli_fetch_array($result5);
+  $AceivedArray1[]=$row5["sum(TotalBilledValue)"];
+
+  $query5="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+  WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and month(BillDate)=(month(current_date())-2) and year(BillDate)=year(current_date())";
+  $result5=mysqli_query($con2,$query5);
+  $row5 = mysqli_fetch_array($result5);
+  $AceivedArray2[]=$row5["sum(TotalBilledValue)"];
+
+  $query5="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+  WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and month(BillDate)=(month(current_date())-3) and year(BillDate)=year(current_date())";
+  $result5=mysqli_query($con2,$query5);
+  $row5 = mysqli_fetch_array($result5);
+  $AceivedArray3[]=$row5["sum(TotalBilledValue)"];
+
+}
+
+$Target=array_sum($TargetArray);
+$AcheivedTarget=array_sum($AceivedArray);
+$PendingTarget=$Target-$AcheivedTarget;
+
+$AcheivedTarget1=array_sum($AceivedArray1);
+$PendingTarget1=$Target-$AcheivedTarget1;
+
+$AcheivedTarget2=array_sum($AceivedArray2);
+$PendingTarget2=$Target-$AcheivedTarget2;
+
+$AcheivedTarget3=array_sum($AceivedArray3);
+$PendingTarget3=$Target-$AcheivedTarget3;
+
+if ($PendingTarget<0) {
+  $PendingTarget=0;
+}
+
+if ($PendingTarget1<0) {
+  $PendingTarget1=0;
+}
+
+if ($PendingTarget2<0) {
+  $PendingTarget2=0;
+}
+
+if ($PendingTarget3<0) {
+  $PendingTarget3=0;
+}
+
+
+
 ?>
 
 
@@ -190,6 +265,9 @@ rsort($data3);
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
   <script src="assets/js/sweetalert.min.js"></script>
+
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 
 </head>
@@ -306,6 +384,53 @@ rsort($data3);
 
           <!-- Reports -->
 
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Billing Target <span>  <?php echo date('M',strtotime($timestamp));;?><a style="float:right" href="employeetarget.php" target="_blank">Show All</a></span></h5>
+
+                <div id="piechart" align="center"></div>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-1 month"));?><a style="float:right" href="employeetarget1.php" target="_blank">Show All</a></span></h5>
+
+                  <div id="piechart2" align="center" style="width: 180px;"></div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-2 month"));?><a style="float:right" href="employeetarget2.php" target="_blank">Show All</a></span></h5>
+
+                  <div id="piechart3" align="center" style="width: 180px;"></div>
+
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-3 month"));?><a style="float:right" href="employeetarget3.php" target="_blank">Show All</a></span></h5>
+
+                  <div id="piechart4" align="center" style="width: 180px;"></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="col-12">
             <div class="card">
 
@@ -341,6 +466,7 @@ rsort($data3);
               </div>
             </div>
           </div>
+
 
           <!-- Recent Sales -->
           <div class="col-12">
@@ -631,11 +757,143 @@ rsort($data3);
 
 
     </script>
+
+
+    <script type="text/javascript">
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawChart2);
+      google.charts.setOnLoadCallback(drawChart3);
+      google.charts.setOnLoadCallback(drawChart4);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Pending', 'Achieved'],
+          ['Pending : '+ <?php echo $PendingTarget?>, <?php echo $PendingTarget?>],
+          ['Billed : '+<?php echo $AcheivedTarget?>, <?php echo $AcheivedTarget?>]
+          ]);
+
+
+        var options = {
+          'title':'Billing Target : ' + <?php echo $Target?>,
+          colors: ['red', 'green', ],
+          fontSize: 15,
+          chartArea: {
+            left: "10%",
+            top: "20%",
+            bottom: "10%",
+            height: "90%",
+            width: "90%",
+
+          }
+
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+        chart.draw(data, options);
+      }
+
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart2() {
+        var data2 = google.visualization.arrayToDataTable([
+          ['Pending', 'Achieved'],
+          ['Pending : '+ <?php echo $PendingTarget1?>, <?php echo $PendingTarget1?>],
+          ['Billed : '+<?php echo $AcheivedTarget1?>, <?php echo $AcheivedTarget1?>]
+          ]);
+
+
+        var options2 = {
+          legend: 'none',
+          colors: ['red', 'green', ],
+          fontSize: 15,
+          chartArea: {
+            left: "10%",
+            top: "20%",
+            bottom: "10%",
+            height: "90%",
+            width: "90%",
+
+          }
+
+        };
+
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
+        chart2.draw(data2, options2);
+      }
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart3() {
+        var data2 = google.visualization.arrayToDataTable([
+          ['Pending', 'Achieved'],
+          ['Pending : '+ <?php echo $PendingTarget2?>, <?php echo $PendingTarget2?>],
+          ['Billed : '+<?php echo $AcheivedTarget2?>, <?php echo $AcheivedTarget2?>]
+          ]);
+
+
+        var options2 = {
+          legend: 'none',
+          colors: ['red', 'green', ],
+          fontSize: 15,
+          chartArea: {
+            left: "10%",
+            top: "20%",
+            bottom: "10%",
+            height: "90%",
+            width: "90%",
+
+          }
+
+        };
+
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart3'));
+        chart2.draw(data2, options2);
+      }
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart4() {
+        var data2 = google.visualization.arrayToDataTable([
+          ['Pending', 'Achieved'],
+          ['Pending : '+ <?php echo $PendingTarget3?>, <?php echo $PendingTarget3?>],
+          ['Billed : '+<?php echo $AcheivedTarget3?>, <?php echo $AcheivedTarget3?>]
+          ]);
+
+
+        var options2 = {
+          colors: ['red', 'green', ],
+          legend: 'none',
+          fontSize: 15,
+          chartArea: {
+            left: "10%",
+            top: "20%",
+            bottom: "10%",
+            height: "90%",
+            width: "90%",
+
+          }
+
+        };
+
+        var chart2 = new google.visualization.PieChart(document.getElementById('piechart4'));
+        chart2.draw(data2, options2);
+      }
+
+    </script>
+
   </body>
 
   </html>
 
   <?php 
+      //echo $Target.' <br>';
+      //echo $PendingTarget3.' <br>';
   $con->close();
   $con2->close();
 ?>

@@ -1,6 +1,7 @@
 
 <?php  
-include('connection.php');   
+include('connection.php'); 
+include "session.php";  
 if(isset($_POST["OrderID"]))
 {
  $output = '';
@@ -38,6 +39,9 @@ if (!empty($EmployeeID))
         $rowE=mysqli_fetch_assoc($resultTech);
         $Employee=$rowE["Employee Name"];
     }
+    $Ref='<button class="btn btn-primary gen" data-bs-toggle="modal" data-bs-target="#Reference" id="'.$row["OrderID"].'" id2="Order">Generate Reference ID</button>';
+}else{
+    $Ref='';
 }
 if (!empty($GadgetID))
 {
@@ -79,8 +83,6 @@ if ($row["Call verified"]==1) {
 }
 
 if ($Attended=='No') {
-            // code...
-
 
     $output .= '
     <tr>  
@@ -149,6 +151,10 @@ if ($Attended=='No') {
     <tr>  
     <td width="30%"><label>Call Verified</label></td>  
     <td width="70%">'.$Call.'</td>  
+    </tr>
+    <tr> 
+    <td width="30%"><label>Action</label></td>  
+     <td width="70%">'.$Ref.'</td>  
     </tr>
     ';
 }else{
@@ -222,6 +228,8 @@ if ($Attended=='No') {
     <td width="30%"><label>Call Verified</label></td>  
     <td width="70%">'.$Call.'</td>  
     </tr>
+    
+   
     ';
 
 }

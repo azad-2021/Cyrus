@@ -38,6 +38,12 @@
         </a>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/cyrus/accounts/" target="_blank">
+          <i class="bi bi-grid"></i>
+          <span>Payment Entry</span>
+        </a>
+      </li>
     </ul>
   </aside>
 <!-- End Sidebar-->

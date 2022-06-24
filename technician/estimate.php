@@ -21,7 +21,7 @@
   $dataApprovalID=mysqli_fetch_assoc($resultApprovalID);
   $JOBCARD= $dataApprovalID['JobCardNo'];
 
-  $queryEstimate="SELECT * FROM rates WHERE Zone=$ZoneCode and Enable=1"; 
+  $queryEstimate="SELECT * FROM rates WHERE Zone=$ZoneCode and Enable=1 and ItemID!=1654"; 
   $resultEstimate=mysqli_query($con4,$queryEstimate);  //select all products
   $queryEstimateList= "SELECT * FROM add_estimate where EmployeeUID=$EmployeeUID";
   $resultEstimateList=mysqli_query($con3,$queryEstimateList);

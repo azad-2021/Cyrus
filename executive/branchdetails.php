@@ -260,6 +260,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th >Call Verified</th>   
                   <th >Employee</th>
                   <th style="min-width:500px">Discription</th> 
+                  <th style="min-width:400px;">Verification Remark</th>
                   <th style="min-width:500px">Executive Remark</th>
 
                 </tr>                     
@@ -283,6 +284,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th >Call Verified</th>             
                   <th>Employee</th>
                   <th style="min-width: 500px;">Discription</th> 
+                  <th style="min-width: 400px;">Verification Remark</th>
                   <th style="min-width: 500px;">Executive Remark</th>
 
                 </tr>                     

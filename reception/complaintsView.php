@@ -12,7 +12,7 @@ if(isset($_POST["ComplaintID"]))
     if (($result)>0) {
         $query = "SELECT * FROM complaints join branchdetails on complaints.BranchCode=branchdetails.BranchCode join gadget on complaints.GadgetID=gadget.GadgetID join employees on complaints.EmployeeCode = employees.EmployeeCode WHERE ComplaintID = '".$_POST["ComplaintID"]."'";
     }else{
-    $query = "SELECT * FROM complaints join branchdetails on complaints.BranchCode=branchdetails.BranchCode join gadget on complaints.GadgetID=gadget.GadgetID WHERE ComplaintID = '".$_POST["ComplaintID"]."'";
+        $query = "SELECT * FROM complaints join branchdetails on complaints.BranchCode=branchdetails.BranchCode join gadget on complaints.GadgetID=gadget.GadgetID WHERE ComplaintID = '".$_POST["ComplaintID"]."'";
 
     }
 
@@ -43,6 +43,11 @@ if(isset($_POST["ComplaintID"]))
             $rowE=mysqli_fetch_assoc($resultTech);
             $Employee=$rowE["Employee Name"];
         }
+
+        $Ref='<button class="btn btn-primary gen" data-bs-toggle="modal" data-bs-target="#Reference" id="'.$row["OrderID"].'" id2="Order">Generate Reference ID</button>';
+
+    }else{
+        $Ref='';
     }
     if (!empty($GadgetID))
     {
@@ -151,6 +156,9 @@ if ($Attended=='No') {
     <tr>  
     <td width="30%"><label>Call Verified</label></td>  
     <td width="70%">'.$Call.'</td>  
+    </tr>
+    <td width="30%"><label>Action</label></td>  
+    <td width="70%">'.$Ref.'</td>
     </tr>
     ';
 }else{

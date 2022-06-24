@@ -17,6 +17,10 @@ $Password=$_SESSION['pass'];
 //echo $password;
 include 'sheet.php';
 
+date_default_timezone_set('Asia/Calcutta');
+$timestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($timestamp));
+
 $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
 $con2 = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbilling");
 
@@ -30,6 +34,8 @@ $resultsB = $con->query($sqlB);
 $rowB=mysqli_fetch_array($resultsB,MYSQLI_ASSOC);
 $BilledAmount=$rowB["sum(TotalBilledValue)"];
 
+
+
 $sqlE ="SELECT * FROM employees where EmployeeCode=$UID";
 if ($con->connect_error) {
     die("Connection failed: " . $con->connect_error);
@@ -38,11 +44,42 @@ $resultsE = $con->query($sqlE);
 $rowE=mysqli_fetch_array($resultsE,MYSQLI_ASSOC);
 $Target=$rowE["TargetAmounts"];
 
+
+$sqlB ="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook where EmployeeCode=$UID and Cancelled=0 and month(BillDate)=(month(current_date())-1) and year(BillDate)=year(current_date())";
+$resultsB = $con->query($sqlB);
+$rowB=mysqli_fetch_array($resultsB,MYSQLI_ASSOC);
+$BilledAmount1=$rowB["sum(TotalBilledValue)"];
+
+$sqlB ="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook where EmployeeCode=$UID and Cancelled=0 and month(BillDate)=(month(current_date())-2) and year(BillDate)=year(current_date())";
+$resultsB = $con->query($sqlB);
+$rowB=mysqli_fetch_array($resultsB,MYSQLI_ASSOC);
+$BilledAmount2=$rowB["sum(TotalBilledValue)"];
+
+$sqlB ="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook where EmployeeCode=$UID and Cancelled=0 and month(BillDate)=(month(current_date())-3) and year(BillDate)=year(current_date())";
+$resultsB = $con->query($sqlB);
+$rowB=mysqli_fetch_array($resultsB,MYSQLI_ASSOC);
+$BilledAmount3=$rowB["sum(TotalBilledValue)"];
+
 if ($Target>0) {
 
     $PendingTarget=$Target-$BilledAmount;
+    $PendingTarget1=$Target-$BilledAmount1;
+    $PendingTarget2=$Target-$BilledAmount2;
+    $PendingTarget3=$Target-$BilledAmount3;
     if ($PendingTarget<0) {
         $PendingTarget=0;
+    }
+
+    if ($PendingTarget1<0) {
+        $PendingTarget1=0;
+    }
+
+    if ($PendingTarget2<0) {
+        $PendingTarget2=0;
+    }
+
+    if ($PendingTarget3<0) {
+        $PendingTarget3=0;
     }
 }
 ?>
@@ -107,22 +144,30 @@ if ($Target>0) {
             print ' > Expences </a></li>';
         }
         ?>
-        <li class="nav-item">
-            <a class="nav-link" href="changepass.php">Change Password</a>        
+        <?php 
+        if ($Target>0){
+            ?>
             <li class="nav-item">
-                <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
-            </li>
+                <a class="nav-link" href="targethistory.php">Target History</a>  
+            </li>   
+        <?php } ?>
+        <li class="nav-item">
+            <a class="nav-link" href="changepass.php">Change Password</a>  
+        </li>      
+        <li class="nav-item">
+            <a class="nav-link" href="logout.php"><i class="fas fa-sign-out-alt"></i>Logout</a>
         </li>
-    </ul>
+    </li>
+</ul>
 </div>
 </div>
 </nav>
 <br>
 <div class="container" style="resize: both;">
-
+    <h4 align="center">Billing Target Report</h4>
     <div class="row">
         <div class="col-lg-12">
-
+            <h5 align="center"><?php echo date('M',strtotime($timestamp));;?></h5>
             <div id="piechart" align="center"></div>
         </div>
     </div>
@@ -600,79 +645,79 @@ if ($Target>0) {
 
         </div>
 
-        <!-- Bootstrap core JavaScript
-            ================================================== -->
-            <!-- Placed at the end of the document so the pages load faster -->
-            <script src="assets/js/jquery.min.js"></script>
-            <script src="assets/js/popper.js"></script>
-            <script src="bootstrap/js/bootstrap.min.js"></script>
-            <script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
-            <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-            <script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
-            "></script>
 
-            <script>
+        <script src="assets/js/jquery.min.js"></script>
+        <script src="assets/js/popper.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+        <script type="text/javascript" src="https://cdn.datatables.net/rowreorder/1.2.8/js/dataTables.rowReorder.min.js
+        "></script>
 
-                $(document).ready(function() {
-                    var table = $('#example').DataTable( {
-                        rowReorder: {
-                            selector: 'td:nth-child(2)'
-                        },
-                        responsive: true
-                    } );
-                } );
+        <script>
 
-                $(document).ready(function() {
-                 var table = $('#userTable2').DataTable( {
+            $(document).ready(function() {
+                var table = $('#example').DataTable( {
                     rowReorder: {
                         selector: 'td:nth-child(2)'
                     },
                     responsive: true
                 } );
-             } );
+            } );
 
-                $(document).ready(function() {
-                    var table = $('#userTable3').DataTable( {
-                        rowReorder: {
-                            selector: 'td:nth-child(2)'
-                        },
-                        responsive: true
-                    } );
-                } );
+            $(document).ready(function() {
+             var table = $('#userTable2').DataTable( {
+                rowReorder: {
+                    selector: 'td:nth-child(2)'
+                },
+                responsive: true
+            } );
+         } );
 
-                $(document).ready(function() {
-                    var table = $('#userTable4').DataTable( {
-                        rowReorder: {
-                            selector: 'td:nth-child(2)'
-                        },
-                        responsive: true
-                    } );
+            $(document).ready(function() {
+                var table = $('#userTable3').DataTable( {
+                    rowReorder: {
+                        selector: 'td:nth-child(2)'
+                    },
+                    responsive: true
                 } );
+            } );
 
-                $(document).ready(function() {
-                    var table = $('#userTable5').DataTable( {
-                        rowReorder: {
-                            selector: 'td:nth-child(2)'
-                        },
-                        responsive: true
-                    } );
+            $(document).ready(function() {
+                var table = $('#userTable4').DataTable( {
+                    rowReorder: {
+                        selector: 'td:nth-child(2)'
+                    },
+                    responsive: true
                 } );
-                $(document).ready(function() {
-                    var table = $('#userTable6').DataTable( {
-                        rowReorder: {
-                            selector: 'td:nth-child(2)'
-                        },
-                        responsive: true
-                    } );
-                } );
-            </script>
+            } );
 
-            <script type="text/javascript">
-            // Load google charts
+            $(document).ready(function() {
+                var table = $('#userTable5').DataTable( {
+                    rowReorder: {
+                        selector: 'td:nth-child(2)'
+                    },
+                    responsive: true
+                } );
+            } );
+            $(document).ready(function() {
+                var table = $('#userTable6').DataTable( {
+                    rowReorder: {
+                        selector: 'td:nth-child(2)'
+                    },
+                    responsive: true
+                } );
+            } );
+        </script>
+
+        <script type="text/javascript">
+
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(drawChart);
+            google.charts.setOnLoadCallback(drawChart2);
+            google.charts.setOnLoadCallback(drawChart3);
+            google.charts.setOnLoadCallback(drawChart4);
 
-            // Draw the chart and set the chart values
             function drawChart() {
               var data = google.visualization.arrayToDataTable([
                   ['Pending', 'Achieved'],
@@ -680,8 +725,8 @@ if ($Target>0) {
                   ['Billed : '+<?php echo $BilledAmount?>, <?php echo $BilledAmount?>]
                   ]);
 
-            // Optional; add a title and set the width and height of the chart
-            var options = {
+
+              var options = {
                 'title':'Billing Target : ' + <?php echo $Target?>,
                 colors: ['red', 'green', ],
                 fontSize: 15,
@@ -693,16 +738,14 @@ if ($Target>0) {
                     width: "90%",
 
                 }
-                //pieSliceText: 'none',
-                /*tooltip: {
-                    text: 'none'
-                }*/
+
             };
 
-            // Display the chart inside the <div> element with id="piechart"
+
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             chart.draw(data, options);
         }
+
     </script>
 </body>
 </html>
