@@ -1,6 +1,11 @@
 <?php 
 include 'connection.php';
 include "session.php";
+
+date_default_timezone_set('Asia/Kolkata');
+$newtimestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($newtimestamp));
+
 if (isset($_SESSION['query'])) {
   $EXEID=$_SESSION['query'];
 }else{
@@ -109,6 +114,37 @@ if (!empty($Regiondata))
       print '<td>'.$row["RegionName"]."</td>";
       print '<td>'.$row["District"]."</td>";
       print '</tr>';
+    }
+
+  }
+}
+
+$BankCodeVisit=!empty($_POST['BankCodeVisit'])?$_POST['BankCodeVisit']:'';
+if (!empty($BankCodeVisit))
+{
+
+  $Designation=!empty($_POST['Designation'])?$_POST['Designation']:'';
+  $Name=!empty($_POST['Name'])?$_POST['Name']:'';
+  $VisitDate=!empty($_POST['VisitDate'])?$_POST['VisitDate']:'';
+  $Description=!empty($_POST['Description'])?$_POST['Description']:'';
+  $NextVisitDate=!empty($_POST['NextVisitDate'])?$_POST['NextVisitDate']:'';
+
+  $Data="SELECT * from bankvisits WHERE VisitDate='$VisitDate' and ExecutiveID=$EXEID and BankCode=$BankCodeVisit and Name='$Name'";
+  $result=mysqli_query($con3,$Data);
+  if (mysqli_num_rows($result)>0)
+  {
+    echo "Details already exist";
+  }else{
+    $sql = "INSERT INTO bankvisits (ExecutiveID, BankCode, Designation, Name, VisitDate, Description, NextVisitDate)
+    VALUES ($EXEID, $BankCodeVisit, '$Designation', '$Name', '$VisitDate', '$Description', '$NextVisitDate')";
+
+    if ($con3->query($sql) === TRUE) {
+
+    }else {
+      echo "Error: " . $sql . "<br>" . $con2->error;
+      $myfile = fopen("error.txt", "w") or die("Unable to open file!");
+      fwrite($myfile, $con->error);
+      fclose($myfile);
     }
 
   }

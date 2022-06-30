@@ -14,7 +14,7 @@ date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 45 days'));
 $NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
@@ -40,7 +40,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Based on Next Reminder</title>
+  <title>Overdue Bills</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -107,7 +107,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active"> Based on Next Reminders</li>
+          <li class="breadcrumb-item active">Action Needed</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -141,75 +141,75 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
             <center>
               <div class="pagetitle">
-                <h1>Group By Bank & Zone</h1>
+                <h1></h1>
               </div>
             </center>
             <div class="table-responsive container">
-              <table class="table table-hover table-bordered border-primary display table-responsive" id="example"> 
+              <table id="example" class="table table-hover table-bordered border-primary display" style="width:100%">
                 <thead> 
                   <tr> 
-                    <th style="min-width: 180px;">Bank</th>
-                    <th style="min-width: 180px;">Zone</th>           
-                    <th style="min-width: 180px;">Branch</th>
-                    <th style="min-width: 100px;">Bill No</th>
-                    <th style="min-width: 100px;">Bill Date</th>        
-                    <th style="min-width: 150px;">Total Billed Value</th> 
-                    <th style="min-width: 150px;">Received Amount</th> 
-                    <th style="min-width: 150px;">Pending Payment</th>
-                    <th style="min-width: 180px;">Next reminder Date</th>   
-                    <th style="min-width: 500px;">Description</th> 
-
+                    <th style="min-width:160px">Bank</th>
+                    <th style="min-width:80px">Zone</th>           
+                    <th style="min-width:150px">Branch</th>
+                    <th style="min-width:100px">Bill No</th>
+                    <th style="min-width:80px">Bill Date</th>        
+                    <th style="min-width: 100px;">Total Billed Value</th> 
+                    <th style="min-width: 100px;">Pending Payment</th>
+                    <th style="min-width: 100px;">Total Reminder</th>       
                   </tr>                     
                 </thead>                 
                 <tbody>
-                  <?php 
+                  <?php
 
-                  $query="SELECT * FROM cyrusbilling.vreminderbasedon";
-                  $result=mysqli_query($con2,$query);
+                  $query="SELECT billbook.BillID, BankName, ZoneRegionName, BranchName, BookNo, BillDate, TotalBilledValue, (billbook.TotalBilledValue - billbook.ReceivedAmount) as PendingPayment, billbook.BranchCode, subquery.rem  FROM cyrusbilling.billbook
+                  join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
+                  join (
+                  SELECT count(reminders.ID) as rem, reminders.BillID FROM cyrusbilling.reminders group by reminders.BillID
+                ) as subquery on billbook.BillID=subquery.BillID
+                WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and ((datediff(current_date(), BillDate)>45) or subquery.rem>10) group by BookNo";
 
-                  while($row = mysqli_fetch_array($result)){
-                    print "<tr>";
-                    print "<td>".$row['BankName']."</td>";             
-                    print "<td>".$row['ZoneRegionName']."</td>";
-                    print "<td>".$row['BranchName']."</td>"; 
-
-                    print '<td><a href="" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="'.$row['BranchCode'].'">'.$row['BillNumber']."</a> </td>";
-
-                    print '<td><span class="d-none">'.$row['Bill DATE'].'</span>'.date("d-M-Y", strtotime($row['Bill DATE']))."</td>";
-                    print "<td>".$row['TotalBilledValue']."</td>";
-                    print "<td>".$row['ReceivedAmount']."</td>";
-                    print "<td>".$row['Pending Payment']."</td>";
-                    print '<td><span class="d-none">'.$row['MaxOfMaxOfNextReminderDate'].'</span>'.date("d-M-Y", strtotime($row['MaxOfMaxOfNextReminderDate']))."</td>";
-                    print "<td>".$row['MaxOfMaxOfDescription']."</td>";
-                    print "</tr>";
-                  }
+                $result=mysqli_query($con2,$query);
+                while($row = mysqli_fetch_array($result)){
+                  $BillID=$row['BillID'];
 
                   ?>
-                </tbody>
-                <tfoot>
                   <tr>
-                    <th style="min-width: 180px;">Bank</th>
-                    <th style="min-width: 180px;">Zone</th>           
-                    <th style="min-width: 180px;">Branch</th>
-                    <th style="min-width: 100px;">Bill No</th>
-                    <th style="min-width: 100px;">Bill Date</th>        
-                    <th style="min-width: 150px;">Total Billed Value</th> 
-                    <th style="min-width: 150px;">Received Amount</th> 
-                    <th style="min-width: 150px;">Pending Payment</th>
-                    <th style="min-width: 180px;">Next reminder Date</th>   
-                    <th style="min-width: 500px;">Description</th> 
+                    <td><?php echo $row['BankName'] ?></td>
+                    <td><?php echo $row['ZoneRegionName'] ?></td>
+                    <td><?php echo $row['BranchName'] ?></td>
+                    <td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
+
+                    <td><span class="d-none"><?php echo $row['BillDate'] ?></span><?php echo date("d-M-Y", strtotime($row['BillDate'])) ?></td>
+
+                    <td><?php echo $row['TotalBilledValue'] ?></td>
+                    <td><?php echo sprintf('%0.2f', ($row['PendingPayment'])) ?></td>
+                    <td><?php echo $row['rem'] ?></td>
                   </tr>
-                </tfoot>
-              </table>
-            </div>
-            <br><br>
+                <?php }
+                ?>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th style="min-width:160px">Bank</th>
+                  <th style="min-width:80px">Zone</th>           
+                  <th style="min-width:150px">Branch</th>
+                  <th style="min-width:100px">Bill No</th>
+                  <th style="min-width:80px">Bill Date</th>        
+                  <th style="min-width: 100px;">Total Billed Value</th> 
+                  <th style="min-width: 100px;">Pending Payment</th> 
+                  <th style="min-width: 100px;">Total Reminder</th>
+                </tr>
+              </tfoot>
+            </table>
           </div>
+          <br><br>
         </div>
       </div>
-      <!-- End Recent Sales -->
     </div>
+    <!-- End Recent Sales -->
   </div>
-  <!-- End Left side columns -->
+</div>
+<!-- End Left side columns -->
 
 </section>
 </main>

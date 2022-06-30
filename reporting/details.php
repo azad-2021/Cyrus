@@ -75,7 +75,7 @@ if (!empty($Branch))
     print '<td>'.$Call."</td>";
     print '<td>'.$Employee."</td>";
     print '<td style="min-width:500px">'.$row3["Discription"]."</td>";
-    print '<td style="min-width:500px">'.$row3["Verification Remark"]."</td>";
+    print '<td style="min-width:500px">'.$row3["Verification remark"]."</td>";
     print '<td style="min-width:500px">'.$row3["Executive Remark"]."</td>";
 
     print "</tr>";

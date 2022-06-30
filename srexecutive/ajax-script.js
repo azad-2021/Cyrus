@@ -1,4 +1,42 @@
-$(document).on({
+ $(document).on('change','#Bank', function(){
+  var BankCode = $(this).val();
+  if(BankCode){
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'BankCode':BankCode},
+      success:function(result){
+        $('#ZoneB').html(result);
+        
+      }
+    }); 
+  }else{
+    $('#ZoneB').html('<option value="">Zone</option>');
+    $('#Branch').html('<option value="">Branch</option>'); 
+  }
+});
+ 
+ $(document).on('change','#Zone', function(){
+  var ZoneCode = $(this).val();
+  if(ZoneCode){
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'ZoneCode':ZoneCode},
+      success:function(result){
+        $('#Branch').html(result);
+        
+      }
+    }); 
+  }else{
+
+    $('#Branch').html('<option value=""> Branch </option>'); 
+  }
+});
+
+
+
+ $(document).on({
   ajaxStart: function(){
     $("body").addClass("loading"); 
   },
@@ -9,7 +47,7 @@ $(document).on({
 
 
 
-$(document).on('click', '.Bill', function(){
+ $(document).on('click', '.Bill', function(){
   //$('#dataModal').modal();
   var BranchCode = $(this).attr("id");
   document.getElementById("branch").value = BranchCode;
@@ -26,14 +64,14 @@ $(document).on('click', '.Bill', function(){
 });
 
 
-$(document).on('click', '.close', function(){
+ $(document).on('click', '.close', function(){
 
 
-});
+ });
 
 
 
-$(document).on('click', '.SaveReminder', function(){
+ $(document).on('click', '.SaveReminder', function(){
   var BillID=document.getElementById("billid").value;
   var BranchCode=document.getElementById("branch").value;
   var Conversation=document.getElementById("conversation").value;
@@ -340,9 +378,50 @@ $(document).on('click', '.SaveReminder', function(){
      url:"dataget.php",
      method:"POST",
      data:{"Bank1":Bank, "ini":ini},
-     success:function(data){
+     success:function(result){
 
-      swal("success","Bank added","success");
+      var r=(result);
+      if (r!=1) {
+
+        swal("error",r,"error");
+
+      }else{
+        swal("success","Bank added","success");
+        $('#AddBank').modal('hide');
+        $('#FormAddBank').trigger("reset");
+      }
+
+    }
+
+  });
+  }
+});
+
+ $(document).on('click', '.SaveZone', function(){
+
+  var Zone=document.getElementById("ZoneName").value;
+  var BankCode=document.getElementById("Bank").value;
+
+  if (BankCode=='' || Zone=='') {
+    swal("error","Please enter all details","error");
+  }else{
+
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{"BankCodeZ":BankCode, "Zone":Zone},
+     success:function(result){
+      var r=(result);
+
+      if (r!=1) {
+
+        swal("error",r,"error");
+
+      }else{
+        swal("success","Zone added","success");
+        $('#AddZone').modal('hide');
+        $('#FormAddZone').trigger("reset");
+      }
 
     }
 

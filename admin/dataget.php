@@ -38,10 +38,10 @@ $ItemZone=!empty($_POST['ItemZone'])?$_POST['ItemZone']:'';
 if (!empty($ItemZone))
 {
 
- $query="SELECT * FROM rates WHERE Zone=$ItemZone";
- $result=mysqli_query($con2,$query);
- if (mysqli_num_rows($result)>0)
- {
+   $query="SELECT * FROM rates WHERE Zone=$ItemZone";
+   $result=mysqli_query($con2,$query);
+   if (mysqli_num_rows($result)>0)
+   {
     while ($arr=mysqli_fetch_assoc($result))
     {
 
@@ -60,25 +60,24 @@ if (!empty($EmployeeCode))
     $result=mysqli_query($con,$query);
     if (mysqli_num_rows($result)>0)
     {
-     $a=mysqli_fetch_assoc($result);
-     echo '<tr>
-     <th scope="col" style="min-width: 150px;">'.$a['Phone'].'</th>
-     <th scope="col" style="min-width: 150px;">'.$a['EmployeeCode'].'</th>
+       $a=mysqli_fetch_assoc($result);
+       echo '<tr>
+       <th scope="col" style="min-width: 150px;">'.$a['Phone'].'</th>
+       <th scope="col" style="min-width: 150px;">'.$a['EmployeeCode'].'</th>
 
-     </tr>';
+       </tr>';
 
- }
+   }
 }
 
 $View=!empty($_POST['view'])?$_POST['view']:'';
 if (!empty($View))
 {
-    $query="SELECT * FROM employees order by `Employee Name`";
+    $query="SELECT * FROM employees WHERE Inservice=1 order by `Employee Name`";
     $result=mysqli_query($con,$query);
     if (mysqli_num_rows($result)>0)
     {
-        $Sr=1;
-        
+
         while($a=mysqli_fetch_assoc($result)){
             $EmployeeID=$a['EmployeeCode'];
             $query="SELECT * FROM reporting
@@ -113,23 +112,21 @@ if (!empty($View))
 
             if ($a['Inservice']==1) {
                 $tr='<tr class="table-success">';
-                $Inservice='<td scope="col" style="min-width: 150px;" class="table-success">Yes';
+                
             }else{
                 $tr='<tr class="table-danger">';
-                $Inservice='<td scope="col" style="min-width: 150px;" class="table-danger">No';
+                
             }
 
             echo $tr.'
-            <td scope="col" style="min-width: 50px;">'.$Sr.'</th>
             <td scope="col" style="min-width: 150px;">'.$a['Employee Name'].'</td>
             <td scope="col" style="min-width: 150px;">'.$a['Phone'].'</td>
-            '.$Inservice.'</td>
             <td scope="col" style="min-width: 150px;">'.$a['TargetAmounts'].'</td>
             <td scope="col" style="min-width: 150px;">'.$AssignTo.'</td>';
             $query="SELECT * FROM pass WHERE UserName is not null and UserType='Reporting' Order by UserName";
             $result3=mysqli_query($con,$query);
             ?>
-            <th scope="col" style="min-width: 150px;">
+            <td scope="col" style="min-width: 150px;">
                 <select class="form-control rounded-corner" id="ChangeReporting" id2="<?php echo $EmployeeID ?>">
                     <option value="">Select</option>
                     <?php 
@@ -138,7 +135,7 @@ if (!empty($View))
                     }
                     ?>
                 </select>
-            </th>
+            </td>
             <?php 
 
             echo '
@@ -146,7 +143,7 @@ if (!empty($View))
             $query="SELECT * FROM pass WHERE UserName is not null and UserType='Dataentry' Order by UserName";
             $result3=mysqli_query($con,$query);
             ?>
-            <th scope="col" style="min-width: 150px;">
+            <td scope="col" style="min-width: 150px;">
                 <select class="form-control rounded-corner" id="ChangeDataentry" id2="<?php echo $EmployeeID ?>">
                     <option value="">Select</option>
                     <?php 
@@ -155,27 +152,45 @@ if (!empty($View))
                     }
                     ?>
                 </select>
-            </th>
+            </td>
             <?php 
             echo '
-            <td scope="col" style="min-width: 150px;">'.$DistrictCount.'</td>
-            <td scope="col" style="min-width: 150px;"><button class="btn btn-primary ResetPass" id="'.$EmployeeID.'">Reset Password</button></td>
-            <td scope="col" style="min-width: 150px;"><button class="btn btn-primary Resetdataentry" id="'.$EmployeeID.'">Reset Jobcard Entry</button></td>
-            <td scope="col" style="min-width: 150px;">'
+            <td scope="col" style="min-width: 150px;">'.$DistrictCount.'</td>'
             ?>
-            <select class="form-control rounded-corner" id="Inservice" id2="<?php echo $EmployeeID ?>">
-                <option value="">Select</option>
-                <option value="1">Active</option>
-                <option value="2">Deactive</option>
-            </select>
-            <?php 
-            echo '</td>
-            <td scope="col" style="min-width: 150px;"><button class="btn btn-primary UEmployee" id="'.$EmployeeID.'" id2="'.$a['Employee Name'].'" id3="'.$a['Qualification'].'" id4="'.$a['Address3'].'" id5="'.$a['Phone'].'" id6="'.$a['TargetAmounts'].'">Edit Detail</button></td>
-            </tr>';
-            $Sr++;
+            <td scope="col" style="min-width: 150px;">
+                <select class="form-control rounded-corner" id="Inservice" id2="<?php echo $EmployeeID ?>">
+                    <option value="">Select</option>
+                    <option value="1">Active</option>
+                    <option value="2">Deactive</option>
+                </select>
+            </td>
+            <td scope="col" style="min-width: 150px;">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Action
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item UEmployee" id="<?php echo 'id="'.$EmployeeID.'" id2="'.$a['Employee Name'].'" id3="'.$a['Qualification'].'" id4="'.$a['Address3'].'" id5="'.$a['Phone'].'" id6="'.$a['TargetAmounts'].'"' ?>">
+                            Edit Details</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item ResetPass" id="<?php echo $EmployeeID ?>">
+                            Reset Password</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item Resetdataentry" id="<?php echo $EmployeeID ?>">
+                                Reset Jobcard Entry
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+        <?php        
 
-        }
     }
+}
 }
 
 $viewDataEntry=!empty($_POST['viewDataEntry'])?$_POST['viewDataEntry']:'';
@@ -452,14 +467,13 @@ if (!empty($viewExecutive))
     $result=mysqli_query($con,$query);
     if (mysqli_num_rows($result)>0)
     {
-        $Sr=1;
         
         while($a=mysqli_fetch_assoc($result)){
             $ExecutiveID=$a['ID'];
 
             if ($a['UserType']=='Reporting') {
-               $query="SELECT count(EmployeeID) as TotalEmployee FROM reporting WHERE ExecutiveID=$ExecutiveID";
-           }elseif($a['UserType']=='Executive'){
+             $query="SELECT count(EmployeeID) as TotalEmployee FROM reporting WHERE ExecutiveID=$ExecutiveID";
+         }elseif($a['UserType']=='Executive'){
 
             $query="SELECT count(`Assign To`) as TotalEmployee FROM districts
             join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode WHERE ControlerID=$ExecutiveID";
@@ -489,15 +503,13 @@ if (!empty($viewExecutive))
         }
 
         echo '<tr>
-        <td scope="col" style="min-width: 50px;">'.$Sr.'</th>
-        <td scope="col" style="min-width: 150px;">'.$a['UserName'].'</td>
-        <td scope="col" style="min-width: 150px;">'.$SRE.'</td>
-        <td scope="col" style="min-width: 150px;">'.$CDistrict.'</td>
-        <td scope="col" style="min-width: 150px;">'.$Regions.'</td>
-        <td scope="col" style="min-width: 150px;">'.$a['UserType'].'</td>
+        <td scope="col" style="min-width: 160px;">'.$a['UserName'].'</td>
+        <td scope="col" style="min-width: 180px;">'.$SRE.'</td>
+        <td scope="col" style="min-width: 100px;">'.$CDistrict.'</td>
+        <td scope="col" style="min-width: 110px;">'.$Regions.'</td>
+        <td scope="col" style="min-width: 120px;">'.$a['UserType'].'</td>
         <td scope="col" style="min-width: 150px;"><button class="btn btn-primary ResetExecutivePass" id="'.$ExecutiveID.'">Reset Password</button></td>
         </tr>';
-        $Sr++;
 
     }
 }

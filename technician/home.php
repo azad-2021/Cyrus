@@ -20,7 +20,7 @@ include 'sheet.php';
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
-
+$DateQ = date('Y-m-d',strtotime($timestamp));
 $con = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbackend");
 $con2 = new mysqli("192.168.1.1:9916","Ashok","cyrus@123","cyrusbilling");
 
@@ -216,8 +216,8 @@ if ($Target>0) {
                     $TotalGST=$row2['SUM(TotalBilledValue)'];
                 }
                 if ($TotalGST-$ReceivedGST<1) {
-                   $BalanceGST=0;
-               }else{
+                 $BalanceGST=0;
+             }else{
                 $BalanceGST=sprintf('%0.2f', ($TotalGST-$ReceivedGST));
             }
             print "<tr>";
@@ -258,7 +258,10 @@ if ($Target>0) {
         $newtimestamp = date('Y-m-d',strtotime($timestamp));
                     //echo $newtimestamp;
         
-        $sql ="SELECT * FROM `vpendingamc` where `EmployeeCode`=".$UID." and Attended=0 and `AssignDate` is not null Order by BranchName";
+        $sql ="SELECT * FROM `vpendingamc`
+        join gadget on vpendingamc.GadgetID=gadget.GadgetID
+        where `EmployeeCode`=".$UID." and Attended=0 and `AssignDate` is not null
+        Order by BranchName";
         if ($con->connect_error) {
             die("Connection failed: " . $con->connect_error);
         }  
@@ -291,21 +294,49 @@ if ($Target>0) {
                             // code...
                 $Bankname= '<span style="color: blue;">'.$Bankname.'</span>';
             }
-            print "<tr>";
-            print "<td >".$Bankname."</td>";
-            print "<td>".$row["ZoneRegionName"]."</td>";
-            print "<td>".$row["BranchName"]."</td>";
-            print "<td>".$row["Address3"]."</td>";
-                    //print "<td>".$row["OrderID"]."</td>";
-            print "<td><a href=\"card.php?oid=&amcid=" . $row['OrderID'] . "&cid=&eid=".$UID ."&brcode=".$row["BranchCode"]."&zcode=".$row["ZoneRegionCode"]."&gid=".$row["GadgetID"]."&PostedDate=".$row["DateOfInformation"]."\">".$row["OrderID"]."</a></td>";
-            print "<td>".$row["Discription"]."</td>";
-            print "<td>".$PostedDate."</td>";
-            print "<td>".$AssignDate."</td>";
-            print "</tr>";
+            $ZoneCode=$row["ZoneRegionCode"];
+            $Gadget=$row["Gadget"];
+            $sql ="SELECT datediff(EndDate, StartDate) as days, visits, StartDate, EndDate FROM cyrusbackend.amcs WHERE ZoneRegionCode=$ZoneCode and Device='$Gadget' and datediff(EndDate, current_date())>=0";
+            $resultAMC=mysqli_query($con,$sql);
+            $row2=mysqli_fetch_array($resultAMC,MYSQLI_ASSOC);
+            $D=0;
+            $Q1='';
+            if (!empty($row2["StartDate"])) {
 
-        }
-        ?>
-    </tbody>                 
+             $D= round($row2["days"]/$row2["visits"]);
+             $SDate=date('d-m-Y',strtotime($row2["StartDate"]));
+             $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
+
+             for ($i=0; $i < $row2["visits"]; $i++) { 
+
+               if (date_create($Q)>=date_create($DateQ)) {
+                   
+                   $duration=$SDate.' to '.$Q;
+                   break;
+               }else{
+                $SDate=$Q;
+                $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
+               }  
+           }
+
+       }
+
+
+       print "<tr>";
+       print "<td >".$Bankname."</td>";
+       print "<td>".$row["ZoneRegionName"]."</td>";
+       print "<td>".$row["BranchName"]."</td>";
+       print "<td>".$row["Address3"]."</td>";
+                    //print "<td>".$row["OrderID"]."</td>";
+       print "<td><a href=\"card.php?oid=&amcid=" . $row['OrderID'] . "&cid=&eid=".$UID ."&brcode=".$row["BranchCode"]."&zcode=".$row["ZoneRegionCode"]."&gid=".$row["GadgetID"]."&PostedDate=".$row["DateOfInformation"]."\">".$row["OrderID"]."</a></td>";
+       print "<td>".$row["Discription"]. ' Duration '.$duration."</td>";
+       print "<td>".$PostedDate."</td>";
+       print "<td>".$AssignDate."</td>";
+       print "</tr>";
+
+   }
+   ?>
+</tbody>                 
 </table>
 <br>
 <table class="table-bordered border-primary table-hover table-sm" id="userTable3" class="display nowrap">
@@ -666,13 +697,13 @@ if ($Target>0) {
             } );
 
             $(document).ready(function() {
-             var table = $('#userTable2').DataTable( {
+               var table = $('#userTable2').DataTable( {
                 rowReorder: {
                     selector: 'td:nth-child(2)'
                 },
                 responsive: true
             } );
-         } );
+           } );
 
             $(document).ready(function() {
                 var table = $('#userTable3').DataTable( {

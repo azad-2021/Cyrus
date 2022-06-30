@@ -35,22 +35,29 @@ if (!empty($ZoneCode))
         }
     }
 }
+$ZoneCodeAMC=!empty($_POST['ZoneCodeAMC'])?$_POST['ZoneCodeAMC']:'';
 
-
-$RegionCode=!empty($_POST['RegionCode'])?$_POST['RegionCode']:'';
-if (!empty($RegionCode))
-{
-    $Data="SELECT District from districts WHERE RegionCode=$RegionCode order by District";
-    $result=mysqli_query($con,$Data);
+if (!empty($ZoneCodeAMC))
+{   
+    $myfile = fopen("ZoneCodeAMC.txt", "w") or die("Unable to open file!");
+    fwrite($myfile, $ZoneCodeAMC);
+    fclose($myfile);
+    $ZoneAMC="SELECT * from amcs WHERE ZoneRegionCode=$ZoneCodeAMC";
+    $result=mysqli_query($con,$ZoneAMC);
     if (mysqli_num_rows($result)>0)
     {
-        echo "<option value=''>Select District</option>";
-        while ($arr=mysqli_fetch_assoc($result))
+
+        while ($row=mysqli_fetch_assoc($result))
         {
-            echo "<option value='".$arr['District']."'>".$arr['District']."</option><br>";
+            print "<tr>";
+            print '<td style="min-width: 150px;">'.$row["Device"]."</td>";
+            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["StartDate"]))."</td>";
+            print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["EndDate"]))."</td>";
+            print '<td style="min-width: 150px;">'.$row["Visits"]."</td>";
+            print '<td style="min-width: 150px;">'.$row["Rate"]."</td>";
+            print '</tr>';
         }
-    }else{
-        echo "<option value=''>No District</option>";
+        
     }
 }
 
@@ -86,16 +93,166 @@ if (!empty($Bank1))
 {
     $ini=!empty($_POST['ini'])?$_POST['ini']:'';
 
+    $Data="SELECT * from cyrusbackend.bank WHERE BankName='$Bank1'";
+    $result=mysqli_query($con,$Data);
+    if (mysqli_num_rows($result)>0)
+    {
+        echo $Bank1.' already exist';
+        $err=1;
+    }else{
+        $sql = "INSERT INTO  cyrusbackend.bank (BankName, BankInitial)
+        VALUES ('$Bank1', '$ini')";
 
-    $sql = "INSERT INTO  cyrusbackend.bank (BankName, BankInitial)
-    VALUES ('$Bank1', '$ini')";
+        if ($con->query($sql) === TRUE) {
+          echo 1;
+      } else {
+          echo "Error: " . $sql . "<br>" . $con->error;
+      }
+  }
+}
+
+$Bank2=!empty($_POST['BankCodeZ'])?$_POST['BankCodeZ']:'';
+if (!empty($Bank2))
+{
+    $Zone=!empty($_POST['Zone'])?$_POST['Zone']:'';
+
+    $err=0;
+
+    $Data="SELECT * from zoneregions WHERE ZoneRegionName='$Zone' and BankCode=$Bank2";
+    $result=mysqli_query($con,$Data);
+    if (mysqli_num_rows($result)>0)
+    {
+        echo $Zone.' already exist';
+        $err=1;
+    }
+
+    if ($err==0) {
+
+        $sql = "INSERT INTO  cyrusbackend.zoneregions (BankCode, ZoneRegionName)
+        VALUES ($Bank2, '$Zone')";
+
+        if ($con->query($sql) === TRUE) {
+          echo 1;
+      } else {
+          echo "Error: " . $sql . "<br>" . $con->error;
+      }
+  }
+}       
+
+$BranchName=!empty($_POST['BranchName'])?$_POST['BranchName']:'';
+if (!empty($BranchName))
+{
+    $DistrictName=!empty($_POST['DistrictName'])?$_POST['DistrictName']:'';
+    $ZoneCodeB=!empty($_POST['ZoneCodeB'])?$_POST['ZoneCodeB']:'';
+    $err=0;
+    for ($i=0; $i < count($BranchName); $i++) { 
+
+        $Data="SELECT * from branchs WHERE BranchName='$BranchName[$i]' and ZoneRegionCode=$ZoneCodeB";
+        $result=mysqli_query($con,$Data);
+        if (mysqli_num_rows($result)>0)
+        {
+            echo $BranchName[$i].' already exist';
+            $err=1;
+        }
+    }
+
+    if ($err==0) {
+
+        for ($i=0; $i < count($BranchName); $i++) { 
+        //echo $BranchName[$i].' . '.$DistrictName[$i].'<br>';
+
+            $sql = "INSERT INTO  cyrusbackend.branchs (ZoneRegionCode, BranchName, Address3)
+            VALUES ($ZoneCodeB ,'$BranchName[$i]', '$DistrictName[$i]')";
+
+            if ($con->query($sql) === TRUE) {
+              echo 1;
+          } else {
+          //echo "Error: " . $sql . "<br>" . $con->error;
+          }
+
+
+      }
+
+  }
+}
+
+$ZoneCodeData=!empty($_POST['ZoneCodeData'])?$_POST['ZoneCodeData']:'';
+
+if (!empty($ZoneCodeData))
+{   
+    $BankData=!empty($_POST['BankData'])?$_POST['BankData']:'';
+    $Zone="SELECT * from branchs WHERE ZoneRegionCode=$ZoneCodeData order by BranchName";
+    $result=mysqli_query($con,$Zone);
+    if (mysqli_num_rows($result)>0)
+    {
+        $sr=0;
+        while ($row=mysqli_fetch_assoc($result))
+        {   
+            $sr++;
+            print "<tr>";
+            print '<td style="min-width: 150px;">'.$sr."</td>";
+            print '<td style="min-width: 150px;">'.$row["BranchName"]."</td>";
+            print '<td style="min-width: 150px;">'.$row["Address3"]."</td>";
+
+            print '<td style="min-width: 150px;">'?>
+            <select class="form-control rounded-corner" id="ZoneU" id2="<?php echo $row["BranchCode"] ?>">
+               <option value="">Select</option>        
+               <?php
+               $query="SELECT * FROM zoneregions Where BankCode=$BankData order by ZoneRegionName"; 
+               $resultZone=mysqli_query($con,$query);
+               while($data=mysqli_fetch_assoc($resultZone)){
+                echo "<option value=".$data["ZoneRegionCode"].">".$data['ZoneRegionName']."</option>";
+            }
+            ?>
+        </select>
+        <?php "</td>";
+
+        print '<td style="min-width: 150px;">'?>
+        <select class="form-control rounded-corner" id="DistrictU" id2="<?php echo $row["BranchCode"] ?>">
+           <option value="">Select</option>        
+           <?php
+           $query="SELECT * FROM districts order by District"; 
+           $resultsDistrict=mysqli_query($con,$query);
+           while($data=mysqli_fetch_assoc($resultsDistrict)){
+            echo "<option value=".$data["District"].">".$data['District']."</option>";
+        }
+        ?>
+    </select>
+    <?php "</td>";
+    print '</tr>';
+}
+
+}
+}
+
+
+$DistrictU=!empty($_POST['DistrictU'])?$_POST['DistrictU']:'';
+if (!empty($DistrictU))
+{
+    $BranchCodeU=!empty($_POST['BranchCodeU'])?$_POST['BranchCodeU']:'';
+
+    $sql = "UPDATE branchs SET Address3='$DistrictU' WHERE BranchCode=$BranchCodeU";
 
     if ($con->query($sql) === TRUE) {
-      echo "New record created successfully";
+      echo 1;
   } else {
       echo "Error: " . $sql . "<br>" . $con->error;
   }
-}
+} 
+
+$ZoneCodeU=!empty($_POST['ZoneCodeU'])?$_POST['ZoneCodeU']:'';
+if (!empty($ZoneCodeU))
+{
+    $BranchCodeU=!empty($_POST['BranchCodeU'])?$_POST['BranchCodeU']:'';
+
+    $sql = "UPDATE branchs SET ZoneRegionCode=$ZoneCodeU WHERE BranchCode=$BranchCodeU";
+
+    if ($con->query($sql) === TRUE) {
+      echo 1;
+  } else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+  }
+} 
 
 
 $con->close();

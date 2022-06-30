@@ -40,7 +40,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Based on Next Reminder</title>
+  <title>Pending Bills</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -107,7 +107,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active"> Based on Next Reminders</li>
+          <li class="breadcrumb-item active">Action Needed</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -141,63 +141,60 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
             <center>
               <div class="pagetitle">
-                <h1>Group By Bank & Zone</h1>
+                <h1></h1>
               </div>
             </center>
             <div class="table-responsive container">
-              <table class="table table-hover table-bordered border-primary display table-responsive" id="example"> 
+              <table id="example" class="table table-hover table-bordered border-primary display" style="width:100%">
                 <thead> 
                   <tr> 
-                    <th style="min-width: 180px;">Bank</th>
-                    <th style="min-width: 180px;">Zone</th>           
-                    <th style="min-width: 180px;">Branch</th>
-                    <th style="min-width: 100px;">Bill No</th>
-                    <th style="min-width: 100px;">Bill Date</th>        
-                    <th style="min-width: 150px;">Total Billed Value</th> 
-                    <th style="min-width: 150px;">Received Amount</th> 
-                    <th style="min-width: 150px;">Pending Payment</th>
-                    <th style="min-width: 180px;">Next reminder Date</th>   
-                    <th style="min-width: 500px;">Description</th> 
-
+                    <th style="min-width:160px">Bank</th>
+                    <th style="min-width:80px">Zone</th>           
+                    <th style="min-width:150px">Branch</th>
+                    <th style="min-width:100px">Bill No</th>
+                    <th style="min-width:80px">Bill Date</th>        
+                    <th style="min-width: 100px;">Total Billed Value</th> 
+                    <th style="min-width: 100px;">Received Amount</th> 
+                    <th style="min-width: 100px;">Pending Payment</th>           
                   </tr>                     
                 </thead>                 
                 <tbody>
                   <?php 
 
-                  $query="SELECT * FROM cyrusbilling.vreminderbasedon";
+                  $query="SELECT * FROM cyrusbilling.reminders
+                  join cyrusbilling.billbook on reminders.BillID=billbook.BillID
+                  join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
+                  WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and  (ActionRequired=1 or ActionRequired=-1)  and Resolved=0
+                  ";
+
                   $result=mysqli_query($con2,$query);
-
                   while($row = mysqli_fetch_array($result)){
-                    print "<tr>";
-                    print "<td>".$row['BankName']."</td>";             
-                    print "<td>".$row['ZoneRegionName']."</td>";
-                    print "<td>".$row['BranchName']."</td>"; 
 
-                    print '<td><a href="" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="'.$row['BranchCode'].'">'.$row['BillNumber']."</a> </td>";
+                    ?>
+                    <tr>
+                      <td><?php echo $row['BankName'] ?></td>
+                      <td><?php echo $row['ZoneRegionName'] ?></td>
+                      <td><?php echo $row['BranchName'] ?></td>
+                      <td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
 
-                    print '<td><span class="d-none">'.$row['Bill DATE'].'</span>'.date("d-M-Y", strtotime($row['Bill DATE']))."</td>";
-                    print "<td>".$row['TotalBilledValue']."</td>";
-                    print "<td>".$row['ReceivedAmount']."</td>";
-                    print "<td>".$row['Pending Payment']."</td>";
-                    print '<td><span class="d-none">'.$row['MaxOfMaxOfNextReminderDate'].'</span>'.date("d-M-Y", strtotime($row['MaxOfMaxOfNextReminderDate']))."</td>";
-                    print "<td>".$row['MaxOfMaxOfDescription']."</td>";
-                    print "</tr>";
-                  }
+                      <td><span class="d-none"><?php echo $row['BillDate'] ?></span><?php echo date("d-M-Y", strtotime($row['BillDate'])) ?></td>
 
-                  ?>
+                      <td><?php echo $row['TotalBilledValue'] ?></td>
+                      <td><?php echo $row['ReceivedAmount'] ?></td>
+                      <td><?php echo sprintf('%0.2f', ($row['TotalBilledValue']-$row['ReceivedAmount'])) ?></td>
+                    </tr>
+                  <?php } ?>
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th style="min-width: 180px;">Bank</th>
-                    <th style="min-width: 180px;">Zone</th>           
-                    <th style="min-width: 180px;">Branch</th>
-                    <th style="min-width: 100px;">Bill No</th>
-                    <th style="min-width: 100px;">Bill Date</th>        
-                    <th style="min-width: 150px;">Total Billed Value</th> 
-                    <th style="min-width: 150px;">Received Amount</th> 
-                    <th style="min-width: 150px;">Pending Payment</th>
-                    <th style="min-width: 180px;">Next reminder Date</th>   
-                    <th style="min-width: 500px;">Description</th> 
+                    <th style="min-width:160px">Bank</th>
+                    <th style="min-width:80px">Zone</th>           
+                    <th style="min-width:150px">Branch</th>
+                    <th style="min-width:100px">Bill No</th>
+                    <th style="min-width:80px">Bill Date</th>        
+                    <th style="min-width: 100px;">Total Billed Value</th> 
+                    <th style="min-width: 100px;">Received Amount</th> 
+                    <th style="min-width: 100px;">Pending Payment</th> 
                   </tr>
                 </tfoot>
               </table>

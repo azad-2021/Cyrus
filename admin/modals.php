@@ -1,7 +1,3 @@
-<!-- Find Orders -->
-<!--END Find Orders -->
-
-
 
 <div class="modal fade" id="ReleasedMaterials" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
@@ -324,32 +320,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <center>
-          <div class="row">
-
-            <div class="col-lg-6">
-              <input type="text" id="myInput2" onkeyup="myFunction2()" placeholder="Search for Name" class="form-control rounded-corner" style="margin-bottom:20px">
-            </div>
-            <div class="col-lg-6">
-              <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for Inservice" class="form-control rounded-corner" style="margin-bottom:20px">
-            </div>
-
-          </div>
-        </center>
-        <table class="table table-hover table-bordered border-primary" id="myTable">
+        <table class="table table-hover table-bordered border-primary SrEngineer-Table">
           <thead>
-            <th>Sr. No.</th>
             <th>Name</th>
             <th>Mobile Number</th>
-            <th>Inservice</th>
             <th>Target Amount</th>
             <th>Reported To</th>
-            <th>Change Reporting To</th>
+            <th style="min-width:180px;">Change Reporting To</th>
             <th>Jobcard Entry</th>
-            <th>Change Jobcard Entry</th>
+            <th style="min-width:180px;">Change Jobcard Entry</th>
             <th>Total District</th>
-            <th>Reset Jobcard Entry</th>
-            <th>Reset Password</th>
             <th>Change Inservice</th>
             <th>Action</th>
           </thead>
@@ -484,21 +464,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <center>
-          <div class="row">
-
-            <div class="col-lg-6">
-              <input type="text" id="myInput3" onkeyup="myFunction3()" placeholder="Search for Name" class="form-control rounded-corner" style="margin-bottom:20px">
-            </div>
-            <div class="col-lg-6">
-              <input type="text" id="myInput4" onkeyup="myFunction4()" placeholder="Search for User Type" class="form-control rounded-corner" style="margin-bottom:20px">
-            </div>
-
-          </div>
-        </center>
-        <table class="table table-hover table-bordered border-primary" id="ExecutiveTable">
+        <table class="table table-hover table-bordered border-primary Executive-Table">
           <thead>
-            <th>Sr. No.</th>
             <th>Name</th>
             <th>Total Service Engineer</th>
             <th>Total District</th>

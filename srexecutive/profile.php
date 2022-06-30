@@ -2,16 +2,14 @@
 include 'connection.php';
 include 'session.php';
 
-//$EXEID=$_SESSION['userid'];
-
+$EXEID=$_SESSION['userid'];
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
 
-$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
-$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
-
 $Hour = date('G');
+//echo $_SESSION['user'];
+
 
 if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Morning ".$_SESSION['user'];
@@ -20,6 +18,30 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 } else if ( $Hour >= 19 || $Hour <= 23 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
+
+
+if(isset($_POST['submit'])){
+
+  $newPassword=$_POST['Password'];
+  $OldPassword=$_POST['OldPassword'];
+    //echo $newPassword;
+  $query ="SELECT * FROM `pass` WHERE ID=$EXEID and Password='$OldPassword'";
+  $results = mysqli_query($con, $query);
+
+  if ($results->num_rows > 0) {
+   $sql = "UPDATE pass SET Password='$newPassword' WHERE ID=$EXEID";
+
+   if ($con->query($sql) === TRUE) {
+     header('location:logout.php');
+   } else {
+    echo "Error updating record: " . $con->error;
+  }
+}else{
+  echo '<script>alert("Old Password not matched")</script>';
+}
+
+}
+
 
 ?>
 
@@ -31,13 +53,13 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Pending work from jobcard</title>
+  <title>Home</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
   <link href="assets/img/cyrus logo.png" rel="icon">
-
+  
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -52,24 +74,15 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/staterestore/1.0.1/css/stateRestore.dataTables.min.css">
-
-
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
-  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script src="assets/js/sweetalert.min.js"></script>
-  <style type="text/css">
-  table{
-    font-size: 14px;
-  }
-</style>
+
+
 </head>
+
 <body>
+
   <!-- ======= Header ======= -->
   <header id="header" class="header fixed-top d-flex align-items-center">
 
@@ -79,7 +92,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         <span class="d-none d-lg-block">Cyrus</span>
       </a>
       <i class="bi bi-list toggle-sidebar-btn"></i>
-    </div>
+    </div><!-- End Logo -->
 
     <div class="search-bar">
       <?php echo $wish; ?>
@@ -88,7 +101,8 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     include "nav.php";
     //include "modals.php";
     ?>
-  </header>
+
+  </header><!-- End Header -->
   <?php 
   include "sidebar.php";
   include "modals.php";
@@ -100,7 +114,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Work Report</li>
+          <li class="breadcrumb-item active">Profile</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -110,22 +124,28 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
         <!-- Left side columns -->
         <div class="col-lg-12">
-
           <center>
-            <div class="pagetitle">
-              <h1>Pending work detail</h1>
-            </div>
+            <form class="form-signin" action="" method="POST">
+              <center>
+                <h5>Change Password</h5>
+              </center>
+              <input type="text" id="pass" name="OldPassword" class="form-control rounded-corner" placeholder="Old Password" disabled style="max-width:300px" value='<?php echo $_SESSION['user'] ?>'>
+              <br>
+              <input type="password" id="pass" name="OldPassword" class="form-control rounded-corner" placeholder="Old Password" required style="max-width:300px">
+              <input type="password" id="pass" name="Password" class="form-control rounded-corner" placeholder="New Password" required style="max-width:300px">
+              <br>
+              <center>
+                <button class="btn btn-primary" name="submit" type="submit">Submit</button>
+              </center>  
+            </form>
           </center>
-          <div class="table-responsive container" id="data">
-
-          </div>
-
         </div>
       </div>
-      <!-- End Left side columns -->
     </section>
+    <div id="data"></div>
   </main>
   <!-- End #main -->
+
   <!-- ======= Footer ======= -->
   <footer id="footer" class="footer">
     <div class="copyright">
@@ -147,89 +167,88 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   <script src="assets/vendor/php-email-form/validate.js"></script>
 
   <!-- Template Main JS File -->
-
-
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
-
   <script src="assets/js/main.js"></script>
-  <script src="ajax.js"></script>
-
+  <script src="assets/js/jquery-3.6.0.min.js"></script>
   <script type="text/javascript">
-    $(document).ready(function() {
-      $('table.display').DataTable( {
-        responsive: false,
+    $(document).on('click','.Find', function(){
 
-        stateSave: false,
-      });
+     var Challan= document.getElementById("ChallanF").value;
+     if(Challan){
+      window.open("challan.php?ChallanNo="+Challan, '_blank').focus();
+
+    }
+  });
+
+
+
+    $(document).on('change','#EmployeeCodeW', function(){
+     document.getElementById("Sdate").value='';
+   });
+
+    $(document).on('change','#Sdate', function(){
+
+     Sdate= document.getElementById("Sdate").value;
+     EmployeeCode= document.getElementById("EmployeeCodeW").value;
+
+     if(Sdate){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'SDateCh':Sdate, 'EmployeeCodeCh':EmployeeCode},
+        success:function(result){
+         $('#ChallanView').html(result);
+       }
+     });
+
+    }
+  });
+
+
+    $(document).on('click','.CancelChallan', function(){
+
+     Challan =  $(this).attr("id");
+     Sdate= document.getElementById("Sdate").value;
+     EmployeeCode= document.getElementById("EmployeeCodeW").value;
+     console.log(EmployeeCode);
+     console.log(Sdate);
+
+     if(Challan){
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'ChallanCancel':Challan},
+        success:function(result){
+      //console.log((result));
+      swal("success","Challan Cancelled","success");
 
       $.ajax({
         type:'POST',
-        url:'PendingWork-jobcard-data.php',
-        data:{'Data':'Data'},
+        url:'dataget.php',
+        data:{'SDateCh':Sdate, 'EmployeeCodeCh':EmployeeCode},
         success:function(result){
-          $('#data').html(result);       
+          $('#ChallanView').html(result);
+
         }
       }); 
 
-    });
+    }
+
+  }); 
+
+    }
+  });
 
 
 
+    $(document).on('click','.PrintChallan', function(){
 
+     Challan =  $(this).attr("id");
+     Type=$(this).attr("id2");
+     window.open("challan.php?ChallanNo="+Challan+"&Type="+Type, '_blank').focus();
 
-    $(document).on('click', '.view_WorkReportB', function(){
-      var EmployeeCode=$(this).attr("id");
-      if (EmployeeCode) {
-        $.ajax({
-          type:'POST',
-          url:'attended.php',
-          data:{'EmployeeCodeB':EmployeeCode},
-          success:function(result){
-            $('#work_data').html(result);
-            $('#WorkReport').modal('show');        
-          }
-        }); 
-      }
-    });
+   });
 
-    $(document).on('click', '.JobcardReminder', function(){
-      var jobcard=$(this).attr("id");
-      document.getElementById("cardnumber").value=jobcard;
-    });
-
-    $(document).on('click', '.SaveReminder', function(){
-      var Reminder= document.getElementById("JobcardReminderData").value;
-      var jobcard= document.getElementById("cardnumber").value;
-      if (Reminder) {
-        $.ajax({
-          type:'POST',
-          url:'dataget.php',
-          data:{'ReminderU':Reminder, 'Jobcard':jobcard},
-          success:function(result){
-            $('.display').DataTable().clear();
-            $('.display').DataTable().destroy();
-            $.ajax({
-              type:'POST',
-              url:'PendingWork-jobcard-data.php',
-              data:{'Data':'Data'},
-              success:function(result){
-                $('#data').html(result);       
-              }
-            });
-
-            $('table.display').DataTable( {
-              responsive: false,
-
-              stateSave: false,
-            });
-
-          }
-        }); 
-      }
-    });
-  </script>
+ </script>
 </body>
 
 </html>

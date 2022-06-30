@@ -1,4 +1,24 @@
 
+<!-- Inventory Pending -->
+<div class="modal fade" id="InventoryPending" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content rounded-corner" style="background-color:#f0f0f0">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Materials Pending Data</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="InventoryData">
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cl" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary addUpdate" data-bs-toggle="modal" data-bs-target="#add">Add Items</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal fade" id="Bill" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -112,17 +132,17 @@
 
 
 <div class="modal fade" id="AddZone" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Enter Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="FormAddBank">
+        <form id="FormAddZone">
           <div class="row">
 
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Select Bank</label>
               <select id="Bank" class="form-control rounded-corner" name="Bank" required>
                 <option value="">Bank</option>
@@ -141,67 +161,34 @@
                 ?>
               </select>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Zone Name</label>
-              <input type="text" class="form-control rounded-corner" id="AddZoneCode2">
+              <input type="text" class="form-control rounded-corner" id="ZoneName">
             </div>          
-            <div class="col-lg-4">
-              <label for="recipient-name" class="col-form-label">Branch Name</label>
-              <input type="text" class="form-control rounded-corner" id="AddBranchCode2">
-            </div>
-            <div class="col-lg-4">
-              <label for="recipient-name" class="col-form-label">Select Region</label>
-              <select id="Region2" class="form-control rounded-corner" required>
-                <option value="">Select</option>
-                <?php
-                $Data="SELECT RegionCode, RegionName from `cyrus regions` order by RegionName";
-                $result=mysqli_query($con,$Data);
-                if (mysqli_num_rows($result)>0)
-                {
-                  while ($arr=mysqli_fetch_assoc($result))
-                  {
-                    ?>
-                    <option value="<?php echo $arr['RegionCode']; ?>"><?php echo $arr['RegionName']; ?></option>
-                    <?php
-                  }
-                }
-                ?>
-              </select>
-            </div>
-            <div class="col-lg-4">
-              <label for="recipient-name" class="col-form-label">Select District</label>
-              <select id="District2" class="form-control rounded-corner" required>
-                <option value="">Select</option>
-              </select>
-            </div>
-            <div class="col-lg-4">
-              <label for="recipient-name" class="col-form-label">Address 2</label>
-              <input type="text" class="form-control rounded-corner" id="Address2-2">
-            </div>
+            
           </div>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary SaveZone">Save</button>
-          <button type="reset" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
-        </div>
-      </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary SaveZone">Save</button>
+            <button type="reset" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="modal fade" id="AddBranch" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
+<div class="modal fade" id="AddBranch" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content rounded-corner">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Enter Details</h5>
+        <h5 class="modal-title" >Enter Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form id="FormAddBank">
-          <div class="row g-3">
+        <form id="FormAddBranch">
+          <div class="row g-3 field">
 
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Select Bank</label>
               <select id="Bank" class="form-control rounded-corner" name="Bank" required>
                 <option value="">Bank</option>
@@ -220,49 +207,42 @@
                 ?>
               </select>
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Zone Name</label>
-              <select id="Zone" class="form-control rounded-corner" name="Zone" required>
+              <select id="ZoneB" class="form-control rounded-corner" name="Zone" required>
                 <option value="">Zone</option>
               </select>
             </div>          
-            <div class="col-lg-4">
+            <div class="col-lg-6">
               <label for="recipient-name" class="col-form-label">Branch Name</label>
-              <input type="text" class="form-control rounded-corner" id="AddBranchCode3">
+              <input type="text" class="form-control rounded-corner" id="B1" name="BArray[]">
             </div>
-            <div class="col-sm-4">
-              <label for="recipient-name" class="col-form-label">Select Region</label>
-              <select id="Region3" class="form-control rounded-corner" required>
+            <div class="col-lg-6">
+              <label for="recipient-name" class="col-form-label">Select District</label>
+              <select id="D1" class="form-control rounded-corner" name="DArray[]" required>
                 <option value="">Select</option>
                 <?php
-                $Data="SELECT RegionCode, RegionName from `cyrus regions` order by RegionName";
+                $Data="SELECT * from cyrusbackend.districts order by District";
                 $result=mysqli_query($con,$Data);
                 if (mysqli_num_rows($result)>0)
                 {
                   while ($arr=mysqli_fetch_assoc($result))
                   {
                     ?>
-                    <option value="<?php echo $arr['RegionCode']; ?>"><?php echo $arr['RegionName']; ?></option>
+                    <option value="<?php echo $arr['District']; ?>"><?php echo $arr['District']; ?></option>
                     <?php
                   }
                 }
                 ?>
               </select>
             </div>
-            <div class="col-sm-4">
-              <label for="recipient-name" class="col-form-label">Select District</label>
-              <select id="District3" class="form-control rounded-corner" name="District" required>
-                <option value="">Select</option>
-              </select>
-            </div>
-            <div class="col-lg-4">
-              <label for="recipient-name" class="col-form-label">Address 2</label>
-              <input type="text" class="form-control rounded-corner" id="Address2-3">
-            </div>
+
+
           </div>
 
         </div>
         <div class="modal-footer">
+          <button class="btn btn-primary add_button" onclick="javascript:void(0);">Add Field</button>
           <button type="button" class="btn btn-primary SaveBranch">Save</button>
           <button type="reset" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
         </div>

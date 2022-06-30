@@ -55,7 +55,6 @@ if(isset($_POST["BranchCode"]))
     <thead> 
       <tr> 
         <th style="min-width:50px">S. No.</th>
-        <th style="min-width:50px">Bill ID</th>
         <th style="min-width:150px">Bill No.</th>           
         <th style="min-width:80px">Bill Date</th>
         <th style="min-width:80px">Total Billed Value</th>
@@ -77,9 +76,8 @@ if(isset($_POST["BranchCode"]))
 
           print "<tr>";
           print "<td>".$Sn."</td>";
-          print "<td>".$row['BillID']."</td>";
           print '<td><a target="blank" href=/cyrus/reporting/billView.php?billno='.base64_encode($row['BookNo']).'>'.$row['BookNo'].'</a></td>';             
-          print "<td>".$row['BillDate']."</td>";
+          print "<td>". date('d-M-Y',strtotime($row['BillDate']))."</td>";
           print '<td>'.$row['TotalBilledValue']."</td>"; 
           print '<td>'.$row['ReceivedAmount']."</td>";
           print '<td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#reminder" data-bs-Billno="'.$row['BookNo'].'" data-bs-BillID="'.$row['BillID'].'">'.sprintf('%0.2f', ($row['TotalBilledValue']-$row['ReceivedAmount']))."</td>";
@@ -114,23 +112,26 @@ if(isset($_POST["BranchCode"]))
       $query = "SELECT * FROM cyrusbilling.billbook
       left join cyrusbilling.reminders on billbook.BillID=cyrusbilling.reminders.BillID
       join cyrusbackend.pass on reminders.UserID=pass.ID
-      WHERE billbook.BranchCode=$BranchCode order by billbook.BillDate desc";
+      WHERE billbook.BranchCode=$BranchCode order by ReminderDate desc";
 
       $result = $con2->query($query);
       if (mysqli_num_rows($result)>0)
       {
         $Sn=1;
         while($row = mysqli_fetch_array($result)){
-
+          $RDate='';
+          if (!empty($row['ResolvedDate'])) {
+             $RDate=date('d-M-Y',strtotime($row['ResolvedDate']));
+          }
           print "<tr>";
           print "<td>".$Sn."</td>";
           print "<td>".$row['UserName']."</td>";
           print '<td>'.$row['BookNo'].'</td>';             
-          print "<td>".$row['ReminderDate']."</td>";
+          print "<td>". date('d-M-Y',strtotime($row['ReminderDate']))."</td>";
           print '<td>'.$row['Description']."</td>"; 
-          print '<td>'.$row['NextReminderDate']."</td>";
+          print "<td>". date('d-M-Y',strtotime($row['NextReminderDate']))."</td>";
           print '<td>'.$row['Action']."</td>";
-          print '<td>'.$row['ResolvedDate']."</td>";
+          print "<td>".$RDate."</td>";
           print "</tr>";
           $Sn++;
         }

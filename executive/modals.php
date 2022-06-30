@@ -411,3 +411,71 @@
     </div>
   </div>
 </div>
+
+<div class="modal" id="AddBankVisit" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title">Enter Visit Details</h5>
+      </div>
+      <div class="modal-body">
+
+        <form class="form-control" id="FBankVisit">
+          <div class="row">
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Bank</label>
+              <select id="BankVisit" class="form-control rounded-corner" name="Bank" required>
+                <option value="">Select</option>
+                <?php
+                $BankData="Select BankCode, BankName from bank order by BankName";
+                $result=mysqli_query($con,$BankData);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['BankCode']; ?>"><?php echo $arr['BankName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Designation</label>
+              <input type="text" class="form-control rounded-corner" id="Designation">
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Name</label>
+              <input type="text" class="form-control rounded-corner" id="DName">
+            </div>
+
+            <div class="col-lg-3">
+              <label for="validationCustom01" class="form-label ">Date of Visit</label>
+              <input type="date" class="form-control rounded-corner" id="VisitDateD">
+            </div>
+
+            <div class="col-lg-6">
+              <label for="validationCustom01" class="form-label ">Description</label>
+              <textarea type="text" class="form-control rounded-corner" maxlength="450" id="DescriptionD"></textarea>
+
+            </div>
+
+            <div class="col-lg-3">
+              <label for="validationCustom01" class="form-label ">Next Visit Date</label>
+              <input type="date" class="form-control rounded-corner" id="NextVisitDateD">
+            </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button data-bs-dismiss="modal" class="btn btn-primary saveBankVisit">Save</button> 
+            <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

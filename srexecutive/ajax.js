@@ -28,16 +28,6 @@
         
       }
     }); 
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'ZoneCodeAMC':ZoneCode},
-      success:function(result){
-        $('#AMCVisit').html(result);
-
-      }
-    });
-    
   }else{
 
     $('#Branch').html('<option value=""> Branch </option>'); 
@@ -266,7 +256,7 @@
   document.getElementById("order_id").value = OrderID;
   document.getElementById("zone_code").value = ZoneCode;
   $.ajax({
-   url:"inventoryPending.php",
+   url:"../cyrus/reporting/inventoryPending.php",
    method:"POST",
    data:{Data:Data},
    success:function(data){
@@ -783,40 +773,575 @@
 });
 });
 
- $(document).on('click', '.AssignedRegion', function(){
+ /*
+ $(document).on('click', '.Delete', function(){
+  //$('#dataModal').modal();
+  //var userid = document.getElementById("delete").value;
+  var EstimateID=document.getElementById("delest").value;
+  var ApprovalID=document.getElementById("delap").value;
+ // var rawData = $(this).val();
+ console.log(ApprovalID);
+ console.log(EstimateID);
 
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'Regiondata':'Data'},
-      success:function(result){
-        $('#RegionData').html(result);
-        
+
+
+
+ if(EstimateID){
+  $.ajax({
+    url:"/cyrus/reporting/estupdate.php",
+    method:"POST",
+    data:{EstimateID:EstimateID},
+    success:function(data){
+
+      $.ajax({
+       url:"/cyrus/reporting/Estimate.php",
+       method:"POST",
+       data:{ApprovalID:ApprovalID},
+       success:function(data){
+        $('#EstimateData').html(data);
+        $('#Estimate').modal('show');
       }
-    }); 
+    });
+
+    }
+  });
+}
 });
 
- $(document).on('click', '.saveBankVisit', function(){
 
-  var BankCode=document.getElementById("BankVisit").value;
-  var Designation=document.getElementById("Designation").value;
-  var Name=document.getElementById("DName").value;
-  var VisitDate=document.getElementById("VisitDateD").value;
-  var Description=document.getElementById("DescriptionD").value;
-  var NextVisitDate=document.getElementById("NextVisitDateD").value;
 
-  if (BankCode='' || Designation='' || Name='' || VisitDate='' || Description='' || NextVisitDate='') {
-    swal("error","Please enter all fields","error");
+
+ $(document).on('click','.QtyUpdate', function(){
+  var EstimateID=document.getElementById("es").value;
+  var newQty=document.getElementById("newQty").value;
+  var ApprovalID=document.getElementById("ap").value;
+  if (newQty==='0') {
+    alert("Quantity must be greater than 0");
   }else{
+    if(newQty){
+      newObj={EstimateID: EstimateID, newQty: newQty};
+      const Data = JSON.stringify(newObj);
+      console.log(Data);
+      $.ajax({
+        type:'POST',
+        url:'/cyrus/reporting/estupdate.php',
+        data:{Data:Data},
+        success:function(result){
+          $.ajax({
+           url:"/cyrus/reporting/Estimate.php",
+           method:"POST",
+           data:{ApprovalID:ApprovalID},
+           success:function(data){
+            $('#EstimateData').html(data);
+            $('#Estimate').modal('show');
+          }
+        });
 
+        }
+      }); 
+    }
+  }
+});
+
+ $(document).on('click','.addItems', function(){
+  var RateID=document.getElementById("items").value;
+  var Qty=document.getElementById("addQty").value;
+  var ApprovalID=document.getElementById("apd").value;
+  if (Qty==='') {
+    alert("Please enter quantity");
+  }else{
+    if(Qty){
+      newObj={RateID: RateID, Qty: Qty, ApprovalID: ApprovalID};
+      const Data = JSON.stringify(newObj);
+      console.log(Data);
+      $.ajax({
+        type:'POST',
+        url:'/cyrus/reporting/estupdate.php',
+        data:{AddData:Data},
+        success:function(result){
+          $.ajax({
+           url:"/cyrus/reporting/Estimate.php",
+           method:"POST",
+           data:{ApprovalID:ApprovalID},
+           success:function(data){
+            $('#EstimateData').html(data);
+            $('#Estimate').modal('show');
+          }
+        });
+
+        }
+      }); 
+    }
+  }
+});
+
+
+ $(document).on('change','#Edate', function(){
+  var EndDate = $(this).val();
+  var StartDate = document.getElementById("Sdate").value;
+  var EmployeeCode = document.getElementById("EmployeeCodeW").value;
+  newObj={EmployeeCode: EmployeeCode, StartDate: StartDate, EndDate: EndDate};
+  const Data = JSON.stringify(newObj);
+  console.log(Data);
+  console.log(EndDate)
+  if(Data){
     $.ajax({
       type:'POST',
       url:'dataget.php',
-      data:{'BankCodeVisit':BankCode, 'Designation':Designation, 'Name':Name, 'VisitDate':VisitDate, 'Description':Description, 'NextVisitDate':NextVisitDate},
+      data:{'Data':Data},
       success:function(result){
-        swal("success","Data enter successfully",'success');
+        $('#EmployeeWorkData').html(result);
+        
       }
     }); 
   }
 });
 
+*/
+
+$(document).on('click', '.Employees', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'view':'Employeelist'},
+   success:function(data){
+    $('#employeelist').html(data);
+    $('#Employees').modal('show');
+  }
+});
+});
+
+$(document).on('click', '.DataentryAllotment', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'viewDataEntry':'Employeelist'},
+   success:function(data){
+    $('#employeelistD').html(data);
+    $('#DataentryAllotment').modal('show');
+  }
+});
+});
+
+
+$(document).on('click', '.SaveExecutive', function(){
+  username=document.getElementById("UserName").value;
+  usertype=document.getElementById("UserType").value;
+  if (username!='' && usertype!='') {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'NewUser':username, 'UserType':usertype},
+     success:function(data){
+      swal("success","User Created","success");
+    }
+  });
+  }else{
+    swal("error","Please enter all fields.","error");
+  }
+});
+
+$(document).on('change', '#ChangeReporting', function(){
+  var ExecutiveID= $(this).val();
+  var EmployeeCode=$(this).attr("id2");
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'NewReporting':ExecutiveID, 'EmployeeCode':EmployeeCode},
+   success:function(data){
+
+   }
+ });
+
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'view':'Employeelist'},
+   success:function(data){
+    $('#employeelist').html(data);
+    $('#Employees').modal('show');
+  }
+});
+});
+
+
+
+$(document).on('change', '#ChangeDataentry', function(){
+  var ExecutiveID= $(this).val();
+  var EmployeeCode=$(this).attr("id2");
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'NewDataentry':ExecutiveID, 'EmployeeCode':EmployeeCode},
+   success:function(data){
+
+   }
+ });
+
+  var delayInMilliseconds = 1000; 
+
+  setTimeout(function() {
+
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'view':'Employeelist'},
+     success:function(data){
+      $('#employeelist').html(data);
+      $('#Employees').modal('show');
+    }
+  });
+
+  }, delayInMilliseconds);
+
+
+});
+
+
+
+
+$(document).on('click', '.ResetPass', function(){
+  var EmployeeCode=$(this).attr("id");
+  if (EmployeeCode) {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'ResetPass':EmployeeCode},
+     success:function(data){
+      swal("success","Password Reset to cyrus@123","success");
+    }
+  });
+  }
+});
+
+
+$(document).on('click', '.ResetExecutivePass', function(){
+  var EmployeeCode=$(this).attr("id");
+  if (EmployeeCode) {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'ResetExecutivePass':EmployeeCode},
+     success:function(data){
+      swal("success","Password Reset to cyrus@123","success");
+    }
+  });
+  }
+});
+
+$(document).on('click', '.Resetdataentry', function(){
+  var EmployeeCode=$(this).attr("id");
+  if (EmployeeCode) {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'Resetdataentry':EmployeeCode},
+     success:function(data){
+
+     }
+   });
+
+
+    var delayInMilliseconds = 1000; 
+
+    setTimeout(function() {
+
+      $.ajax({
+       url:"dataget.php",
+       method:"POST",
+       data:{'view':'Employeelist'},
+       success:function(data){
+        $('#employeelist').html(data);
+        $('#Employees').modal('show');
+      }
+    });
+
+    }, delayInMilliseconds);
+
+
+
+  }
+});
+
+
+$(document).on('click', '.SaveNewEmployee', function(){
+  EmployeeName=document.getElementById("EmployeeName").value;
+  EmployeeQulaification=document.getElementById("EmployeeQulaification").value;
+  EmployeeDistrict=document.getElementById("EmployeeDistrict").value;
+  EmployeeMobile=document.getElementById("EmployeeMobile").value;
+  if (EmployeeName!='' && EmployeeQulaification!='' && EmployeeDistrict!='' && EmployeeMobile!='') {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'NewEmployeeName':EmployeeName, 'EmployeeQulaification':EmployeeQulaification, 'EmployeeDistrict':EmployeeDistrict,'EmployeeMobile':EmployeeMobile},
+     success:function(data){
+      swal("success","New employee added","success");
+      $('#EAddEmployees').modal('hide');
+      $('#NewEmployeeF').trigger("reset");
+    }
+  });
+  }else{
+    swal("error","Please enter all fields.","error");
+  }
+});
+
+var EmployeeCodeU=0;
+$(document).on('click', '.UEmployee', function(){
+  EmployeeCodeU=$(this).attr("id");
+  var EmployeeName=$(this).attr("id2");
+  var Qualification=$(this).attr("id3");
+  var District=$(this).attr("id4");
+  var Phone=$(this).attr("id5");
+  var Target=$(this).attr("id6");
+  
+  document.getElementById("EmployeeNameU").value=EmployeeName;
+  document.getElementById("EmployeeQulaificationU").value=Qualification;
+  document.getElementById("EmployeeDistrictU").value=District;
+  document.getElementById("EmployeeMobileU").value=Phone;
+  document.getElementById("EmployeeTargetU").value=Target
+  $('#UpdateEmployees').modal('show');
+});
+
+
+$(document).on('click', '.SaveNewEmployeeU', function(){
+  EmployeeName=document.getElementById("EmployeeNameU").value;
+  EmployeeQulaification=document.getElementById("EmployeeQulaificationU").value;
+  EmployeeDistrict=document.getElementById("EmployeeDistrictU").value;
+  EmployeeMobile=document.getElementById("EmployeeMobileU").value;
+  Target=document.getElementById("EmployeeTargetU").value;
+  if (EmployeeName!='' && EmployeeQulaification!='' && EmployeeDistrict!='' && EmployeeMobile!='') {
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'EmployeeNameU':EmployeeName, 'EmployeeQulaificationU':EmployeeQulaification, 'EmployeeDistrictU':EmployeeDistrict,'EmployeeMobileU':EmployeeMobile,'EmployeeCodeU':EmployeeCodeU, 'EmployeeTargetU':Target},
+     success:function(data){
+      swal("success","New employee added","success");
+      $('#UpdateEmployees').modal('hide');
+      //$('#NewEmployeeF').trigger("reset");
+      var delayInMilliseconds = 1000; 
+
+      setTimeout(function() {
+
+        $.ajax({
+         url:"dataget.php",
+         method:"POST",
+         data:{'view':'Employeelist'},
+         success:function(data){
+          $('#employeelist').html(data);
+          $('#Employees').modal('show');
+        }
+      });
+
+      }, delayInMilliseconds);
+    }
+  });
+  }else{
+    swal("error","Please enter all fields.","error");
+  }
+});
+
+$(document).on('change', '#Inservice', function(){
+  var Inservice= $(this).val();
+  var EmployeeCode=$(this).attr("id2");
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'Inservice':Inservice, 'EmployeeCode':EmployeeCode},
+   success:function(data){
+
+   }
+ });
+
+  var delayInMilliseconds = 1000; 
+
+  setTimeout(function() {
+
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'view':'Employeelist'},
+     success:function(data){
+      $('#employeelist').html(data);
+      $('#Employees').modal('show');
+    }
+  });
+    
+  }, delayInMilliseconds);
+
+
+});
+
+
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[3];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function myFunction2() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput2");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function myFunction3() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput3");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("ExecutiveTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function myFunction4() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput4");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("ExecutiveTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[5];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+
+
+$(document).on('click', '.Executive', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'viewExecutive':'ExecutiveList'},
+   success:function(data){
+    $('#executivelist').html(data);
+    $('#Executive').modal('show');
+  }
+});
+});
+
+$(document).on('click', '.BankReminders', function(){
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'BankReminders':'BankReminders'},
+   success:function(data){
+    $('#BankReminderData').html(data);
+    $('#BankReminders').modal('show');
+  }
+});
+});
+
+
+$(document).on('change', '#ChangeReminder', function(){
+  var ExecutiveID= $(this).val();
+  var ZoneCode=$(this).attr("id2");
+  $.ajax({
+   url:"dataget.php",
+   method:"POST",
+   data:{'NewReminder':ExecutiveID, 'ZoneCode':ZoneCode},
+   success:function(data){
+
+   }
+ });
+
+  var delayInMilliseconds = 1000; 
+
+  setTimeout(function() {
+
+    $.ajax({
+     url:"dataget.php",
+     method:"POST",
+     data:{'BankReminders':'BankReminders'},
+     success:function(data){
+      $('#BankReminderData').html(data);
+      $('#BankReminders').modal('show');
+    }
+  });
+
+  }, delayInMilliseconds);
+
+
+});
+
+
+
+function myFunction5() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput5");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable6");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+
+function myFunction6() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput6");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable6");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}

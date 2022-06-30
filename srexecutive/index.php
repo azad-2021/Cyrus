@@ -222,7 +222,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
         </table>
       </div>
 
-
+      <div id="r"></div>
     </div>
   </div>
   <!-- End Left side columns -->
@@ -257,264 +257,22 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
 <script src="assets/js/main.js"></script>
 <script src="ajax-script.js"></script>
-
+<?php include"js-php.php"; ?>
 <script type="text/javascript">
   $(document).ready(function() {
     $('table.display').DataTable( {
       responsive: false,
 
-        } );
+    } );
   } );
 
-
-  $(document).on('click', '.view_WorkReportO', function(){
-    var EmployeeCode=$(this).attr("id");
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeO':EmployeeCode},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-  $(document).on('click', '.view_WorkReportA', function(){
-    var EmployeeCode=$(this).attr("id");
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeA':EmployeeCode},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-
-  $(document).on('click', '.view_WorkReportC', function(){
-    var EmployeeCode=$(this).attr("id");
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeC':EmployeeCode},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-
-  $(document).on('click', '.view_WorkReportB', function(){
-    var EmployeeCode=$(this).attr("id");
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeB':EmployeeCode},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-  $(document).on('change', '#SDate', function(){
-    document.getElementById("EDate").value = "";
-  });
-
-  $(document).on('change', '#employee', function(){
-    document.getElementById("SDate").value = "";
-  });
-
-  $(document).on('change', '#EDate', function(){
-    var SDate = document.getElementById("SDate").value;
-    var EDate = document.getElementById("EDate").value;
-        //var EmployeeCode = document.getElementById("employee").value;
-
-        if (SDate==''){
-          swal("error","Please select Start Date","error");
-        }else{
-          $.ajax({
-            type:'POST',
-            url:'dataget.php',
-            data:{'EmployeeCodeP':'xyz', 'SDate':SDate, 'EDate':EDate},
-            success:function(result){
-              $('#work_dataP').html(result);        
-            }
-          });
-        }
-      });
-
-
-  function myFunctionPS() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("EmployeePS");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("myTablePS");
-    tr = table.getElementsByTagName("tr");
-    for (i = 0; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td")[1];
-      if (td) {
-        txtValue = td.textContent || td.innerText;
-        if (txtValue.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }       
-    }
-  }
-
-  $(document).on('click', '.view_WorkReportOP', function(){
-    var EmployeeCode=$(this).attr("id");
-    var SDate = document.getElementById("SDate").value;
-    var EDate = document.getElementById("EDate").value;
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeOP':EmployeeCode, 'SDate':SDate, 'EDate':EDate},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-  $(document).on('click', '.view_WorkReportAP', function(){
-    var EmployeeCode=$(this).attr("id");
-    var SDate = document.getElementById("SDate").value;
-    var EDate = document.getElementById("EDate").value;
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeAP':EmployeeCode, 'SDate':SDate, 'EDate':EDate},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-
-  $(document).on('click', '.view_WorkReportCP', function(){
-    var EmployeeCode=$(this).attr("id");
-    var SDate = document.getElementById("SDate").value;
-    var EDate = document.getElementById("EDate").value;
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeCP':EmployeeCode, 'SDate':SDate, 'EDate':EDate},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
-
-
-  $(document).on('click', '.view_WorkReportBP', function(){
-    var EmployeeCode=$(this).attr("id");
-    var SDate = document.getElementById("SDate").value;
-    var EDate = document.getElementById("EDate").value;
-    if (EmployeeCode) {
-      $.ajax({
-        type:'POST',
-        url:'attended.php',
-        data:{'EmployeeCodeBP':EmployeeCode, 'SDate':SDate, 'EDate':EDate},
-        success:function(result){
-          $('#work_data').html(result);
-          $('#WorkReport').modal('show');        
-        }
-      }); 
-    }
-  });
 </script>
 
-<script>
+</body>
 
-  function sortTable(n) {
-    var table;
-    table = document.getElementById("myTablePS");
-    var rows, i, x, y, count = 0;
-    var switching = true;
+</html>
 
-      // Order is set as ascending
-      var direction = "ascending";
-
-       // Run loop until no switching is needed
-       while (switching) {
-        switching = false;
-        var rows = table.rows;
-
-                    //Loop to go through all rows
-                    for (i = 1; i < (rows.length - 1); i++) {
-                      var Switch = false;
-
-                        // Fetch 2 elements that need to be compared
-                        x = rows[i].getElementsByTagName("TD")[n];
-                        y = rows[i + 1].getElementsByTagName("TD")[n];
-
-                        // Check the direction of order
-                        if (direction == "ascending") {
-
-                            // Check if 2 rows need to be switched
-                            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase())
-                            {
-                                // If yes, mark Switch as needed and break loop
-                                Switch = true;
-                                break;
-                              }
-                            } else if (direction == "descending") {
-
-                            // Check direction
-                            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase())
-                            {
-                                // If yes, mark Switch as needed and break loop
-                                Switch = true;
-                                break;
-                              }
-                            }
-                          }
-                          if (Switch) {
-                        // Function to switch rows and mark switch as completed
-                        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-                        switching = true;
-
-                        // Increase count for each switch
-                        count++;
-                      } else {
-                        // Run while loop again for descending order
-                        if (count == 0 && direction == "ascending") {
-                          direction = "descending";
-                          switching = true;
-                        }
-                      }
-                    }
-                  }
-                </script>
-
-              </body>
-
-              </html>
-
-              <?php 
-              $con->close();
-              $con2->close();
-            ?>
+<?php 
+$con->close();
+$con2->close();
+?>

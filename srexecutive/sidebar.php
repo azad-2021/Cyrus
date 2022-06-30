@@ -40,9 +40,9 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="/cyrus/reception/" target="_blank">
+        <a class="nav-link collapsed" href="branchdetails.php">
           <i class="bi bi-grid"></i>
-          <span>Reception</span>
+          <span>Branch Detail</span>
         </a>
       </li><!-- End Contact Page Nav -->
       <li class="nav-item">
@@ -64,12 +64,26 @@
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link collapsed" href="branchdetails.php" target="_blank">
+        <a class="nav-link collapsed" href="action.php">
           <i class="bi bi-grid"></i>
-          <span>Branch Detail</span>
+          <span>Action Needed</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="overdue.php">
+          <i class="bi bi-grid"></i>
+          <span>Overdue</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="update-branch.php">
+          <i class="bi bi-grid"></i>
+          <span>Update Zone/District</span>
         </a>
       </li>
 
     </ul>
 
-</aside><!-- End Sidebar-->
+  </aside><!-- End Sidebar-->
+
+

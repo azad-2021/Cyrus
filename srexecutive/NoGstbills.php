@@ -243,7 +243,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
-
+<?php include"js-php.php"; ?>
 <script type="text/javascript">
   $(document).ready(function() {
     // Setup - add a text input to each footer cell
@@ -293,8 +293,6 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }
   });
   });
-
-
 </script>
 </body>
 
