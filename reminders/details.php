@@ -17,14 +17,14 @@ if (!empty($Branch))
         {
             //$AssignDate= date("d-m-Y", strtotime($row3["AssignDate"]));
             if (!empty($row3["AssignDate"])) {
-               $AssignDate= date("d-m-Y", strtotime($row3["AssignDate"]));
+               $AssignDate= date("d-M-Y", strtotime($row3["AssignDate"]));
            }else{
             $AssignDate='';
         }
         if ($row3["Attended"]==1) {
             $Attended='Yes';
             if (!empty($row3["AttendDate"])) {
-             $AttendDate= date("d-m-Y", strtotime($row3["AttendDate"]));
+             $AttendDate= date("d-M-Y", strtotime($row3["AttendDate"]));
          }else{
             $AttendDate='';
         }
@@ -101,7 +101,7 @@ if (!empty($BrCode))
 
 
             if (!empty($row2["AssignDate"])) {
-               $AssignDate= date("d-m-Y", strtotime($row2["AssignDate"]));
+               $AssignDate= date("d-M-Y", strtotime($row2["AssignDate"]));
            }else{
             $AssignDate='';
         }
@@ -109,7 +109,7 @@ if (!empty($BrCode))
         if ($row2["Attended"]==1) {
             $Attended='Yes';
             if (!empty($row2["AttendDate"])) {
-               $AttendDate= date("d-m-Y", strtotime($row2["AttendDate"]));
+               $AttendDate= date("d-M-Y", strtotime($row2["AttendDate"]));
            }else{
             $AttendDate='';
         }
@@ -204,7 +204,7 @@ if (!empty($BranchCode))
             <a href="/technician/view.php?card=<?php print base64_encode($row["Card Number"]); ?>" target="_blank"><?php print $row["Card Number"]; ?></a>
             <?php
             "</td>";
-            print '<td>'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
+            print '<td>'.date("d-M-Y", strtotime($row["VisitDate"]))."</td>";
             print '<td>'.$Gadget."</td>";
             print '<td>'.$Employee."</td>";
             print '<td style="min-width: 800px;">'.$row["ServiceDone"]."</td>";

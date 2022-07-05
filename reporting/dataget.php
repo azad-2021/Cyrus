@@ -1,5 +1,8 @@
 <?php
 include ('data.php');
+date_default_timezone_set('Asia/Kolkata');
+$newtimestamp =date('y-m-d H:i:s');
+$Date = date('Y-m-d',strtotime($newtimestamp));
 $BankCode=!empty($_POST['BankCode'])?$_POST['BankCode']:'';
 if (!empty($BankCode))
 {
@@ -93,24 +96,22 @@ if (!empty($ZoneCodeAMC))
         
     }
 }
-$Jobcard='c509xc';
-//$Jobcard=!empty($_POST['Jobcard'])?$_POST['Jobcard']:'';
+
+
+$Jobcard=!empty($_POST['Jobcard'])?$_POST['Jobcard']:'';
 if (!empty($Jobcard))
 {
-    //$QID=!empty($_POST['QID'])?$_POST['QID']:'';
-    //$Type=!empty($_POST['GenType'])?$_POST['GenType']:'';
-    //$Remark=!empty($_POST['Remark'])?$_POST['Remark']:'';
-    $Remark='old AMC ID so closed';
-    $QID=187248;
-    $Remark='old AMC ID so closed';
-    $Type='Order';
+    $QID=!empty($_POST['QID'])?$_POST['QID']:'';
+    $Type=!empty($_POST['GenType'])?$_POST['GenType']:'';
+    $Remark=!empty($_POST['Remark'])?$_POST['Remark']:'';
+
     $input = preg_replace("/[^a-zA-Z0-9]+/", "", $Jobcard);
     $Jobcard=strtoupper($input);
     $sqlx = "SELECT * from `jobcardmain` where `Card Number` = '$Jobcard'";  
     $resultx = mysqli_query($conn, $sqlx);  
     if (mysqli_num_rows($resultx)>0)
     {
-     echo '<script>alert("Jobcard alredy exist")</script>';
+     echo 'Jobcard alredy exist';
 
  }else{
 
@@ -138,7 +139,7 @@ if (!empty($Jobcard))
   $sql2 = "INSERT INTO `reference table`( `Reference`, `Card Number`, `EmployeeCode`, `VisitDate`, `User`, `BranchCode`,  `ID`) VALUES ('$Type','$Jobcard','$EmployeeCode', '$Date', '$user', '$BranchCode', '$QID')";
 
   if ($conn->query($sql2) === TRUE) {
-        //echo '<meta http-equiv="refresh" content="0">';
+        echo 1;
   }else {
       echo "Error: " . $sql2 . "<br>" . $conn->error;
 
@@ -169,7 +170,7 @@ if (!empty($Jobcard))
     echo "Error: " . $sql . "<br>" . $conn->error;
 
 }
-echo '<meta http-equiv="refresh" content="0">';
+
 }else {
   echo "Error: " . $sql . "<br>" . $conn->error;
 
@@ -194,21 +195,17 @@ echo '<meta http-equiv="refresh" content="0">';
   $sql2 = "INSERT INTO `reference table`( `Reference`, `Card Number`, `EmployeeCode`, `VisitDate`, `User`, `BranchCode`,  `ID`) VALUES ('$Type','$Jobcard','$EmployeeCode', '$Date', '$user', '$BranchCode', '$QID')";
 
   if ($conn->query($sql2) === TRUE) {
-        //echo '<meta http-equiv="refresh" content="0">';
+        
   }else {
       echo "Error: " . $sql2 . "<br>" . $conn->error;
 
   }
 
-
-  $sql = "INSERT INTO `jobcardmain` (`Card Number`, `BranchCode`, `VisitDate`, `Remark`, `GadgetID`, `EmployeeCode`, ServiceDone, WorkPending) 
-  VALUES('$Jobcard', '$BranchCode', '$Date', 'Not Ok', '$GadgetID', '$EmployeeCode', 'Closed', 'Closed')";
-
   if ($conn->query($sql) === TRUE) {
 
       $sql = "UPDATE complaints SET `Executive Remark`='$Remark', AttendDate='$Date', Attended=1 WHERE ComplaintID=$QID";
       if ($conn->query($sql) === TRUE) {
-        echo '<meta http-equiv="refresh" content="0">';
+        echo 1;
     }else {
         echo "Error: " . $sql . "<br>" . $conn->error;
 

@@ -113,17 +113,35 @@ if(isset($exEmployeeID))
               ?>
             </select>
           </td>  
-          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a></td>                    
-        </tr>
-        <?php
-        $Sn++;
-      }
+          <td  scope="col" style="min-width: 150px;">
 
-      $con->close();
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Action
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a>
+                </li>
+                <li>
+                  <a class="dropdown-item gen" data-bs-toggle="modal" data-bs-target="#Reference" id="<?php echo $row["OrderID"] ?>" id2="Order">
+                  Close ID</a>
+                </li>
+              </ul>
+            </div>
+
+          </td>        
+        </tr>                
+      </tr>
+      <?php
+      $Sn++;
     }
-    ?>
-    
-  </tbody>
+
+    $con->close();
+  }
+  ?>
+  
+</tbody>
 </table>
 </table>
 

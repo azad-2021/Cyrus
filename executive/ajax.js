@@ -133,24 +133,15 @@
 });
 
  $(document).on('click', '.delete', function(){
-  //$('#dataModal').modal();
-
+ 
   var OrderID=document.getElementById("orderid").value;
-
-  
-  
-  //var ZoneCode2=document.getElementById("zone_code").value;
   var RateID=$(this).val();
   var Qty=document.getElementById("qty").value;
   var ZoneCode=document.getElementById("ZoneCode").value;
-  //console.log(ItemID);
-  //console.log(OrderID);
-  //console.log(Qty);
   newObj2={OrderID: OrderID, ZoneCode: ZoneCode};
   const Data2 = JSON.stringify(newObj2);
   newObj={OrderID: OrderID, RateID: RateID, Type: "Delete"};
   const Data = JSON.stringify(newObj);
-
 
   console.log(Data);
   $.ajax({
@@ -785,16 +776,29 @@
 
  $(document).on('click', '.AssignedRegion', function(){
 
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'Regiondata':'Data'},
-      success:function(result){
-        $('#RegionData').html(result);
-        
-      }
-    }); 
+  $.ajax({
+    type:'POST',
+    url:'dataget.php',
+    data:{'Regiondata':'Data'},
+    success:function(result){
+      $('#RegionData').html(result);
+
+    }
+  }); 
 });
+
+ $(document).on('click', '.BankVisit', function(){
+
+  $.ajax({
+    type:'POST',
+    url:'dataget.php',
+    data:{'BankVisit':'BankCode'},
+    success:function(result){
+      $('#BankVisitData').html(result);
+    }
+  }); 
+});
+
 
  $(document).on('click', '.saveBankVisit', function(){
 
@@ -805,7 +809,7 @@
   var Description=document.getElementById("DescriptionD").value;
   var NextVisitDate=document.getElementById("NextVisitDateD").value;
 
-  if (BankCode='' || Designation='' || Name='' || VisitDate='' || Description='' || NextVisitDate='') {
+  if (BankCode=='' || Designation=='' || Name=='' || VisitDate=='' || Description=='' || NextVisitDate=='') {
     swal("error","Please enter all fields","error");
   }else{
 
@@ -814,9 +818,27 @@
       url:'dataget.php',
       data:{'BankCodeVisit':BankCode, 'Designation':Designation, 'Name':Name, 'VisitDate':VisitDate, 'Description':Description, 'NextVisitDate':NextVisitDate},
       success:function(result){
-        swal("success","Data enter successfully",'success');
+        if ((result)==1) {
+          swal("success","Data enter successfully",'success');
+          $('#FBankVisit').trigger('reset');
+        }else{
+          swal("error",(result),'error');
+        }
+
       }
     }); 
+
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'BankVisit':'BankCode'},
+      success:function(result){
+        $('#BankVisitData').html(result);
+        //$('#AddBankVisit').modal('show');
+      }
+    }); 
+
+
   }
 });
 

@@ -100,22 +100,39 @@ if(isset($_POST["EmployeeID"]))
                  <option value="">Select</option>        
                  <?php
                  if ($Type !="Executive") {
-                 if ($int>=0) {
-                   $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
-                   $resultTech=mysqli_query($con,$queryTech);
-                   while($data=mysqli_fetch_assoc($resultTech)){
-                    $json = array("EmployeeID"=>$data['EmployeeCode'], "OrderID"=>$row['OrderID'], "Status"=>"Assigned", "Count"=>$row3['count(ID)'], "exEmployeeID"=>$exEmployeeID);
-                    $Data=json_encode($json);
-                    echo "<option value=".$Data.">".$data['Employee Name']."</option>";
+                   if ($int>=0) {
+                     $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
+                     $resultTech=mysqli_query($con,$queryTech);
+                     while($data=mysqli_fetch_assoc($resultTech)){
+                      $json = array("EmployeeID"=>$data['EmployeeCode'], "OrderID"=>$row['OrderID'], "Status"=>"Assigned", "Count"=>$row3['count(ID)'], "exEmployeeID"=>$exEmployeeID);
+                      $Data=json_encode($json);
+                      echo "<option value=".$Data.">".$data['Employee Name']."</option>";
+                    }
                   }
-                }
                 }  
                 ?>
               </select>
             </form>
           </td>
           
-          <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a></td>        
+          <td  scope="col" style="min-width: 150px;">
+
+            <div class="btn-group">
+              <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Action
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>" id2="0">Add Remark</a>
+                </li>
+                <li>
+                  <a class="dropdown-item gen" data-bs-toggle="modal" data-bs-target="#Reference" id="<?php echo $row["OrderID"] ?>" id2="Order">
+                  Close ID</a>
+                </li>
+              </ul>
+            </div>
+
+          </td>        
         </tr>
         <?php
         $Sn++;

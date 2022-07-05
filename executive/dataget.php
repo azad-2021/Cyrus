@@ -134,17 +134,42 @@ if (!empty($BankCodeVisit))
   if (mysqli_num_rows($result)>0)
   {
     echo "Details already exist";
+  }elseif($VisitDate>=$NextVisitDate){
+    echo 'Next visit date must be greater than visit date';
   }else{
     $sql = "INSERT INTO bankvisits (ExecutiveID, BankCode, Designation, Name, VisitDate, Description, NextVisitDate)
     VALUES ($EXEID, $BankCodeVisit, '$Designation', '$Name', '$VisitDate', '$Description', '$NextVisitDate')";
 
     if ($con3->query($sql) === TRUE) {
-
+      echo 1;
     }else {
-      echo "Error: " . $sql . "<br>" . $con2->error;
-      $myfile = fopen("error.txt", "w") or die("Unable to open file!");
-      fwrite($myfile, $con->error);
-      fclose($myfile);
+      echo "Error: " . $sql . "<br>" . $con3->error;
+    }
+
+  }
+}
+
+$BankVisit=!empty($_POST['BankVisit'])?$_POST['BankVisit']:'';
+
+if (!empty($BankVisit))
+{   
+
+  $query="SELECT * from cyrusbackend.bankvisits join cyrusbackend.bank on bankvisits.BankCode=bank.BankCode
+  WHERE ExecutiveID=$EXEID order by VisitDate desc";
+  $result=mysqli_query($con3,$query);
+  if (mysqli_num_rows($result)>0)
+  {
+
+    while ($row=mysqli_fetch_assoc($result))
+    {
+      print "<tr>";
+      print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["Name"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["Designation"]."</td>";
+      print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
+      print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["NextVisitDate"]))."</td>";
+      print '<td style="min-width: 150px;">'.$row["Description"]."</td>";
+      print '</tr>';
     }
 
   }

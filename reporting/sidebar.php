@@ -146,8 +146,17 @@
       <span>Add Jobcard</span>
     </a>
   </li>
-
   <?php 
+  if ($_SESSION['userid']==32) {
+   ?>
+   <li class="nav-item">
+    <a class="nav-link collapsed" href="/cyrus/reminders/" target="_blank">
+      <i class="bi bi-grid"></i>
+      <span>Payment Reminder</span>
+    </a>
+  </li>
+<?php }
+
 }elseif($Type=='Executive'){
   ?>
 
@@ -164,14 +173,14 @@
       <span>Delayed Work</span>
     </a>
   </li>
-    <li class="nav-item">
+  <li class="nav-item">
     <a class="nav-link collapsed" href="abouttodelay.php">
       <i class="bi bi-grid"></i>
       <span>About to Delay</span>
     </a>
   </li>
 
-  <?php 
+<?php 
 }
 ?>
 </ul>

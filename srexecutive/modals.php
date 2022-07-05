@@ -242,11 +242,76 @@
 
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary add_button" onclick="javascript:void(0);">Add Field</button>
+          <button class="btn btn-primary add_button" onclick="javascript:void(0);">More branch</button>
           <button type="button" class="btn btn-primary SaveBranch">Save</button>
           <button type="reset" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
         </div>
       </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="ActionTaken" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Action Taken</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="FormReminder">
+          <div class="row">
+            <div class="col-lg-6 d-none">
+              <input type="text" class="form-control rounded-corner" id="billid2">
+            </div>
+            <div class="col-6 d-none">
+              <input type="text" class="form-control rounded-corner" id="branch">
+            </div>
+            <div class="col-lg-4">
+              <label for="message-text" class="col-form-label">Detail of conversation with branch:</label>
+              <textarea class="form-control rounded-corner" id="DetailConversation" disabled=""></textarea>
+            </div>
+
+            <div class="col-4">
+              <label for="recipient-name" class="col-form-label">Next Reminder Date</label>
+              <input type="text" class="form-control rounded-corner" id="NextRmDate" disabled="">
+            </div>
+            <div class="col-lg-4">
+              <label for="message-text" class="col-form-label">Action Taken</label>
+              <textarea  class="form-control rounded-corner" id="ActionTakenD" ></textarea>
+            </div>            
+          </div>
+          <center>
+            <div class="form-check" style="margin-top: 60px; float:right; margin-right:100px;">
+              <input class="form-check-input" type="checkbox" id="Resolved">
+              <label class="form-check-label" for="flexCheckDefault" style="margin-top: -5px;">Resolved</label>
+            </div>
+          </center>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary SaveActionTaken" data-bs-dismiss="modal">Save</button>
+        <button type="button" class="btn btn-secondary close" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="OverdueBill" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Overdue Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="OverdueData" style="background-color: #f0f0f0;">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>

@@ -120,7 +120,6 @@ if(isset($_POST['submit'])){
     $Camera=$_POST['Camera'];
     
     $DVR=$_POST['DVR'];
-
     $NoRecording=$_POST['NoRecording'];
 
     $CleaningCamera=$_POST['CleaningCamera'];
@@ -136,6 +135,9 @@ if(isset($_POST['submit'])){
       header("location:jobcardentry.php?empid=$enEmployeeID");
     } else {
       echo "Error: " . $sql2 . "<br>" . $con->error;
+      $myfile = fopen("errcctv.txt", "w") or die("Unable to open file!");
+      fwrite($myfile, $con->error);
+      fclose($myfile);
     }
 
   }

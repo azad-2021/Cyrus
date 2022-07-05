@@ -55,7 +55,7 @@
   $.ajax({
    url:"Bill.php",
    method:"POST",
-   data:{BranchCode:BranchCode},
+   data:{'BranchCode':BranchCode},
    success:function(data){
     $('#BillData').html(data);
     $('#Bill').modal('show');
@@ -63,6 +63,21 @@
 });
 });
 
+ $(document).on('click', '.Bill2', function(){
+  //$('#dataModal').modal();
+  var BranchCode = $(this).attr("id");
+  document.getElementById("branch").value = BranchCode;
+  console.log(BranchCode);
+  $.ajax({
+   url:"Bill.php",
+   method:"POST",
+   data:{'BranchCode':BranchCode, 'Action':'Action'},
+   success:function(data){
+    $('#BillData').html(data);
+    $('#Bill').modal('show');
+  }
+});
+});
 
  $(document).on('click', '.close', function(){
 

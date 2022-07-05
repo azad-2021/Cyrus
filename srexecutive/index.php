@@ -143,7 +143,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
                 print "<tr>";
                 print "<td>".$row['user']."</td>";             
-                print '<td><span class="d-none">'.$row['ReminderOn'].'</span>'.date("d-m-Y", strtotime($row['ReminderOn']))."</td>";
+                print '<td><span class="d-none">'.$row['ReminderOn'].'</span>'.date("d-M-Y", strtotime($row['ReminderOn']))."</td>";
                 print "<td>".$row['CountBranchCode']."</td>"; 
                 print "</tr>";
 

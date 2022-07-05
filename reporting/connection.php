@@ -1,14 +1,13 @@
 <?php   
  
-    
     $host = "192.168.1.1:9916";  
     $user = "Ashok";  
     $password = 'cyrus@123';  
-    
-    $host1 = "localhost";  
-    $user1 = "root";  
-    $password1 = '';
-    
+    /*
+    $host = "localhost";  
+    $user = "root";  
+    $password = '';
+    */
     $db_2 = "cyrusbackend";
     $db_3 = "cyrusbilling";
 

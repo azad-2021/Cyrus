@@ -203,7 +203,7 @@
   if(BranchCode){
     $.ajax({
       type:'POST',
-      url:'dataget.php',
+      url:'details.php',
       data:{'Branch':BranchCode},
       success:function(result){
         $('#jobcard').html(result);

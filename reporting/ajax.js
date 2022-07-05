@@ -557,7 +557,7 @@ $(document).on('change','#unc', function(){
   let day = inpDate.getDay()
   console.log(UnDate);
 
-var Alert2=0;
+  var Alert2=0;
   $.ajax({
     url:"dataget.php",
     method:"POST",
@@ -641,5 +641,46 @@ var Alert2=0;
   }
 });
 
+$(document).on('click', '.gen', function(){
 
+  var ID=$(this).attr("id");
+  Type=$(this).attr("id2");
+  document.getElementById("QID").value=ID;
+  document.getElementById("TypeGen").value=Type;
+});
+
+
+
+
+$(document).on('click', '.GenerateRefID', function(){
+
+  var ID=document.getElementById("QID").value;
+  var Type=document.getElementById("TypeGen").value;
+  var Jobcard=document.getElementById("Jobcard").value;
+  var Remark=document.getElementById("Remark").value;
+  if (Jobcard!='' && Remark!='') {
+    $.ajax({
+      url:"dataget.php",
+      method:"POST",
+      data:{"QID":ID, "GenType":Type, "Jobcard":Jobcard, "Remark":Remark},
+      success:function(data){
+        var r =(data);
+        if (r!=1) {
+          swal("error",r, "error");
+        }else{
+          swal("success","ID Closed", "success");
+          var delayInMilliseconds = 1000; 
+
+          setTimeout(function() {
+            location.reload();
+          }, delayInMilliseconds);
+        }
+      }
+    });
+  }else{
+    swal("error","Please enter all details","error");
+  }
+
+
+});
 

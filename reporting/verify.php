@@ -187,6 +187,16 @@ if($ComplaintID>0){
       $resultupdate = mysqli_query($con,$sql);
 
       $enEmployeeID=base64_encode($EmployeeID);
+
+      $query ="SELECT * FROM `approval` WHERE OrderID=$OrderID";
+      $results = mysqli_query($con, $query);
+      while($row=mysqli_fetch_array($results)){
+        $DelCard=$row["JobCardNo"];
+        $query ="DELETE FROM jobcardmain WHERE `Card Number`='$DelCard'";
+        $res = mysqli_query($con, $query);
+      }
+
+
       header("location:/technician/rejectjobcard.php?cardno=$Jobcard&empid=$enEmployeeID");
     }else{
       $sql = "UPDATE `approval` SET VDate='$Date', Vby='$user', Vremark='$Vremark', Vpending='$Vpending', Vok='$Vok', vopen='$Vopen', posted='$posted' WHERE ApprovalID=$ApprovalID";
@@ -200,7 +210,7 @@ if($ComplaintID>0){
     echo  $con->error;
   }
 }
-
+header("location:vexecutive.php?empid=$enEmployeeID");
 }else{
   print_r($errors);
 }
@@ -355,12 +365,12 @@ if($ComplaintID>0){
               <label for="Branch">Verification Remark</label>
               <textarea class="form-control rounded-corner" cols="4" rows="2" name="VRemark" required></textarea>
             </div>
-            <div class="form-group col-lg-12">
+            <div class="col-lg-12">
               <label for="Bank ID">Pending Work</label>
               <textarea class="form-control rounded-corner" cols="4" rows="2" name="Vpending"></textarea>
             </div>
 
-            <div class="form-group col-lg-4">
+            <div class="col-lg-4">
               <br>
               <h5><label for="Branch">Branch OK</label></h5>
               <input type="radio" name="Vok" id="Vok" value="YES" >
@@ -371,7 +381,7 @@ if($ComplaintID>0){
 
             </div>
 
-            <div class="form-group col-lg-4">
+            <div class="col-lg-4">
               <br>
               <h5><label for="Branch">Call Verified</label></h5>
               <input type="radio" name="call" id="call" value="YES">
@@ -382,7 +392,7 @@ if($ComplaintID>0){
 
             </div>
 
-            <div class="form-group col-lg-4">
+            <div class="col-lg-4">
               <br>
               <h5><label for="Branch">Close ID</label></h5>
               <input type="radio" name="Vopen" id="Vopen" value="YES">
@@ -442,7 +452,6 @@ if($ComplaintID>0){
 </html>
 
 <?php 
-//echo $ApprovalID;
-echo $_SESSION['user'];
+
 
 ?>

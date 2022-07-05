@@ -67,11 +67,12 @@ if(isset($_FILES['image'])){
 
   $JOBCARD = getjobcard();
   $errors='';
+  $AMCR=0;
   if ((empty($AMCID)==false)) {
     $JOBCARD=$JOBCARD.'AMC';
     $OID=$AMCID;
   }else{
-    $query ="SELECT * FROM orders where Discription like '%AMC%' and AssignDate is not null and Attended=0 and BranchCode=$BranchCode";
+    $query ="SELECT * FROM orders where Discription like '%AMC%' and AssignDate is not null and Attended=0 and BranchCode=$BranchCode and EmployeeCode=$EmployeeUID";
     $resultAMC = mysqli_query($con2, $query);
     if (mysqli_num_rows($resultAMC)>0){
       $AMCR=1;
@@ -213,8 +214,6 @@ if(isset($_FILES['image'])){
  }else{
   print($errors);
 }
-
-
 
 }
 

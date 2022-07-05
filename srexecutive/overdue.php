@@ -107,7 +107,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-          <li class="breadcrumb-item active">Action Needed</li>
+          <li class="breadcrumb-item active">Pending bills more than 45 days or having more than 10 reminders</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -150,64 +150,53 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <tr> 
                     <th style="min-width:160px">Bank</th>
                     <th style="min-width:80px">Zone</th>           
-                    <th style="min-width:150px">Branch</th>
-                    <th style="min-width:100px">Bill No</th>
-                    <th style="min-width:80px">Bill Date</th>        
-                    <th style="min-width: 100px;">Total Billed Value</th> 
-                    <th style="min-width: 100px;">Pending Payment</th>
-                    <th style="min-width: 100px;">Total Reminder</th>       
+                    <th style="min-width: 100px;">Pending Payment</th>    
                   </tr>                     
                 </thead>                 
                 <tbody>
                   <?php
-
+                  /*
                   $query="SELECT billbook.BillID, BankName, ZoneRegionName, BranchName, BookNo, BillDate, TotalBilledValue, (billbook.TotalBilledValue - billbook.ReceivedAmount) as PendingPayment, billbook.BranchCode, subquery.rem  FROM cyrusbilling.billbook
                   join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
                   join (
                   SELECT count(reminders.ID) as rem, reminders.BillID FROM cyrusbilling.reminders group by reminders.BillID
                 ) as subquery on billbook.BillID=subquery.BillID
                 WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and ((datediff(current_date(), BillDate)>45) or subquery.rem>10) group by BookNo";
+                */
+                $query="SELECT billbook.BillID, BankName, ZoneRegionName, sum(TotalBilledValue) as BilledValue, sum(billbook.ReceivedAmount) as Received, BankCode, ZoneRegionCode  FROM cyrusbilling.billbook
+                join cyrusbackend.branchdetails on billbook.BranchCode=branchdetails.BranchCode
+                join (
+                SELECT count(reminders.ID) as rem, reminders.BillID FROM cyrusbilling.reminders group by reminders.BillID
+              ) as subquery on billbook.BillID=subquery.BillID
+              WHERE (billbook.TotalBilledValue - billbook.ReceivedAmount) >1 and Cancelled=0 and ((datediff(current_date(), BillDate)>45) or subquery.rem>10) group by BankCode, ZoneRegionCode";
+              $result=mysqli_query($con2,$query);
+              while($row = mysqli_fetch_array($result)){
+                $ZoneCode=$row['ZoneRegionCode'];
 
-                $result=mysqli_query($con2,$query);
-                while($row = mysqli_fetch_array($result)){
-                  $BillID=$row['BillID'];
-
-                  ?>
-                  <tr>
-                    <td><?php echo $row['BankName'] ?></td>
-                    <td><?php echo $row['ZoneRegionName'] ?></td>
-                    <td><?php echo $row['BranchName'] ?></td>
-                    <td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
-
-                    <td><span class="d-none"><?php echo $row['BillDate'] ?></span><?php echo date("d-M-Y", strtotime($row['BillDate'])) ?></td>
-
-                    <td><?php echo $row['TotalBilledValue'] ?></td>
-                    <td><?php echo sprintf('%0.2f', ($row['PendingPayment'])) ?></td>
-                    <td><?php echo $row['rem'] ?></td>
-                  </tr>
-                <?php }
                 ?>
-              </tbody>
-              <tfoot>
                 <tr>
-                  <th style="min-width:160px">Bank</th>
-                  <th style="min-width:80px">Zone</th>           
-                  <th style="min-width:150px">Branch</th>
-                  <th style="min-width:100px">Bill No</th>
-                  <th style="min-width:80px">Bill Date</th>        
-                  <th style="min-width: 100px;">Total Billed Value</th> 
-                  <th style="min-width: 100px;">Pending Payment</th> 
-                  <th style="min-width: 100px;">Total Reminder</th>
+                  <td><?php echo $row['BankName'] ?></td>
+                  <td><?php echo $row['ZoneRegionName'] ?></td>
+                  <td ><a style="color:Blue;" data-bs-toggle="modal" data-bs-target="#OverdueBill" class="overduebill" id="<?php echo $row['ZoneRegionCode'] ?>" id2="<?php echo $row['BankCode'] ?>"><?php echo number_format(($row['BilledValue']-$row['Received']),2) ?></a></td>
                 </tr>
-              </tfoot>
-            </table>
-          </div>
-          <br><br>
+              <?php }
+              ?>
+            </tbody>
+            <tfoot>
+              <tr>
+                <th style="min-width:160px">Bank</th>
+                <th style="min-width:80px">Zone</th>           
+                <th style="min-width: 100px;">Pending Payment</th> 
+              </tr>
+            </tfoot>
+          </table>
         </div>
+        <br><br>
       </div>
     </div>
-    <!-- End Recent Sales -->
   </div>
+  <!-- End Recent Sales -->
+</div>
 </div>
 <!-- End Left side columns -->
 
@@ -278,19 +267,16 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 <script type="text/javascript">
 
 
-  $(document).on('click', '.view_Bills', function(){
-    var Zone = $(this).attr("id");
-    var Bank=$(this).attr("id2");
-    var Type=$(this).attr("id3");
-    console.log(Zone);
-    console.log(Bank);
+  $(document).on('click', '.overduebill', function(){
+    var ZoneCode = $(this).attr("id");
+    var BankCode=$(this).attr("id2");
     $.ajax({
-     url:"BillsData.php",
+     url:"overduedata.php",
      method:"POST",
-     data:{Zone:Zone, Bank:Bank, Type:Type},
+     data:{ZoneCode:ZoneCode, BankCode:BankCode, Type:'Overdue'},
      success:function(data){
-      $('#billdata').html(data);
-      $('#ViewBill').modal('show');
+      $('#OverdueData').html(data);
+      $('#OverdueBill').modal('show');
     }
   });
   });

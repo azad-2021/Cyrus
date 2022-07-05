@@ -109,11 +109,19 @@ if(isset($_POST["BranchCode"]))
     </thead>                 
     <tbody>
       <?php 
-      $query = "SELECT * FROM cyrusbilling.billbook
-      left join cyrusbilling.reminders on billbook.BillID=cyrusbilling.reminders.BillID
-      join cyrusbackend.pass on reminders.UserID=pass.ID
-      WHERE billbook.BranchCode=$BranchCode order by ReminderDate desc";
 
+      if (isset($_POST["Action"])) {
+        $query = "SELECT * FROM cyrusbilling.billbook
+        left join cyrusbilling.reminders on billbook.BillID=cyrusbilling.reminders.BillID
+        join cyrusbackend.pass on reminders.UserID=pass.ID
+        WHERE billbook.BranchCode=$BranchCode and ActionRequired=1 and Cancelled=0 and (TotalBilledValue - ReceivedAmount) >1 order by ReminderDate desc";
+      }else{
+
+        $query = "SELECT * FROM cyrusbilling.billbook
+        left join cyrusbilling.reminders on billbook.BillID=cyrusbilling.reminders.BillID
+        join cyrusbackend.pass on reminders.UserID=pass.ID
+        WHERE billbook.BranchCode=$BranchCode and Cancelled=0 and (TotalBilledValue - ReceivedAmount) >1 order by ReminderDate desc";
+      }
       $result = $con2->query($query);
       if (mysqli_num_rows($result)>0)
       {
@@ -121,23 +129,30 @@ if(isset($_POST["BranchCode"]))
         while($row = mysqli_fetch_array($result)){
           $RDate='';
           if (!empty($row['ResolvedDate'])) {
-             $RDate=date('d-M-Y',strtotime($row['ResolvedDate']));
-          }
-          print "<tr>";
-          print "<td>".$Sn."</td>";
-          print "<td>".$row['UserName']."</td>";
-          print '<td>'.$row['BookNo'].'</td>';             
-          print "<td>". date('d-M-Y',strtotime($row['ReminderDate']))."</td>";
-          print '<td>'.$row['Description']."</td>"; 
-          print "<td>". date('d-M-Y',strtotime($row['NextReminderDate']))."</td>";
-          print '<td>'.$row['Action']."</td>";
-          print "<td>".$RDate."</td>";
-          print "</tr>";
-          $Sn++;
+           $RDate=date('d-M-Y',strtotime($row['ResolvedDate']));
+         }
+
+         if ($row['ActionRequired']==1 and $row['Resolved']==0) {
+          $tr='<tr class="table-danger">';
+        }else{
+          $tr="<tr>";
         }
 
+        print $tr;
+        print "<td>".$Sn."</td>";
+        print "<td>".$row['UserName']."</td>";
+        print '<td><a href="" data-bs-toggle="modal" class="ActionTaken" data-bs-target="#ActionTaken" id="'.$row['BillID'].'" id2="'.$row['Description'].'" id3="'.$row['NextReminderDate'].'">'.$row['BookNo'].'</a></td>';             
+        print "<td>". date('d-M-Y',strtotime($row['ReminderDate']))."</td>";
+        print '<td>'.$row['Description']."</td>"; 
+        print "<td>". date('d-M-Y',strtotime($row['NextReminderDate']))."</td>";
+        print '<td>'.$row['Action']."</td>";
+        print "<td>".$RDate."</td>";
+        print "</tr>";
+        $Sn++;
       }
-      ?>
-    </tbody>
-  </table>
+
+    }
+    ?>
+  </tbody>
+</table>
 </div>

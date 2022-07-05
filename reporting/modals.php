@@ -343,3 +343,35 @@
   </div>
 </div>
 
+<div class="modal" id="Reference" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Close ID</h5>
+      </div>
+      <div class="modal-body">
+
+        <form class="form-control rounded-corner" method="POST" action="">
+          <center>
+            <div class="col-lg-6">
+              <label for="validationCustom01" class="form-label ">Enter Jobcard No</label>
+              <input type="text" class="form-control rounded-corner" id="Jobcard" required>
+            </div>
+            <div class="col-lg-6">
+              <label for="validationCustom01" class="form-label ">Enter Remark</label>
+              <textarea  type="text" class="form-control rounded-corner" id="Remark" maxlength="150" required></textarea>
+            </div>
+
+            <input class="d-none" type="text" name="Type" id="TypeGen">
+            <input class="d-none" type="number" name="ID" id="QID">
+          </div>
+        </center>
+      </form>
+      <div class="modal-footer">
+        <button class="btn btn-primary GenerateRefID" data-bs-dismiss="modal">Save</button>
+        <input class="btn btn-secondary" type="reset"  data-bs-dismiss="modal" value="Close">
+      </div>
+
+    </div>
+  </div>
+</div>

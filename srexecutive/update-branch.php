@@ -138,7 +138,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
             </div>
             <div class="col-sm-6">
               <select id="ZoneData" class="form-control rounded-corner" name="Zone" required>
-                <option value="">Zone</option>
+                <option value="">Zone/Region</option>
               </select>
             </div>
 
@@ -160,7 +160,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                   <th>Sr. No.</th>
                   <th>Branch</th>
                   <th>District</th>
-                  <th>Change Zone</th>
+                  <th>Change Zone/Region</th>
                   <th >Change District</th>
                 </tr>                     
               </thead>               
@@ -251,16 +251,21 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   var ZoneCode=document.getElementById("ZoneData").value;
   var BankCode=document.getElementById("BankData").value;
   if(District){
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'DistrictU':District,'BranchCodeU':BranchCode},
-      success:function(result){
-        console.log((result));
-        swal("success","District Updated", "success");
 
-      }
-    }); 
+    if (confirm("You want to change District. Do you wish to continue?")) {
+
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'DistrictU':District,'BranchCodeU':BranchCode},
+        success:function(result){
+          console.log((result));
+          swal("success","District Updated", "success");
+
+        }
+      }); 
+
+    }
     var delayInMilliseconds = 1000; 
 
     setTimeout(function() {
@@ -275,24 +280,29 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }, delayInMilliseconds);
 
   }
+
 });
 
-$(document).on('change','#ZoneU', function(){
+ $(document).on('change','#ZoneU', function(){
   var ZoneCodeU = $(this).val();
   var BranchCode =$(this).attr("id2");
   var ZoneCode=document.getElementById("ZoneData").value;
   var BankCode=document.getElementById("BankData").value;
   if(ZoneCodeU){
-    $.ajax({
-      type:'POST',
-      url:'dataget.php',
-      data:{'ZoneCodeU':ZoneCodeU,'BranchCodeU':BranchCode},
-      success:function(result){
-        console.log((result));
-        swal("success","Zone Updated", "success");
 
-      }
-    }); 
+    if (confirm("You want to change zone/Region. Do you wish to continue?")) {
+
+      $.ajax({
+        type:'POST',
+        url:'dataget.php',
+        data:{'ZoneCodeU':ZoneCodeU,'BranchCodeU':BranchCode},
+        success:function(result){
+          console.log((result));
+          swal("success","Zone Updated", "success");
+
+        }
+      }); 
+    }
     var delayInMilliseconds = 1000; 
 
     setTimeout(function() {

@@ -153,7 +153,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                     <th style="min-width:150px">Branch</th>
                     <th style="min-width:100px">Bill No</th>
                     <th style="min-width:80px">Bill Date</th>        
-                    <th style="min-width: 100px;">Total Billed Value</th> 
+                    <th style="min-width: 100px;">Billed Value</th> 
                     <th style="min-width: 100px;">Received Amount</th> 
                     <th style="min-width: 100px;">Pending Payment</th>           
                   </tr>                     
@@ -175,7 +175,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                       <td><?php echo $row['BankName'] ?></td>
                       <td><?php echo $row['ZoneRegionName'] ?></td>
                       <td><?php echo $row['BranchName'] ?></td>
-                      <td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
+                      <td style="color:Blue;" data-bs-toggle="modal" data-bs-target="#Bill" class="Bill2" id="<?php echo $row['BranchCode'] ?>"><?php echo $row['BookNo'] ?></td>
 
                       <td><span class="d-none"><?php echo $row['BillDate'] ?></span><?php echo date("d-M-Y", strtotime($row['BillDate'])) ?></td>
 
@@ -291,6 +291,17 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     }
   });
   });
+
+  $(document).on('click', '.ActionTaken', function(){
+    var BillID = $(this).attr("id");
+    var Desc=$(this).attr("id2");
+    var NextDate=$(this).attr("id3");
+
+    document.getElementById("billid2").value=BillID;
+    document.getElementById("DetailConversation").value=Desc;
+    document.getElementById("NextRmDate").value=NextDate;
+
+  });  
 </script>
 </body>
 

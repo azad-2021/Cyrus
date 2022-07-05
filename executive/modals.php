@@ -413,7 +413,7 @@
 </div>
 
 <div class="modal" id="AddBankVisit" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title">Enter Visit Details</h5>
@@ -424,7 +424,7 @@
           <div class="row">
             <div class="col-lg-4">
               <label for="validationCustom01" class="form-label ">Select Bank</label>
-              <select id="BankVisit" class="form-control rounded-corner" name="Bank" required>
+              <select id="BankVisit" class="form-control rounded-corner">
                 <option value="">Select</option>
                 <?php
                 $BankData="Select BankCode, BankName from bank order by BankName";
@@ -454,7 +454,7 @@
 
             <div class="col-lg-3">
               <label for="validationCustom01" class="form-label ">Date of Visit</label>
-              <input type="date" class="form-control rounded-corner" id="VisitDateD">
+              <input type="date" class="form-control rounded-corner" id="VisitDateD" max="<?php echo $Date ?>"  min="<?php echo date('Y-m-d', strtotime($Date. ' - 7 days')) ?>">
             </div>
 
             <div class="col-lg-6">
@@ -467,15 +467,30 @@
               <label for="validationCustom01" class="form-label ">Next Visit Date</label>
               <input type="date" class="form-control rounded-corner" id="NextVisitDateD">
             </div>
-
           </div>
 
-          <div class="modal-footer">
-            <button data-bs-dismiss="modal" class="btn btn-primary saveBankVisit">Save</button> 
-            <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
+          <div class="table-responsive" style="margin:20px">
+            <table class="table table-hover table-bordered border-primary">
+              <thead>
+                <th>Bank</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Visit Date</th>
+                <th>Next Visit Date</th>
+                <th>Description</th>
+              </thead>
+              <tbody id="BankVisitData">
+                
+              </tbody>
+            </table>
           </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
         </form>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-primary saveBankVisit">Save</button> 
       </div>
+      
     </div>
   </div>
 </div>
