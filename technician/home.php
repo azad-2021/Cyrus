@@ -296,29 +296,35 @@ if ($Target>0) {
             }
             $ZoneCode=$row["ZoneRegionCode"];
             $Gadget=$row["Gadget"];
+            $duration='';
             $sql ="SELECT datediff(EndDate, StartDate) as days, visits, StartDate, EndDate FROM cyrusbackend.amcs WHERE ZoneRegionCode=$ZoneCode and Device='$Gadget' and datediff(EndDate, current_date())>=0";
             $resultAMC=mysqli_query($con,$sql);
-            $row2=mysqli_fetch_array($resultAMC,MYSQLI_ASSOC);
-            $D=0;
-            $Q1='';
-            if (!empty($row2["StartDate"])) {
 
-               $D= round($row2["days"]/$row2["visits"]);
-               $SDate=date('d-m-Y',strtotime($row2["StartDate"]));
-               $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
+            if (mysqli_num_rows($resultAMC)>0)
+            {
 
-               for ($i=0; $i < $row2["visits"]; $i++) { 
+                $row2=mysqli_fetch_array($resultAMC,MYSQLI_ASSOC);
+                $D=0;
+                $Q1='';
+                if (!empty($row2["StartDate"])) {
 
-                 if (date_create($Q)>=date_create($DateQ)) {
+                   $D= round($row2["days"]/$row2["visits"]);
+                   $SDate=date('d-m-Y',strtotime($row2["StartDate"]));
+                   $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
 
-                     $duration=$SDate.' to '.$Q;
-                     break;
-                 }else{
-                    $SDate=$Q;
-                    $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
-                }  
+                   for ($i=0; $i < $row2["visits"]; $i++) { 
+
+                     if (date_create($Q)>=date_create($DateQ)) {
+
+                         $duration=$SDate.' to '.$Q;
+                         break;
+                     }else{
+                        $SDate=$Q;
+                        $Q=date('d-m-Y', strtotime($SDate. ' + '.$D.' days'));
+                    }  
+                }
+
             }
-
         }
 
 
@@ -548,7 +554,7 @@ if ($Target>0) {
                      // echo "; ";
                       //echo $ZoneCode;
 
-                $ded = date('Y-m-d', strtotime($org. ' + 2 days'));
+                $ded = date('Y-m-d', strtotime($org. ' + 7 days'));
 
                 $datetime1 = date_create($newtimestamp);
                 $datetime2 = date_create($ded);
@@ -578,7 +584,7 @@ if ($Target>0) {
                 print "<td>".$row["Address3"]."</td>";
                     //print "<td>".$row["ComplaintID"]."</td>";
 
-                 if(strpos($Discription, 'AMC') !== false){
+                if(strpos($Discription, 'AMC') !== false){
 
                     print '<td><a href="card.php?amcid='. $row['OrderID'] .'&oid=&cid=&eid='.$UID .'&brcode='.$row["BranchCode"].'&zcode='.$ZoneCode.'&gid='.$row["GadgetID"].'&PostedDate='.$row["DateOfInformation"].'">'.$row["OrderID"].'</a></td>';
                 }else{

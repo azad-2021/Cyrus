@@ -52,6 +52,11 @@ $VisitDate = $row["VisitDate"];
 $Status = $row["Status"];
 $GadgetID = $row["GadgetID"];
 $Jobcard = $row["JobCardNo"]; 
+
+$s=substr($Jobcard,-1) ;
+if (($s!='C') or ($s!='A')) {
+  $job=substr($Jobcard, 0,-1) ;
+}
 $enJobcard=base64_encode($Jobcard);
 $EmployeeID = $row["EmployeeID"];
 $Gadget=$row["Gadget"];
@@ -303,6 +308,7 @@ header("location:vexecutive.php?empid=$enEmployeeID");
         <table class="table table-hover table-sm table-bordered border-primary nowrap">
           <thead>
             <tr>
+              <th style="min-width:150px">Change Employee</th>
               <th style="min-width:120px">Bank</th>
               <th style="min-width:120px">Zone</th>
               <th style="min-width:280px">Branch Name</th>
@@ -312,141 +318,180 @@ header("location:vexecutive.php?empid=$enEmployeeID");
               <th style="min-width:150px">Mobile No.</th>
               <th style="min-width:120px">Date of Visit</th>
 
+
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><?php echo $Bank;?></td>
-              <td><?php echo $Zone;?></td>
-              <td><?php echo $BranchName;?></td>
-              <td><?php echo $ID;?></td>
-              <td><?php echo $Gadget;?></td>
-              <td><?php echo $BranchPhone;?></td>
-              <td><?php echo $BranchMobile;?></td>
-              <td><?php echo $VisitDate;?></td>
+              <td>
+                <select class="form-control rounded-corner" style="text-align: center;" id="ChangeEmployee">
+                 <option value="">Select</option>        
+                 <?php
 
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                 $queryTech="SELECT * FROM employees Where Inservice=1 order by `Employee Name`"; 
+                 $resultTech=mysqli_query($con,$queryTech);
+                 while($data=mysqli_fetch_assoc($resultTech)){
+                  echo "<option value=".$data['EmployeeCode'].">".$data['Employee Name']."</option>";
+                }
+                ?>
+              </select>
+            </td>
+            <td><?php echo $Bank;?></td>
+            <td><?php echo $Zone;?></td>
+            <td><?php echo $BranchName;?></td>
+            <td><?php echo $ID;?></td>
+            <td><?php echo $Gadget;?></td>
+            <td><?php echo $BranchPhone;?></td>
+            <td><?php echo $BranchMobile;?></td>
+            <td><?php echo $VisitDate;?></td>
 
-      <div class="table-responsive container">
-        <table class="table table-hover table-sm table-bordered border-primary nowrap">
-          <thead>
-            <tr>
-              <th style="min-width:250px">Description</th>
-              <th style="min-width:100px">Job Card No.</th>
-              <th style="min-width:150px">Material Consumed</th>
-              <th style="min-width:150px">Estimate</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><?php echo $Description;?></td>
-              <td><a href="/technician/view.php?card=<?php echo base64_encode($Jobcard);?>" target="_blank"><?php echo $Jobcard;?></a></td>
-              <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
-              <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <br>
-      <center>
-        <div class="pagetitle">
-          <h1>Verification Status</h1>
-        </div>
-      </center>
-      <fieldset>
-
-        <form method="POST" action="">
-          <div class="row">
-            <div class="col-lg-12">
-              <label for="Branch">Verification Remark</label>
-              <textarea class="form-control rounded-corner" cols="4" rows="2" name="VRemark" required></textarea>
-            </div>
-            <div class="col-lg-12">
-              <label for="Bank ID">Pending Work</label>
-              <textarea class="form-control rounded-corner" cols="4" rows="2" name="Vpending"></textarea>
-            </div>
-
-            <div class="col-lg-4">
-              <br>
-              <h5><label for="Branch">Branch OK</label></h5>
-              <input type="radio" name="Vok" id="Vok" value="YES" >
-              <label for="yes">Yes</label>
-              &nbsp;
-              <input type="radio" id="Vok" name="Vok" value="NO">
-              <label for="no">No</label>
-
-            </div>
-
-            <div class="col-lg-4">
-              <br>
-              <h5><label for="Branch">Call Verified</label></h5>
-              <input type="radio" name="call" id="call" value="YES">
-              <label for="yes">Yes</label>
-              &nbsp;
-              <input type="radio" id="call" name="call" value="NO">
-              <label for="no">No</label>
-
-            </div>
-
-            <div class="col-lg-4">
-              <br>
-              <h5><label for="Branch">Close ID</label></h5>
-              <input type="radio" name="Vopen" id="Vopen" value="YES">
-              <label for="yes">Yes</label>
-              &nbsp;
-              <input type="radio" id="Vopen" name="Vopen" value="No">
-              <label for="no">No</label>
-
-            </div>
-          </div>  
-          <br><br>
-          <center>
-
-            <input type="submit"  class=" btn btn-primary my-button" value="submit" name="submit"></input>
-          </center>      
-        </form>
-
-      </fieldset>
-    </section>
-  </main>
-  <!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </footer>
-  <!-- End Footer -->
 
-  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <div class="table-responsive container">
+      <table class="table table-hover table-sm table-bordered border-primary nowrap">
+        <thead>
+          <tr>
+            <th style="min-width:250px">Description</th>
+            <th style="min-width:100px">Job Card No.</th>
+            <th style="min-width:150px">Material Consumed</th>
+            <th style="min-width:150px">Estimate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><?php echo $Description;?></td>
+            <td><a href="/technician/view.php?card=<?php echo base64_encode($job);?>" target="_blank"><?php echo $Jobcard;?></a></td>
+            <td><a href="viewm.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Material; ?></a></td>
+            <td><a href="viewe.php?apid=<?php echo $ApprovalID;?>" target="_blank"><?php  echo $Estimate; ?></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <!-- Vendor JS Files -->
-  <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/chart.js/chart.min.js"></script>
-  <script src="assets/vendor/echarts/echarts.min.js"></script>
-  <script src="assets/vendor/quill/quill.min.js"></script>
-  <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="assets/vendor/tinymce/tinymce.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
+    <br>
+    <center>
+      <div class="pagetitle">
+        <h1>Verification Status</h1>
+      </div>
+    </center>
+    <fieldset>
 
-  <!-- Template Main JS File -->
-  
-  <script src="assets/js/main.js"></script>
-  <script src="ajax-script.js"></script>
-  <script src="search.js"></script>
-  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-  <script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
+      <form method="POST" action="">
+        <div class="row">
+          <div class="col-lg-12">
+            <label for="Branch">Verification Remark</label>
+            <textarea class="form-control rounded-corner" cols="4" rows="2" name="VRemark" required></textarea>
+          </div>
+          <div class="col-lg-12">
+            <label for="Bank ID">Pending Work</label>
+            <textarea class="form-control rounded-corner" cols="4" rows="2" name="Vpending"></textarea>
+          </div>
 
-  <script type="text/javascript">
+          <div class="col-lg-4">
+            <br>
+            <h5><label for="Branch">Branch OK</label></h5>
+            <input type="radio" name="Vok" id="Vok" value="YES" >
+            <label for="yes">Yes</label>
+            &nbsp;
+            <input type="radio" id="Vok" name="Vok" value="NO">
+            <label for="no">No</label>
 
-  </script>
+          </div>
+
+          <div class="col-lg-4">
+            <br>
+            <h5><label for="Branch">Call Verified</label></h5>
+            <input type="radio" name="call" id="call" value="YES">
+            <label for="yes">Yes</label>
+            &nbsp;
+            <input type="radio" id="call" name="call" value="NO">
+            <label for="no">No</label>
+
+          </div>
+
+          <div class="col-lg-4">
+            <br>
+            <h5><label for="Branch">Close ID</label></h5>
+            <input type="radio" name="Vopen" id="Vopen" value="YES">
+            <label for="yes">Yes</label>
+            &nbsp;
+            <input type="radio" id="Vopen" name="Vopen" value="No">
+            <label for="no">No</label>
+
+          </div>
+        </div>  
+        <br><br>
+        <center>
+
+          <input type="submit"  class=" btn btn-primary my-button" value="submit" name="submit"></input>
+        </center>      
+      </form>
+
+    </fieldset>
+  </section>
+</main>
+<!-- End #main -->
+
+<!-- ======= Footer ======= -->
+<footer id="footer" class="footer">
+  <div class="copyright">
+    &copy; Copyright 2022 <strong><span>Cyrus</span></strong>. All Rights Reserved
+  </div>
+</footer>
+<!-- End Footer -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Vendor JS Files -->
+<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="assets/vendor/chart.js/chart.min.js"></script>
+<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="assets/vendor/quill/quill.min.js"></script>
+<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+<script src="assets/vendor/tinymce/tinymce.min.js"></script>
+<script src="assets/vendor/php-email-form/validate.js"></script>
+
+<!-- Template Main JS File -->
+
+<script src="assets/js/main.js"></script>
+<script src="ajax-script.js"></script>
+<script src="search.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/staterestore/1.0.1/js/dataTables.stateRestore.min.js"></script>
+
+<script type="text/javascript">
+  var APID=<?php echo $ApprovalID; ?>;
+  var EmployeeID='<?php echo base64_encode($EmployeeID); ?>';
+//console.log(APID);
+
+$(document).on('change','#ChangeEmployee', function(){
+  var EmployeeCode = $(this).val();
+  if(EmployeeCode){
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'EmployeeCodeC':EmployeeCode, 'APID':APID},
+      success:function(result){
+       console.log((result));
+       var delayInMilliseconds = 1000; 
+
+       setTimeout(function() {
+        window.open("vexecutive.php?empid="+EmployeeID,"_self")
+      }, delayInMilliseconds);
+
+
+     }
+   }); 
+  }
+});
+
+
+</script>
 </body>
 
 </html>

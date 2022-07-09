@@ -38,10 +38,10 @@ $ItemZone=!empty($_POST['ItemZone'])?$_POST['ItemZone']:'';
 if (!empty($ItemZone))
 {
 
-   $query="SELECT * FROM rates WHERE Zone=$ItemZone";
-   $result=mysqli_query($conn2,$query);
-   if (mysqli_num_rows($result)>0)
-   {
+ $query="SELECT * FROM rates WHERE Zone=$ItemZone";
+ $result=mysqli_query($conn2,$query);
+ if (mysqli_num_rows($result)>0)
+ {
     while ($arr=mysqli_fetch_assoc($result))
     {
 
@@ -60,14 +60,14 @@ if (!empty($EmployeeCode))
     $result=mysqli_query($conn,$query);
     if (mysqli_num_rows($result)>0)
     {
-       $a=mysqli_fetch_assoc($result);
-       echo '<tr>
-       <th scope="col" style="min-width: 150px;">'.$a['Phone'].'</th>
-       <th scope="col" style="min-width: 150px;">'.$a['EmployeeCode'].'</th>
+     $a=mysqli_fetch_assoc($result);
+     echo '<tr>
+     <th scope="col" style="min-width: 150px;">'.$a['Phone'].'</th>
+     <th scope="col" style="min-width: 150px;">'.$a['EmployeeCode'].'</th>
 
-       </tr>';
+     </tr>';
 
-   }
+ }
 }
 
 
@@ -111,36 +111,36 @@ if (!empty($Jobcard))
     $resultx = mysqli_query($conn, $sqlx);  
     if (mysqli_num_rows($resultx)>0)
     {
-     echo 'Jobcard alredy exist';
+       echo 'Jobcard alredy exist';
 
- }else{
+   }else{
 
-  if ($Type=='Order') {
+      if ($Type=='Order') {
 
-    $query = "SELECT * FROM cyrusbackend.orders WHERE OrderID=$QID";
-    $result = mysqli_query($conn, $query);
-    $row = mysqli_fetch_array($result); 
+        $query = "SELECT * FROM cyrusbackend.orders WHERE OrderID=$QID";
+        $result = mysqli_query($conn, $query);
+        $row = mysqli_fetch_array($result); 
 
-    if (!empty($row["Executive Remark"])) {
+        if (!empty($row["Executive Remark"])) {
 
-      $exRemark=$row["Executive Remark"];
+          $exRemark=$row["Executive Remark"];
 
-      $Remark=$_SESSION['user'].' - '.$DateR.' - '.$Remark.' '.$exRemark;
-  }
+          $Remark=$_SESSION['user'].' - '.$DateR.' - '.$Remark.' '.$exRemark;
+      }
    // echo $Remark;
 
-  $BranchCode=$row["BranchCode"];
-  $GadgetID=$row["GadgetID"];
-  $EmployeeCode=$row["EmployeeCode"];
+      $BranchCode=$row["BranchCode"];
+      $GadgetID=$row["GadgetID"];
+      $EmployeeCode=$row["EmployeeCode"];
 
 
-  $sql = "INSERT INTO `jobcardmain` (`Card Number`, `BranchCode`, `VisitDate`, `Remark`, `GadgetID`, `EmployeeCode`, ServiceDone, WorkPending) VALUES('$Jobcard', '$BranchCode', '$Date', 'Not Ok', '$GadgetID', '$EmployeeCode', 'Closed', 'Closed')";
+      $sql = "INSERT INTO `jobcardmain` (`Card Number`, `BranchCode`, `VisitDate`, `Remark`, `GadgetID`, `EmployeeCode`, ServiceDone, WorkPending) VALUES('$Jobcard', '$BranchCode', '$Date', 'Not Ok', '$GadgetID', '$EmployeeCode', 'Closed', 'Closed')";
 
-  $sql2 = "INSERT INTO `reference table`( `Reference`, `Card Number`, `EmployeeCode`, `VisitDate`, `User`, `BranchCode`,  `ID`) VALUES ('$Type','$Jobcard','$EmployeeCode', '$Date', '$user', '$BranchCode', '$QID')";
+      $sql2 = "INSERT INTO `reference table`( `Reference`, `Card Number`, `EmployeeCode`, `VisitDate`, `User`, `BranchCode`,  `ID`) VALUES ('$Type','$Jobcard','$EmployeeCode', '$Date', '$user', '$BranchCode', '$QID')";
 
-  if ($conn->query($sql2) === TRUE) {
+      if ($conn->query($sql2) === TRUE) {
         echo 1;
-  }else {
+    }else {
       echo "Error: " . $sql2 . "<br>" . $conn->error;
 
   }
@@ -195,7 +195,7 @@ if (!empty($Jobcard))
   $sql2 = "INSERT INTO `reference table`( `Reference`, `Card Number`, `EmployeeCode`, `VisitDate`, `User`, `BranchCode`,  `ID`) VALUES ('$Type','$Jobcard','$EmployeeCode', '$Date', '$user', '$BranchCode', '$QID')";
 
   if ($conn->query($sql2) === TRUE) {
-        
+
   }else {
       echo "Error: " . $sql2 . "<br>" . $conn->error;
 
@@ -221,5 +221,22 @@ if (!empty($Jobcard))
 
 }
 }
+
+$EmployeeCodeC=!empty($_POST['EmployeeCodeC'])?$_POST['EmployeeCodeC']:'';
+if (!empty($EmployeeCodeC))
+{
+
+    $APID=$_POST['APID'];
+
+    $sql = "UPDATE cyrusbackend.approval SET EmployeeID=$EmployeeCodeC WHERE ApprovalID=$APID";
+    if ($conn->query($sql) === TRUE) {
+        echo 1;
+    }else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+
+    }
+
+}
+
 
 ?>

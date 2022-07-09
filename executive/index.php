@@ -30,6 +30,35 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 }
 
 
+$query = "SELECT count(District) FROM cyrusbackend.districts
+join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+WHERE ControlerID=$EXEID";
+$result=mysqli_query($con,$query);
+$row = mysqli_fetch_array($result);
+
+if ($row["count(District)"]>0) {
+
+  $NoOfDistricts=$row["count(District)"];
+  $query = "SELECT * FROM cyrusbackend.districtlogs WHERE ExecutiveID=$EXEID and NoOfDistricts=$NoOfDistricts and month(`TimeStamp`)=month(current_date())";
+  $result2=mysqli_query($con3,$query);
+  if (mysqli_num_rows($result2)>0)
+  {
+    $row2 = mysqli_fetch_array($result2);
+  }else{
+   $sql= "INSERT INTO cyrusbackend.districtlogs (ExecutiveID, NoOfDistricts)
+    VALUES ($EXEID, $NoOfDistricts)";
+
+   if ($con3->query($sql) === TRUE) {
+    //echo "New record created successfully";
+   } else {
+    echo "Error: " . $sql . "<br>" . $con3->error;
+
+
+  }
+}
+
+
+}
 $query="SELECT count(orders.OrderID) as PendingMaterials
 FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
 join branchdetails on orders.BranchCode=branchdetails.BranchCode

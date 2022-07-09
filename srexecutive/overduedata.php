@@ -23,13 +23,15 @@ if(isset($_POST["ZoneCode"]))
 
         <th style="min-width:120px">Branch</th>
         <th style="min-width:120px">Branch Code</th>
-        <th style="min-width:100px">Bill No</th>   
-        <th style="min-width:100px">Total Billed Amount</th> 
+        <th style="min-width:100px">Bill No</th> 
+        <th style="min-width:100px">Bill Date</th>  
+        <th style="min-width:150px">Total Billed Amount</th> 
         <th style="min-width:100px">Received Amount</th> 
         <th style="min-width:100px">Pending Payment</th>      
         <th style="min-width:100px;">Email</th>   
         <th style="min-width:150px;">Phone</th>
-        <th style="min-width:150px;">Mobile</th>            
+        <th style="min-width:150px;">Mobile</th>
+        <th style="min-width:100px;">Reminders</th>             
       </tr>                     
     </thead>                 
     <tbody>
@@ -52,12 +54,14 @@ if(isset($_POST["ZoneCode"]))
         print "<td>".$row['BranchName']."</td>";
         print '<td>'.$row['Branch_code']."</td>";
         print "<td>".$row['BookNo']."</td>";
+        print "<td>".$row['BillDate']."</td>";
         print "<td>".$row['TotalBilledValue']."</td>";  
         print "<td>".$row['ReceivedAmount']."</td>";
         print "<td>".$row['PendingPayment']."</td>";
         print '<td>'.$row['Email']."</td>";
         print '<td>'.$row['PhoneNo']."</td>";
         print '<td>'.$row['Mobile Number']."</td>";
+        print "<td>".$row['rem']."</td>";
         print "</tr>";
       }
 

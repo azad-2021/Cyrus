@@ -7,7 +7,7 @@ $host1 = "localhost";
 $user1 = "root";  
 $password1 = '';
 
-$db_2 = "cyrusbackend";
+$db_2 = "projects";
 $db_3 = "cyrusbilling";
 
 $con = mysqli_connect($host1, $user1, $password1, $db_2);  

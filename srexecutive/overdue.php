@@ -270,6 +270,7 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $(document).on('click', '.overduebill', function(){
     var ZoneCode = $(this).attr("id");
     var BankCode=$(this).attr("id2");
+
     $.ajax({
      url:"overduedata.php",
      method:"POST",

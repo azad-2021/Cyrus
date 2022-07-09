@@ -1,7 +1,7 @@
   <script type="text/javascript">
     var id=2;
     $(document).ready(function(){
-    var maxField = 10; //Input fields increment limitation
+    var maxField = 1000; //Input fields increment limitation
     var addButton = $('.add_button'); //Add button selector
     var wrapper = $('.field'); //Input field wrapper
 
@@ -43,4 +43,70 @@
       id--;
     });
   });
-</script>
+
+
+    $(document).on('click','.SaveBranch', function(){
+      var BranchName=[];
+      var District=[];
+      var ZoneCode=document.getElementById("ZoneB").value;
+      var input = document.getElementsByName('BArray[]');
+      var input2 = document.getElementsByName('DArray[]');
+      if (ZoneCode) {
+        var err=0;
+        for (var i = 0; i < input.length; i++) {
+
+          var a = input[i];
+          var b = input2[i];
+          if (a.value!='' && b.value!='') {
+            BranchName.push(a.value);
+            District.push(b.value);            
+            
+          }else{
+            swal("error","Please enter all fields","error");
+            err=1;
+            break;
+          }
+        }
+
+        if (err==0) {
+          swal("success","Branch added","success");
+          
+          $.ajax({
+            type:'POST',
+            url:'dataget.php',
+            data:{'BranchName':BranchName, 'DistrictName':District, 'ZoneCodeB':ZoneCode},
+            success:function(result){
+
+              if ((result)==1) {
+                swal("success","Branch added","success");
+              }else{
+                swal("error",(result),"error");
+              }
+
+              
+            }
+          });
+        }
+
+
+      }else{
+        swal("error","Please select Zone/Region","error");
+      }
+      /*
+      if(BankCode){
+        $.ajax({
+          type:'POST',
+          url:'dataget.php',
+          data:{'BankCode':BankCode},
+          success:function(result){
+            $('#Zone').html(result);
+
+          }
+        }); 
+      }*/
+    });
+
+
+
+
+  </script>
