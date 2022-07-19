@@ -16,7 +16,11 @@
      <?php 
      include 'connection.php';
      include 'session.php';
-     $EXEID=$_SESSION['userid'];
+     if (isset($_SESSION['query'])) {
+       $EXEID=$_SESSION['query'];
+     }else{
+       $EXEID=$_SESSION['userid'];
+     }
      $Zone=!empty($_POST['Zone'])?$_POST['Zone']:'';
      if (!empty($Zone))
      { 

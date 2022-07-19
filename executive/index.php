@@ -29,36 +29,66 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
   $wish= "Good Evening ".$_SESSION['user'];
 }
 
+/*
 
-$query = "SELECT count(District) FROM cyrusbackend.districts
+
+$query = "SELECT count(DISTINCT BankCode) as BankCount FROM cyrusbackend.branchdetails
+join districts on branchdetails.Address3=districts.District
 join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
 WHERE ControlerID=$EXEID";
 $result=mysqli_query($con,$query);
 $row = mysqli_fetch_array($result);
 
-if ($row["count(District)"]>0) {
+$query = "SELECT count(DISTINCT ZoneRegionCode) as ZoneCount FROM cyrusbackend.branchdetails
+join districts on branchdetails.Address3=districts.District
+join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+WHERE ControlerID=$EXEID";
+$result=mysqli_query($con,$query);
+$row2 = mysqli_fetch_array($result);
 
-  $NoOfDistricts=$row["count(District)"];
-  $query = "SELECT * FROM cyrusbackend.districtlogs WHERE ExecutiveID=$EXEID and NoOfDistricts=$NoOfDistricts and month(`TimeStamp`)=month(current_date())";
-  $result2=mysqli_query($con3,$query);
-  if (mysqli_num_rows($result2)>0)
-  {
-    $row2 = mysqli_fetch_array($result2);
-  }else{
-   $sql= "INSERT INTO cyrusbackend.districtlogs (ExecutiveID, NoOfDistricts)
-    VALUES ($EXEID, $NoOfDistricts)";
+$query = "SELECT count(DISTINCT BranchCode) as BranchCount FROM cyrusbackend.branchdetails
+join districts on branchdetails.Address3=districts.District
+join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+WHERE ControlerID=$EXEID";
+$result=mysqli_query($con,$query);
+$row3 = mysqli_fetch_array($result);
 
-   if ($con3->query($sql) === TRUE) {
+
+$BankCount=$row["BankCount"];
+$ZoneCount=$row2["ZoneCount"];
+$BranchCount=$row3["BranchCount"];
+
+*/
+
+$query = "SELECT count(DISTINCT BankCode) as BankCount, count(DISTINCT ZoneRegionCode) as ZoneCount, count(DISTINCT BranchCode) as BranchCount FROM cyrusbackend.branchdetails
+join districts on branchdetails.Address3=districts.District
+join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+WHERE ControlerID=$EXEID";
+$result=mysqli_query($con,$query);
+$row = mysqli_fetch_array($result);
+
+$BankCount=$row["BankCount"];
+$ZoneCount=$row["ZoneCount"];
+$BranchCount=$row["BranchCount"];
+
+$query = "SELECT * FROM dsr.`control details` WHERE ExecutiveID=$EXEID and NoOfBanks=$BankCount and NoOfZones=$ZoneCount and  NoOfBranchs=$BranchCount and month(`TimeStamp`)=month(current_date()) and year(TimeStamp)=year(current_date())";
+$result2=mysqli_query($con3,$query);
+if (mysqli_num_rows($result2)>0)
+{
+  $row2 = mysqli_fetch_array($result2);
+}else{
+ $sql= "INSERT INTO dsr.`control details` (ExecutiveID, NoOfBanks, NoOfZones, NoOfBranchs)
+ VALUES ($EXEID, $BankCount, $ZoneCount, $BranchCount)";
+
+ if ($con3->query($sql) === TRUE) {
     //echo "New record created successfully";
-   } else {
-    echo "Error: " . $sql . "<br>" . $con3->error;
-
-
-  }
-}
+ } else {
+  echo "Error: " . $sql . "<br>" . $con3->error;
 
 
 }
+}
+
 $query="SELECT count(orders.OrderID) as PendingMaterials
 FROM cyrusbackend.orders join demandbase on orders.OrderID=demandbase.OrderID
 join branchdetails on orders.BranchCode=branchdetails.BranchCode
@@ -259,7 +289,6 @@ if ($PendingTarget3<0) {
 }
 
 
-
 ?>
 
 
@@ -350,7 +379,7 @@ if ($PendingTarget3<0) {
             <div class="col-xxl-4 col-md-4">
               <div class="card info-card sales-card">
                 <div class="card-body">
-                  <h5 class="card-title" style="margin-bottom: 30px;">Total <span>| Pending Material <br><center>Confirmation</center> </span></h5>
+                  <h5 class="card-title">Total <span>| Pending Material <br><center>Confirmation</center> </span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="ps-3">
@@ -410,55 +439,6 @@ if ($PendingTarget3<0) {
           </div>
 
           <!-- End Customers Card -->
-
-          <!-- Reports -->
-
-
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">Billing Target <span>  <?php echo date('M',strtotime($timestamp));;?><a style="float:right" href="employeetarget.php" target="_blank">Show All</a></span></h5>
-
-                <div id="piechart" align="center"></div>
-
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-lg-4">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-1 month"));?><a style="float:right" href="employeetarget1.php" target="_blank">Show All</a></span></h5>
-
-                  <div id="piechart2" align="center" style="width: 180px;"></div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-2 month"));?><a style="float:right" href="employeetarget2.php" target="_blank">Show All</a></span></h5>
-
-                  <div id="piechart3" align="center" style="width: 180px;"></div>
-
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-4">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Billing Target <span><?php echo date('M', strtotime("-3 month"));?><a style="float:right" href="employeetarget3.php" target="_blank">Show All</a></span></h5>
-
-                  <div id="piechart4" align="center" style="width: 180px;"></div>
-
-                </div>
-              </div>
-            </div>
-          </div>
 
           <div class="col-12">
             <div class="card">
@@ -784,135 +764,6 @@ if ($PendingTarget3<0) {
       var chart = new ApexCharts(document.querySelector("#PendingPayment"), options3);
       chart.render();
 
-
-    </script>
-
-
-    <script type="text/javascript">
-
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-      google.charts.setOnLoadCallback(drawChart2);
-      google.charts.setOnLoadCallback(drawChart3);
-      google.charts.setOnLoadCallback(drawChart4);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Pending', 'Achieved'],
-          ['Pending : '+ <?php echo $PendingTarget?>, <?php echo $PendingTarget?>],
-          ['Billed : '+<?php echo $AcheivedTarget?>, <?php echo $AcheivedTarget?>]
-          ]);
-
-
-        var options = {
-          'title':'Billing Target : ' + <?php echo $Target?>,
-          colors: ['red', 'green', ],
-          fontSize: 15,
-          chartArea: {
-            left: "10%",
-            top: "20%",
-            bottom: "10%",
-            height: "90%",
-            width: "90%",
-
-          }
-
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
-      }
-
-
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart2() {
-        var data2 = google.visualization.arrayToDataTable([
-          ['Pending', 'Achieved'],
-          ['Pending : '+ <?php echo $PendingTarget1?>, <?php echo $PendingTarget1?>],
-          ['Billed : '+<?php echo $AcheivedTarget1?>, <?php echo $AcheivedTarget1?>]
-          ]);
-
-
-        var options2 = {
-          legend: 'none',
-          colors: ['red', 'green', ],
-          fontSize: 15,
-          chartArea: {
-            left: "10%",
-            top: "20%",
-            bottom: "10%",
-            height: "90%",
-            width: "90%",
-
-          }
-
-        };
-
-        var chart2 = new google.visualization.PieChart(document.getElementById('piechart2'));
-        chart2.draw(data2, options2);
-      }
-
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart3() {
-        var data2 = google.visualization.arrayToDataTable([
-          ['Pending', 'Achieved'],
-          ['Pending : '+ <?php echo $PendingTarget2?>, <?php echo $PendingTarget2?>],
-          ['Billed : '+<?php echo $AcheivedTarget2?>, <?php echo $AcheivedTarget2?>]
-          ]);
-
-
-        var options2 = {
-          legend: 'none',
-          colors: ['red', 'green', ],
-          fontSize: 15,
-          chartArea: {
-            left: "10%",
-            top: "20%",
-            bottom: "10%",
-            height: "90%",
-            width: "90%",
-
-          }
-
-        };
-
-        var chart2 = new google.visualization.PieChart(document.getElementById('piechart3'));
-        chart2.draw(data2, options2);
-      }
-
-      google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart4() {
-        var data2 = google.visualization.arrayToDataTable([
-          ['Pending', 'Achieved'],
-          ['Pending : '+ <?php echo $PendingTarget3?>, <?php echo $PendingTarget3?>],
-          ['Billed : '+<?php echo $AcheivedTarget3?>, <?php echo $AcheivedTarget3?>]
-          ]);
-
-
-        var options2 = {
-          colors: ['red', 'green', ],
-          legend: 'none',
-          fontSize: 15,
-          chartArea: {
-            left: "10%",
-            top: "20%",
-            bottom: "10%",
-            height: "90%",
-            width: "90%",
-
-          }
-
-        };
-
-        var chart2 = new google.visualization.PieChart(document.getElementById('piechart4'));
-        chart2.draw(data2, options2);
-      }
 
     </script>
 

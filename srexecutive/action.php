@@ -302,6 +302,37 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
     document.getElementById("NextRmDate").value=NextDate;
 
   });  
+
+  $(document).on('click', '.SaveActionTaken', function(){
+
+    BillID=document.getElementById("billid2").value;
+    Action=document.getElementById("ActionTakenD").value;
+    var resolveCheck=document.getElementById("Resolved");
+
+    if (resolveCheck.checked == true){
+      var Resolved=1;
+    }else{
+      var Resolved=0;
+    }
+
+    if (BillID && Action && Resolved) {
+
+      $.ajax({
+        url:"dataget.php",
+        method:"POST",
+        data:{'BillIDAction':BillID, 'ActionTaken':Action, 'Resolved':Resolved},
+        success:function(data){
+          var intervalId = window.setInterval(function(){
+            location.reload();
+          }, 1000);
+        }
+      }); 
+
+    }else{
+      swal("error","Please enter all fields","error");
+    }
+
+  });  
 </script>
 </body>
 

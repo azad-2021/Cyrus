@@ -783,6 +783,19 @@
 });
 });
 
+ $(document).on('click', '.AssignedRegion', function(){
+
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'Regiondata':'Data'},
+      success:function(result){
+        $('#RegionData').html(result);
+        
+      }
+    }); 
+});
+
  /*
  $(document).on('click', '.Delete', function(){
   //$('#dataModal').modal();

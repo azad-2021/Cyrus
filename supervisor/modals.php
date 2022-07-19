@@ -380,3 +380,112 @@
 
 
 <!-- End released Materails-->
+
+<div class="modal" id="AddBankVisit" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title">Enter PR Details</h5>
+      </div>
+      <div class="modal-body">
+
+        <form class="form-control" id="FBankVisit">
+          <div class="row">
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Bank</label>
+              <select id="BankVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+                <?php
+                $BankData="Select BankCode, BankName from bank order by BankName";
+                $result=mysqli_query($con,$BankData);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['BankCode']; ?>"><?php echo $arr['BankName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Zone</label>
+              <select id="ZoneVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+              </select>
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Designation</label>
+              <select id="DesignationVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+                <?php
+                $Data="SELECT * FROM dsr.designation Order By DesignationName";
+                $result=mysqli_query($con3,$Data);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['DesignationID']; ?>"><?php echo $arr['DesignationName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Bank Employee</label>
+              <select id="BEmployeeVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+              </select>
+            </div>
+
+            <div class="col-lg-3">
+              <label for="validationCustom01" class="form-label ">Date of Visit</label>
+              <input type="date" class="form-control rounded-corner" id="VisitDateD" max="<?php echo $Date ?>"  min="<?php echo date('Y-m-d', strtotime($Date. ' - 7 days')) ?>">
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Next Visit Date</label>
+              <input type="date" class="form-control rounded-corner" id="NextVisitDateD">
+            </div>
+            <div class="col-lg-12">
+              <label for="validationCustom01" class="form-label ">Visit Remark</label>
+              <textarea type="text" class="form-control rounded-corner" maxlength="450" id="DescriptionD"></textarea>
+            </div>
+
+          </div>
+
+          <div class="table-responsive" style="margin:20px">
+            <table class="table table-hover table-bordered border-primary">
+              <thead>
+                <th>Bank</th>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Visit Date</th>
+                <th>Next Visit Date</th>
+                <th>Description</th>
+                
+              </thead>
+              <tbody id="BankVisitData">
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
+        </form>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-primary saveBankVisit">Save</button> 
+      </div>
+      
+    </div>
+  </div>
+</div>

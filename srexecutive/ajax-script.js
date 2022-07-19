@@ -229,9 +229,6 @@
 });
 
 
-
-
-
  $(document).on('change','#Branch', function(){
   var BranchCode = $(this).val();
   if(BranchCode){

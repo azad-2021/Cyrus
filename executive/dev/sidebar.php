@@ -25,7 +25,7 @@
           </li>
           <li>
             <a href="branchdetails.php" target="_blank">
-              <i class="bi bi-circle"></i><span>Branch Details</span>
+              <i class="bi bi-circle"></i><span>Branch Detail</span>
             </a>
           </li>
           <li>
@@ -35,7 +35,7 @@
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindEmployee">
-              <i class="bi bi-circle"></i><span>Employees</span>
+              <i class="bi bi-circle"></i><span>Employee</span>
             </a>
           </li>
           <li>
@@ -45,17 +45,17 @@
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindComplaint">
-              <i class="bi bi-circle"></i><span>Complaints</span>
+              <i class="bi bi-circle"></i><span>Complaint</span>
             </a>
           </li>
           <li>
             <a href="/cyrus/reporting/search.php" target="blank">
-              <i class="bi bi-circle"></i><span>Job Cards</span>
+              <i class="bi bi-circle"></i><span>Job Card</span>
             </a>
           </li>
           <li>
             <a href="" data-bs-toggle="modal" data-bs-target="#FindJobcard">
-              <i class="bi bi-circle"></i><span>Job Card Details</span>
+              <i class="bi bi-circle"></i><span>Job Card Detail</span>
             </a>
           </li>
         </ul>
@@ -110,7 +110,7 @@
     </a>
   </li><!-- End Profile Page Nav -->
   <li class="nav-item">
-    <a class="nav-link collapsed" href="/cyrus/SaaS/" target="_blank">
+    <a class="nav-link collapsed" href="/cyrus/SaaS/ordertable.php" target="_blank">
       <i class="bi bi-grid"></i>
       <span>SaaS</span>
     </a>
@@ -118,6 +118,14 @@
   <?php 
 }
 ?>
+
+<li class="nav-item">
+  <a class="nav-link collapsed AssignedRegion" href="" data-bs-toggle="modal" data-bs-target="#AssignedRegion">
+    <i class="bi bi-grid"></i>
+    <span>Assigned Region & District</span>
+  </a>
+</li>
+
 <li class="nav-item">
   <a class="nav-link collapsed" href="PendingMaterial.php">
     <i class="bi bi-grid"></i>
@@ -148,7 +156,7 @@
 <li class="nav-item">
   <a class="nav-link collapsed" href="PendingBills.php">
     <i class="bi bi-grid"></i>
-    <span>Pending Bills</span>
+    <span>Pending Bill</span>
   </a>
 </li><!-- End Contact Page Nav -->
 
@@ -158,12 +166,13 @@
     <span>Multi-Orders Confirmation</span>
   </a>
 </li>
-
+<!--
 <li class="nav-item">
   <a class="nav-link collapsed" href="oldwork.php">
     <i class="bi bi-grid"></i><span>Old Pending Work</span>
   </a>
 </li>
+-->
 <!-- End Register Page Nav -->
 
 </ul>

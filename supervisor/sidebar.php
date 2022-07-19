@@ -158,6 +158,13 @@
     <span>Multi-Orders Confirmation</span>
   </a>
 </li>
+
+<li class="nav-item">
+  <a class="nav-link collapsed BankVisit" href="" data-bs-toggle="modal" data-bs-target="#AddBankVisit">
+    <i class="bi bi-grid"></i>
+    <span>Add Bank Visit</span>
+  </a>
+</li>
 <!-- End Register Page Nav -->
 
 </ul>

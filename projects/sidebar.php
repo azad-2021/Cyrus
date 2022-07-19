@@ -55,9 +55,16 @@
 <li class="nav-item">
   <a class="nav-link collapsed" href="addSite.php">
     <i class="bi bi-grid"></i>
-    <span>Add Site</span>
+    <span>Add Work Site</span>
   </a>
 </li>
+<li class="nav-item">
+  <a class="nav-link collapsed" href="DivisionDetails.php">
+    <i class="bi bi-grid"></i>
+    <span>Division Detail</span>
+  </a>
+</li>
+
 </ul>
 </aside>
 <!-- End Sidebar-->

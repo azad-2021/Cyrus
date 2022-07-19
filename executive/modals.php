@@ -413,7 +413,7 @@
 </div>
 
 <div class="modal" id="AddBankVisit" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content rounded-corner">
       <div class="modal-header">
         <h5 class="modal-title">Enter Visit Details</h5>
@@ -422,6 +422,7 @@
 
         <form class="form-control" id="FBankVisit">
           <div class="row">
+
             <div class="col-lg-4">
               <label for="validationCustom01" class="form-label ">Select Bank</label>
               <select id="BankVisit" class="form-control rounded-corner">
@@ -442,14 +443,39 @@
               </select>
             </div>
 
+
             <div class="col-lg-4">
-              <label for="validationCustom01" class="form-label ">Designation</label>
-              <input type="text" class="form-control rounded-corner" id="Designation">
+              <label for="validationCustom01" class="form-label ">Select Zone</label>
+              <select id="ZoneVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+              </select>
             </div>
 
             <div class="col-lg-4">
-              <label for="validationCustom01" class="form-label ">Name</label>
-              <input type="text" class="form-control rounded-corner" id="DName">
+              <label for="validationCustom01" class="form-label ">Select Designation</label>
+              <select id="DesignationVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+                <?php
+                $BankData="SELECT * FROM dsr.designation Order By DesignationName";
+                $result=mysqli_query($con3,$BankData);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['DesignationID']; ?>"><?php echo $arr['DesignationName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+
+            <div class="col-lg-4">
+              <label for="validationCustom01" class="form-label ">Select Bank Employee</label>
+              <select id="BEmployeeVisit" class="form-control rounded-corner">
+                <option value="">Select</option>
+              </select>
             </div>
 
             <div class="col-lg-3">
@@ -457,16 +483,15 @@
               <input type="date" class="form-control rounded-corner" id="VisitDateD" max="<?php echo $Date ?>"  min="<?php echo date('Y-m-d', strtotime($Date. ' - 7 days')) ?>">
             </div>
 
-            <div class="col-lg-6">
-              <label for="validationCustom01" class="form-label ">Description</label>
-              <textarea type="text" class="form-control rounded-corner" maxlength="450" id="DescriptionD"></textarea>
-
-            </div>
-
-            <div class="col-lg-3">
+            <div class="col-lg-4">
               <label for="validationCustom01" class="form-label ">Next Visit Date</label>
               <input type="date" class="form-control rounded-corner" id="NextVisitDateD">
             </div>
+            <div class="col-lg-12">
+              <label for="validationCustom01" class="form-label ">Visit Remark</label>
+              <textarea type="text" class="form-control rounded-corner" maxlength="450" id="DescriptionD"></textarea>
+            </div>
+
           </div>
 
           <div class="table-responsive" style="margin:20px">
@@ -478,9 +503,10 @@
                 <th>Visit Date</th>
                 <th>Next Visit Date</th>
                 <th>Description</th>
+                <th>Visit By</th>
               </thead>
               <tbody id="BankVisitData">
-                
+
               </tbody>
             </table>
           </div>
@@ -488,9 +514,85 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
         </form>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#AddBankEmployee" class="btn btn-primary">Add Bank Employee</button>
         <button type="button" data-bs-dismiss="modal" class="btn btn-primary saveBankVisit">Save</button> 
       </div>
       
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="AddBankEmployee" data-bs-backdrop="static" data-bs-keyboard="false"  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content rounded-corner">
+      <div class="modal-header">
+        <h5 class="modal-title">Enter Bank Employee Details</h5>
+      </div>
+      <div class="modal-body">
+
+        <form class="form-control" id="FBankEmployee">
+          <div class="row">
+            <div class="col-lg-6" >
+              <select id="Bank" class="form-control rounded-corner" name="Bank" style="margin-bottom:10px;">
+                <option value="">Bank</option>
+                <?php
+                $BankData="Select BankCode, BankName from bank order by BankName";
+                $result=mysqli_query($con,$BankData);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['BankCode']; ?>"><?php echo $arr['BankName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+            <div class="col-lg-6">
+              <select id="Zone" class="form-control rounded-corner" name="Zone" style="margin-bottom:10px;">
+                <option value="">Zone</option>
+              </select>
+            </div>
+
+            <div class="col-lg-6">
+              <select class="form-control rounded-corner" id="DesignationID" style="margin-bottom:10px;">
+                <option value="">Designation</option>
+                <?php
+                $Data="SELECT * FROM dsr.designation Order By DesignationName";
+                $result=mysqli_query($con3,$Data);
+                if (mysqli_num_rows($result)>0)
+                {
+                  while ($arr=mysqli_fetch_assoc($result))
+                  {
+                    ?>
+                    <option value="<?php echo $arr['DesignationID']; ?>"><?php echo $arr['DesignationName']; ?></option>
+                    <?php
+                  }
+                }
+                ?>
+              </select>
+            </div>
+
+            <div class="col-lg-6">
+              <input type="text" class="form-control rounded-corner" style="margin-bottom:10px;" id="DName" placeholder="Bank Employee Name">
+            </div>
+            <center>
+              <div class="col-lg-6">
+                <input type="number" style="margin-bottom:10px;" class="form-control rounded-corner" id="DMobile" placeholder="Employee Mo. Number" onkeyup="limits(this, 10);">
+              </div>
+
+            </center>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="reset"  data-bs-dismiss="modal">Close</button> 
+        </form>
+        <button type="button" data-bs-dismiss="modal" class="btn btn-primary SaveBankEmployee">Save</button> 
+      </div>
+
     </div>
   </div>
 </div>

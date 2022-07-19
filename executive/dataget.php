@@ -27,6 +27,7 @@ if (!empty($BankCode))
   }
 
 }
+
 $ZoneCode=!empty($_POST['ZoneCode'])?$_POST['ZoneCode']:'';
 if (!empty($ZoneCode))
 {
@@ -42,7 +43,25 @@ if (!empty($ZoneCode))
   }
 }
 
+$DesignationIDVisit=!empty($_POST['DesignationIDVisit'])?$_POST['DesignationIDVisit']:'';
+if (!empty($DesignationIDVisit))
+{
+  $ZoneCodeVisit=!empty($_POST['ZoneCodeVisit'])?$_POST['ZoneCodeVisit']:'';
 
+  $DataVisit="SELECT * FROM `bank employee` WHERE ZoneRegionCode=$ZoneCodeVisit and DesignationID=$DesignationIDVisit order by BankEmployeeName";
+  $result = mysqli_query($con3,$DataVisit);
+  if(mysqli_num_rows($result)>0)
+  {
+    echo "<option value=''>Select Bank Employee</option>";
+    while ($arr=mysqli_fetch_assoc($result))
+    {
+      echo "<option value='".$arr['BankEmployeeID']."'>".$arr['BankEmployeeName']."</option><br>";
+    }
+  }else{
+    echo "<option value=''>Select Bank Employee</option>";
+  }
+
+}
 $Data=!empty($_POST['Data'])?$_POST['Data']:'';
 //$ItemZone=295;
 
@@ -119,17 +138,17 @@ if (!empty($Regiondata))
   }
 }
 
-$BankCodeVisit=!empty($_POST['BankCodeVisit'])?$_POST['BankCodeVisit']:'';
-if (!empty($BankCodeVisit))
+$DesignationIDVEntry=!empty($_POST['DesignationIDVEntry'])?$_POST['DesignationIDVEntry']:'';
+if (!empty($DesignationIDVEntry))
 {
 
-  $Designation=!empty($_POST['Designation'])?$_POST['Designation']:'';
-  $Name=!empty($_POST['Name'])?$_POST['Name']:'';
+  $BEmployeeVisit=!empty($_POST['BEmployeeVisit'])?$_POST['BEmployeeVisit']:'';
+  $ZoneCodeVEntry=!empty($_POST['ZoneCodeVEntry'])?$_POST['ZoneCodeVEntry']:'';
   $VisitDate=!empty($_POST['VisitDate'])?$_POST['VisitDate']:'';
   $Description=!empty($_POST['Description'])?$_POST['Description']:'';
   $NextVisitDate=!empty($_POST['NextVisitDate'])?$_POST['NextVisitDate']:'';
 
-  $Data="SELECT * from bankvisits WHERE VisitDate='$VisitDate' and ExecutiveID=$EXEID and BankCode=$BankCodeVisit and Name='$Name'";
+  $Data="SELECT * from `visit details` WHERE VisitDate='$VisitDate' and ExecutiveID=$EXEID and ZoneRegionCode=$ZoneCodeVEntry and  BankEmployeeID=$DesignationIDVEntry";
   $result=mysqli_query($con3,$Data);
   if (mysqli_num_rows($result)>0)
   {
@@ -137,8 +156,8 @@ if (!empty($BankCodeVisit))
   }elseif($VisitDate>=$NextVisitDate){
     echo 'Next visit date must be greater than visit date';
   }else{
-    $sql = "INSERT INTO bankvisits (ExecutiveID, BankCode, Designation, Name, VisitDate, Description, NextVisitDate)
-    VALUES ($EXEID, $BankCodeVisit, '$Designation', '$Name', '$VisitDate', '$Description', '$NextVisitDate')";
+    $sql = "INSERT INTO `visit details` (ExecutiveID, ZoneRegionCode, BankEmployeeID, VisitDate, VisitRemark, NextVisitDate)
+    VALUES ($EXEID, $ZoneCodeVEntry, $BEmployeeVisit, '$VisitDate', '$Description', '$NextVisitDate')";
 
     if ($con3->query($sql) === TRUE) {
       echo 1;
@@ -154,8 +173,15 @@ $BankVisit=!empty($_POST['BankVisit'])?$_POST['BankVisit']:'';
 if (!empty($BankVisit))
 {   
 
-  $query="SELECT * from cyrusbackend.bankvisits join cyrusbackend.bank on bankvisits.BankCode=bank.BankCode
-  WHERE ExecutiveID=$EXEID order by VisitDate desc";
+  $query="SELECT * FROM dsr.`visit details`
+  join cyrusbackend.pass on `visit details`.ExecutiveID=pass.ID
+  join `bank employee` on `visit details`.BankEmployeeID = `bank employee`.BankEmployeeID
+  join designation on `bank employee`.DesignationID= designation.DesignationID
+  join cyrusbackend.zoneregions on `visit details`.ZoneRegionCode=zoneregions.ZoneRegionCode
+  join cyrusbackend.bank on zoneregions.BankCode=bank.BankCode
+  join cyrusbackend.`cyrus regions` on `visit details`.ExecutiveID=`cyrus regions`.ControlerID
+  WHERE month(VisitDate)=month(current_date()) and ControlerID=$EXEID
+  group by VisitDate";
   $result=mysqli_query($con3,$query);
   if (mysqli_num_rows($result)>0)
   {
@@ -164,16 +190,189 @@ if (!empty($BankVisit))
     {
       print "<tr>";
       print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
-      print '<td style="min-width: 150px;">'.$row["Name"]."</td>";
-      print '<td style="min-width: 150px;">'.$row["Designation"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["DesignationName"]."</td>";
       print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
       print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["NextVisitDate"]))."</td>";
-      print '<td style="min-width: 150px;">'.$row["Description"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["VisitRemark"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["UserName"]."</td>";
       print '</tr>';
     }
 
   }
+
+  $query="SELECT * FROM dsr.`visit details`
+  join cyrusbackend.pass on `visit details`.ExecutiveID=pass.ID
+  join `bank employee` on `visit details`.BankEmployeeID = `bank employee`.BankEmployeeID
+  join designation on `bank employee`.DesignationID=designation.DesignationID
+  join cyrusbackend.branchdetails on `visit details`.ZoneRegionCode=branchdetails.ZoneRegionCode
+  join cyrusbackend.`cyrus regions` on `visit details`.ExecutiveID=`cyrus regions`.SubControllerID
+  WHERE ControlerID=$EXEID and month(VisitDate)=month(current_date())
+  group by VisitDate";
+  $result=mysqli_query($con3,$query);
+  if (mysqli_num_rows($result)>0)
+  {
+
+    while ($row=mysqli_fetch_assoc($result))
+    {
+     print "<tr>";
+     print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+     print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+     print '<td style="min-width: 150px;">'.$row["DesignationName"]."</td>";
+     print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
+     print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["NextVisitDate"]))."</td>";
+     print '<td style="min-width: 150px;">'.$row["VisitRemark"]."</td>";
+     print '<td style="min-width: 150px;">'.$row["UserName"]."</td>";
+     print '</tr>';
+   }
+
+ }
 }
+
+$DName=!empty($_POST['DName'])?$_POST['DName']:'';
+if (!empty($DName))
+{
+
+  $Designation=!empty($_POST['DesignationID'])?$_POST['DesignationID']:'';
+  $ZoneCodeD=!empty($_POST['ZoneCodeD'])?$_POST['ZoneCodeD']:'';
+  $DMobile=!empty($_POST['DMobile'])?$_POST['DMobile']:'';
+  $DMobile='+91'.$DMobile;
+  //echo  $Designation;
+  $Data="SELECT * FROM `bank employee` WHERE BankEmployeeName='$DName' and ZoneRegionCode=$ZoneCodeD and DesignationID=$Designation";
+  $result=mysqli_query($con,$Data);
+  if (mysqli_num_rows($result)>0)
+  {
+    echo "Bank Employee ".$DName."  already exist";
+  }else{
+    $sql = "INSERT INTO `bank employee` (BankEmployeeName, DesignationID, ZoneRegionCode, MobileNumber)
+    VALUES ('$DName', $Designation, $ZoneCodeD, '$DMobile')";
+
+    if ($con3->query($sql) === TRUE) {
+      echo 1;
+    }else {
+      echo "Error: " . $sql . "<br>" . $con3->error;
+    }
+
+  }
+}
+
+$TotalVisits=!empty($_POST['TotalVisits'])?$_POST['TotalVisits']:'';
+
+if (!empty($TotalVisits))
+{   
+
+  $query="SELECT * FROM cyrusbackend.branchdetails
+  join districts on branchdetails.Address3=districts.District
+  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE ControlerID=$EXEID group by ZoneRegionCode order by BankName";
+  $result=mysqli_query($con,$query);
+  if (mysqli_num_rows($result)>0)
+  {
+    $sr=0;
+    while ($row=mysqli_fetch_assoc($result))
+    {
+      $sr++;
+      print "<tr>";
+      print '<td style="min-width: 150px;">'.$sr."</td>";
+      print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+      print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+      print '</tr>';
+    }
+
+  }
+
+}
+
+
+$PendingVisit=!empty($_POST['PendingVisit'])?$_POST['PendingVisit']:'';
+
+if (!empty($PendingVisit))
+{   
+
+  //echo $PendingVisit;
+
+  $query="SELECT * FROM cyrusbackend.branchdetails
+  join districts on branchdetails.Address3=districts.District
+  join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
+  WHERE not exists (
+  SELECT ZoneRegionCode FROM dsr.`visit details` WHERE branchdetails.ZoneRegionCode=`visit details`.ZoneRegionCode and  month(VisitDate)=month(current_date())
+) and ControlerID=$EXEID group by ZoneRegionCode order by BankName";
+$result=mysqli_query($con,$query);
+if (mysqli_num_rows($result)>0)
+{
+  $sr=0;
+  while ($row=mysqli_fetch_assoc($result))
+  {
+    $sr++;
+    print "<tr>";
+    print '<td style="min-width: 150px;">'.$sr."</td>";
+    print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+    print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+    print '</tr>';
+  }
+
+}
+
+}
+
+/*
+
+$query="SELECT * FROM cyrusbackend.bankvisits
+join pass on bankvisits.ExecutiveID=pass.ID
+join `bank employee` on bankvisits.BankEmployeeID = `bank employee`.BankEmployeeID
+join `bank designation` on `bank employee`.DesignationID=`bank designation`.DesignationID
+join zoneregions on bankvisits.ZoneRegionCode=zoneregions.ZoneRegionCode
+join bank on zoneregions.BankCode=bank.BankCode
+join `cyrus regions` on bankvisits.ExecutiveID=`cyrus regions`.ControlerID
+WHERE month(VisitDate)=(month(current_date())-3)
+group by VisitDate";
+$result=mysqli_query($con3,$query);
+if (mysqli_num_rows($result)>0)
+{
+
+  while ($row=mysqli_fetch_assoc($result))
+  {
+    print "<tr>";
+    print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+    print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+    print '<td style="min-width: 150px;">'.$row["DesignationName"]."</td>";
+    print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
+    print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["NextVisitDate"]))."</td>";
+    print '<td style="min-width: 150px;">'.$row["VisitRemark"]."</td>";
+    print '<td style="min-width: 150px;">'.$row["UserName"]."</td>";
+    print '</tr>';
+  }
+
+}
+
+$query="SELECT * FROM cyrusbackend.bankvisits
+join pass on bankvisits.ExecutiveID=pass.ID
+join `bank employee` on bankvisits.BankEmployeeID = `bank employee`.BankEmployeeID
+join `bank designation` on `bank employee`.DesignationID=`bank designation`.DesignationID
+join branchdetails on bankvisits.ZoneRegionCode=branchdetails.ZoneRegionCode
+join `cyrus regions` on bankvisits.ExecutiveID=`cyrus regions`.SubControllerID
+WHERE ControlerID=$EXEID and month(VisitDate)=(month(current_date())-3)
+group by VisitDate";
+$result=mysqli_query($con3,$query);
+if (mysqli_num_rows($result)>0)
+{
+
+  while ($row=mysqli_fetch_assoc($result))
+  {
+   print "<tr>";
+   print '<td style="min-width: 150px;">'.$row["BankName"]."</td>";
+   print '<td style="min-width: 150px;">'.$row["ZoneRegionName"]."</td>";
+   print '<td style="min-width: 150px;">'.$row["DesignationName"]."</td>";
+   print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["VisitDate"]))."</td>";
+   print '<td style="min-width: 150px;">'.date("d-m-Y", strtotime($row["NextVisitDate"]))."</td>";
+   print '<td style="min-width: 150px;">'.$row["VisitRemark"]."</td>";
+   print '<td style="min-width: 150px;">'.$row["UserName"]."</td>";
+   print '</tr>';
+ }
+
+}*/
+
+
 
 ?>
 

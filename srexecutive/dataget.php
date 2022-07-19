@@ -254,7 +254,20 @@ if (!empty($ZoneCodeU))
   }
 } 
 
+$BillIDAction=!empty($_POST['BillIDAction'])?$_POST['BillIDAction']:'';
+if (!empty($BillIDAction))
+{
+    $ActionTaken=!empty($_POST['ActionTaken'])?$_POST['ActionTaken']:'';
+    $Resolved=!empty($_POST['Resolved'])?$_POST['Resolved']:'';
 
+    $sql = "UPDATE reminders SET Action='$ActionTaken', Resolved=$Resolved WHERE BillID=$BillIDAction";
+
+    if ($con->query($sql) === TRUE) {
+      echo 1;
+  } else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+  }
+} 
 $con->close();
 $con2->close();
 

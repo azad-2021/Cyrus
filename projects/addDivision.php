@@ -144,10 +144,14 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
                           <label for="validationCustom01"  class="form-label ">BG Date</label>
                           <input type="date" class="form-control rounded-corner" id="BGDate" name="BGDate" required>
                         </div>
+                        <div class="col-lg-3">
+                          <label for="validationCustomUsername" class="form-label">Warranty in months</label>
+                          <input type="number" min=0 class="form-control rounded-corner" name="warranty" id="WarrantyAdd">
+                        </div>
 
-                        <div class="col-lg-12">
+                        <div class="col-lg-9">
                           <label for="validationCustomUsername" class="form-label">Description</label>
-                          <textarea class="form-control rounded-corner" id="DescriptionAdd" name="Discription" required></textarea> 
+                          <textarea class="form-control rounded-corner" id="DescriptionAdd" name="Description" required></textarea> 
                         </div>
 
                       </div>
@@ -237,10 +241,10 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
       var ComplitionDate=document.getElementById("ComplitionDate").value;
       var Division=document.getElementById("DivisionAdd").value;
       var Description=document.getElementById("DescriptionAdd").value;
-
+      var Warranty=document.getElementById("WarrantyAdd").value;
       var input = document.getElementsByName('NameArray[]');
       var input2 = document.getElementsByName('RateArray[]');
-      if (Division && OrganizationCode && BGDate && BGAmount && LOADateAdd && ComplitionDate && Description) {
+      if (Division && OrganizationCode && BGDate && BGAmount && LOADateAdd && ComplitionDate && Description && Warranty) {
         var err=0;
         for (var i = 0; i < input.length; i++) {
 
@@ -263,16 +267,23 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
           console.log(Division);
           console.log(OrganizationCode);
           //swal("success","Division Created","success");
-
           
           $.ajax({
             type:'POST',
             url:'dataget.php',
-            data:{'DivisionName':Division, 'OrganizationCode':OrganizationCode, 'BGDate':BGDate, 'BGAmount':BGAmount, 'LOADate':LOADateAdd, 'ComplitionDate':ComplitionDate, 'DivRate':Rate, 'DivMaterial':Material, 'Description':Description},
+            data:{'DivisionName':Division, 'OrganizationCode':OrganizationCode, 'BGDate':BGDate, 'BGAmount':BGAmount, 'LOADate':LOADateAdd, 'ComplitionDate':ComplitionDate, 'DivRate':Rate, 'DivMaterial':Material, 'Description':Description, 'Warranty':Warranty},
             success:function(result){
 
               if ((result)==1) {
                 swal("success","Division Created","success");
+
+                var delayInMilliseconds = 2000; 
+
+                setTimeout(function() {
+                  location.reload();
+                }, delayInMilliseconds);
+
+
               }else{
                 swal("error",(result),"error");
               }

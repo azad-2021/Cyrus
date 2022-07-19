@@ -114,127 +114,62 @@ if ( $Hour >= 1 && $Hour <= 11 ) {
 
     <section class="section dashboard">
 
-     <div class="modal fade" data-bs-backdrop="static" id="add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content rounded-corner">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Add Materials</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div id="material">
+      <!-- Recent Sales -->
+      <div class="col-12">
+        <div class="card recent-sales overflow-auto">
 
-            </div>
+          <div class="card-body">
             <br>
-            <form id="f1">
-              <div class="col-lg-3">
-                <input type="number" name="" id="order_id" class="d-none form-control">
-              </div>
-              <div class="col-lg-3">
-                <input type="number" name="" id="zone_code" class="d-none form-control">
-              </div>
-              <div class="row text-centered">
-                <div class="col-lg-5">
-                  <center>
-                    <label >Select Items</label>
-                  </center>
-                  <select id="ItemID" class="form-control rounded-corner" name="Items" required>
-                    <option value="">Select</option>
-                  </select>
-                </div>
-                <div class="col-lg-5">
-                  <center>
-                    <label>Enter Quantity</label>
-                  </center>
-                  <input type="number" name="" id="qty" class="form-control rounded-corner" onkeydown="limit(this);" onkeyup="limit(this);">
-                </div>
-                <div class="col-lg-2">
-                  <center>
-                    <label></label>
-                    <br>
-                  </center>
-                  <button type="button" class="btn btn-primary btn-lg addUpdateItems">Add</button>
-                </div>
-
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary confirmUpdate cl">Confirm</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Sales -->
-    <div class="col-12">
-      <div class="card recent-sales overflow-auto">
-
-        <div class="card-body">
-          <br>
-          <div class="table-responsive container">
-            <table class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
-              <thead>
-                <tr class="text-dark">
-                  <th scope="col" style="min-width:200px">Employee</th>
-                  <th scope="col" style="min-width:200px">Pending Work</th>
-                </tr>
-              </thead>
-              <tbody>
-               <?php 
-
-               $query="SELECT * FROM cyrusbackend.employees
-               Join districts on employees.EmployeeCode=districts.`Assign To`
-               Join branchdetails on districts.District=branchdetails.Address3
-               WHERE Inservice=1";
-               $result=mysqli_query($con,$query);
-
-               if (mysqli_num_rows($result)>0)
-               {
-
-                while($rowB = mysqli_fetch_array($result)){
-                  $Count=0;
-                  $query2="SELECT * FROM cyrusbackend.gadget";
-                  $result2=mysqli_query($con,$query2);
-                  while($rowg = mysqli_fetch_array($result2)){
-
-                    $GadgetID=$rowg['GadgetID'];
-                    $BranchCode=$rowB['BranchCode'];
-                    $EmployeeCode=$rowB['EmployeeCode'];
-
-                    $query3="SELECT `Card Number` FROM cyrusbackend.jobcardmain WHERE GadgetID=$GadgetID and BranchCode=$BranchCode and EmployeeCode=$EmployeeCode and WorkPending is not null and length(WorkPending)>1 Order By Job_Card_No desc LIMIT 1";
-                    $result3=mysqli_query($con,$query3);
-
-                    if (mysqli_num_rows($result3)>0)
-                    {
-                      
-
-                      while($row3 = mysqli_fetch_array($result3)){
-                        $Count++;
-
-                      }
-                    }
-
-                  }
-                  ?>
-
-                  <tr>
-                    <td ><?php echo $rowB['Employee Name']; ?></td>
-                    <td ><?php echo $Count; ?></td>
+            <div class="table-responsive container">
+              <table class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
+                <thead>
+                  <tr class="text-dark">
+                    <th scope="col" style="min-width:200px">Employee</th>
+                    <th scope="col" style="min-width:200px">Pending Work</th>
                   </tr>
-                  <?php
+                </thead>
+                <tbody>
+                 <?php 
+
+                 $query2="SELECT distinct jobcardmain.BranchCode FROM cyrusbackend.jobcardmain
+                 join branchs on jobcardmain.BranchCode=branchs.BranchCode
+                 WHERE VisitDate>='2022-01-01' and length(WorkPending)>1 and Address3 not like '%Reserved%'";
+                 $result2=mysqli_query($con,$query2);
+
+                 while($rowB = mysqli_fetch_array($result2)){
+
+                   $query3="SELECT * FROM cyrusbackend.gadget";
+                   $result3=mysqli_query($con,$query3);
+
+                   while($rowC = mysqli_fetch_array($result3)){
+
+                    $GadgetID=$rowC['GadgetID'];
+                    $BranchCode=$rowB['BranchCode'];
+
+                    $query4="SELECT * FROM cyrusbackend.jobcardmain WHERE length(WorkPending)>1 and BranchCode=$BranchCode and GadgetID=$GadgetID and VisitDate>='2022-01-01'
+                    order by Job_Card_No desc limit 1";
+                    $result4=mysqli_query($con,$query4);
+                    while($rowD = mysqli_fetch_array($result4)){
+
+                      ?>
+
+                      <tr>
+                        <td ><?php echo $rowD['BranchCode']; ?></td>
+                        <td ><?php echo $rowD['Card Number']; ?></td>
+                      </tr>
+                      <?php
+                    }
+                  }
                 }
-              }
-              ?>
-            </tbody>
-          </table>
+                ?>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
+    <!-- End Recent Sales -->
   </div>
-  <!-- End Recent Sales -->
-</div>
 </div>
 <!-- End Left side columns -->
 

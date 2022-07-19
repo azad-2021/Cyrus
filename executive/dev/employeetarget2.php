@@ -13,8 +13,9 @@ if (isset($_GET['user'])) {
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
-$DateR = date('d-M-y h:i A',strtotime($timestamp));
 
+$ThirtyDays = date('Y-m-d', strtotime($Date. ' - 30 days'));
+$NintyDays = date('Y-m-d', strtotime($Date. ' - 90 days'));
 
 $Hour = date('G');
 //echo $_SESSION['user'];
@@ -32,18 +33,6 @@ if (isset($_POST['submit'])) {
   $OrderID=$_POST['EOrderID'];
   $Remark=$_POST['ERemark'];
 
-  $sql ="SELECT `Executive Remark` FROM orders WHERE OrderID=$OrderID";
-
-  $result = mysqli_query($con,$sql);
-  
-  if (mysqli_num_rows($result)>0)
-  { 
-    $row = mysqli_fetch_array($result);
-    $exRemark=$row["Executive Remark"];
-  }else{
-    $exRemark='';
-  }
-  $Remark=$_SESSION['user'].' - '.$DateR.' - '.$Remark.' '.$exRemark;
   $sql = "UPDATE orders SET `Executive Remark`='$Remark' WHERE OrderID=$OrderID";
   if ($con->query($sql) === TRUE) {
     echo '<meta http-equiv="refresh" content="0">';
@@ -63,13 +52,13 @@ if (isset($_POST['submit'])) {
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Pending Material Confirmation</title>
+  <title>Employee Target</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
   <link href="assets/img/cyrus logo.png" rel="icon">
-
+  
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -234,52 +223,57 @@ if (isset($_POST['submit'])) {
               <table class="table display text-start align-middle table-bordered border-primary table-hover mb-0">
                 <thead>
                   <tr class="text-dark">
-                    <th scope="col" style="min-width:200px">Bank</th>
-                    <th scope="col" style="min-width:200px">Zone</th>
-                    <th scope="col" style="min-width:200px">Branch</th>
-                    <th scope="col" style="min-width:100px">Order ID</th>
-                    <th scope="col" style="min-width:300px">Description</th>
-                    <th scope="col" style="min-width:150px">Order Date</th>
-                    <th scope="col" style="min-width:150px">Remark</th>
-                    <th scope="col" style="min-width:150px">Action</th>
+                    <th scope="col" style="min-width:150px">Employee Name</th>
+                    <th scope="col" style="min-width:150px">Target Amount</th>
+                    <th scope="col" style="min-width:150px">Billed Amount</th>
+                    <th scope="col" style="min-width:150px">Pending Amount</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php 
-                  $sql ="SELECT orders.OrderID, StatusID, Discription, DateOfInformation, orders.BranchCode, DemandGenDate, BankName, ZoneRegionName, ZoneRegionCode, BranchName, `Executive Remark` FROM cyrusbackend.orders 
-                  join demandbase on orders.OrderID=demandbase.OrderID
-                  join branchdetails on orders.BranchCode=branchdetails.BranchCode
-                  join districts on branchdetails.Address3=districts.district
+                  $queryT="SELECT TargetAmounts, EmployeeCode, `Employee Name` FROM cyrusbackend.employees
+                  join districts on employees.EmployeeCode=districts.`Assign To`
                   join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-                  WHERE demandbase.StatusID=1 and ControlerID=$EXEID order by DateOfInformation";
+                  WHERE ControlerID=$EXEID
+                  group by EmployeeCode order by `Employee Name`";
+                  $resultT=mysqli_query($con,$queryT);
 
-                  $result = mysqli_query($con,$sql);
-                  while ($row = mysqli_fetch_array($result)) { 
-                   ?>
-                   <tr>
+                  $TargetArray=array();
+                  $AceivedArray=array();
 
-                    <td><?php echo $row["BankName"]; ?></td>
-                    <td><?php echo $row["ZoneRegionName"]; ?></td>
-                    <td><?php echo $row["BranchName"]; ?></td>
+                  while ($row=mysqli_fetch_assoc($resultT)){
 
-                    <td  ><a href="" class="add" data-bs-toggle="modal" data-bs-target="#add" id="<?php print $row["ZoneRegionCode"]; ?>" data-bs-orderid="<?php echo $row["OrderID"]; ?>" data-bs-zonecode="<?php echo $row["ZoneRegionCode"]; ?>"><?php echo $row["OrderID"]; ?></a></td>
+                    $EmployeeCode=$row["EmployeeCode"];
+                    $query4="SELECT sum(TotalBilledValue) FROM cyrusbilling.billbook
+                    WHERE EmployeeCode=$EmployeeCode and Cancelled=0 and month(BillDate)=(month(current_date())-2) and year(BillDate)=year(current_date())";
+                    $result4=mysqli_query($con2,$query4);
+                    $row4 = mysqli_fetch_array($result4);
+                    if(!empty($row4["sum(TotalBilledValue)"])){
+                      $BilledAmount=number_format((float)$row4["sum(TotalBilledValue)"], 2, '.', '');
+                      $Pending=$row["TargetAmounts"]-$row4["sum(TotalBilledValue)"];
+                    }else{
+                      $BilledAmount='0.00';
+                      $Pending='0.00';
+                    }
 
-                    <td><?php echo $row["Discription"]; ?></td>
-                    <td><?php echo $row["DateOfInformation"]; ?></td>
-                    <td><?php echo $row["Executive Remark"]; ?></td>
-                    <td  ><a href="" class="AddRemark" data-bs-toggle="modal" data-bs-target="#AddRemark" id="<?php print $row["OrderID"]; ?>">Add Remark</a></td>
-                  </tr>
-                <?php } ?>
-              </tbody>
-            </table>
+                    ?>
+                    <tr>
+                      <td><a target="_blank" href="/cyrus/technician/executiveview.php?eid=<?php echo $row["EmployeeCode"]; ?>&name=<?php echo $row["Employee Name"]; ?>"><?php echo $row["Employee Name"]; ?></a></td>
+                      <td><?php echo $row["TargetAmounts"]; ?></td>
+                      <td><?php echo $BilledAmount; ?></td>
+                      <td><?php echo $Pending; ?></td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
+      <!-- End Recent Sales -->
     </div>
-    <!-- End Recent Sales -->
   </div>
-</div>
-<!-- End Left side columns -->
+  <!-- End Left side columns -->
 
 </section>
 </main>

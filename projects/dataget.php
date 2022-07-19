@@ -1,7 +1,7 @@
 <?php
 include ('connection.php');
 include 'session.php';
-
+$userid=$_SESSION['userid'];
 date_default_timezone_set('Asia/Calcutta');
 $timestamp =date('y-m-d H:i:s');
 $Date = date('Y-m-d',strtotime($timestamp));
@@ -37,6 +37,7 @@ if (!empty($DivisionCodeM))
       print '<tr>';
       print '<td>'.$arr["Description"]."</td>";
       print '<td >'.$arr["Rate"]."</td>";
+      print '<td ><input class="form-control rounded-corner" min=0 name="Qty[]" type="number" id="'.$arr["RateID"].'"></td>';
       print '<td ><input class="form-check-input checkb" name="select" type="checkbox" value="'.$arr["RateID"].'"></td>';
       print '</tr>';
 
@@ -96,17 +97,17 @@ if (!empty($DivisionName))
   $Rate=$_POST['DivRate'];
   $Material=$_POST['DivMaterial'];
   $Description=$_POST['Description'];
+  $Warranty=$_POST['Warranty'];
   //echo $BGDate;
   $err=0;
   for ($i=0; $i <count($Material) ; $i++) { 
 
 
-    $query="SELECT * from projects.rates WHERE Description='$Material[$i]'";
+    $query="SELECT * from projects.division WHERE DivisionName='$DivisionName' and OrganizationCode=$OrganizationCode";
     $result=mysqli_query($con,$query);
     if (mysqli_num_rows($result)>0)
     { 
-      echo 'matererial '.$Material[$i].' already exist';
-      break;
+      echo 'Division '.$DivisionName.' already exist';
       $err=1;
     }
 
@@ -119,8 +120,8 @@ if (!empty($DivisionName))
       if ($con->query($sql) === TRUE) {
        $DivisionCode = $con->insert_id;
 
-       $sql = "INSERT INTO projects.orders (DivisionCode, Description, LOADate, DateOfCompletion, BGAmount, BGDate)
-       VALUES ($DivisionCode, '$Description', '$LOADate','$CompletionDate', $BGAmount, '$BGDate')";
+       $sql = "INSERT INTO projects.orders (DivisionCode, Description, LOADate, DateOfCompletion, BGAmount, BGDate, Warranty, GenByID)
+       VALUES ($DivisionCode, '$Description', '$LOADate','$CompletionDate', $BGAmount, '$BGDate', $Warranty, $userid)";
 
        if ($con->query($sql) === TRUE) {
 
@@ -153,6 +154,156 @@ if (!empty($DivisionName))
 }
 
 }
+
+
+$SiteName=!empty($_POST['SiteName'])?$_POST['SiteName']:'';
+if (!empty($SiteName))
+{
+
+  $err=0;
+  $err2=0;
+  $DivisionCode=$_POST['DivisionCode'];
+
+  $query="SELECT * from projects.site WHERE SiteName='$SiteName'";
+  $result=mysqli_query($con,$query);
+  if (mysqli_num_rows($result)>0)
+  { 
+    echo ' Site '.$SiteName.' already exist ! ';
+
+    $err=1;
+  }
+
+  if (isset($_POST['Material'])) {
+
+    $NewMaterial=$_POST['Material'];
+    for ($i=0; $i < count($NewMaterial); $i++) { 
+
+      $query="SELECT * from projects.rates WHERE Description='$NewMaterial[$i]' and DivisionCode=$DivisionCode";
+      $result=mysqli_query($con,$query);
+      if (mysqli_num_rows($result)>0)
+      { 
+        echo ' Material '.$NewMaterial[$i].' already exist ! ';
+
+        $err2=1;
+        break;
+      }
+    }
+  }
+
+  if ($err==0 and $err2==0) {
+
+    $query="SELECT * from projects.orders WHERE DivisionCode=$DivisionCode and GenByID=$userid order by OrderID desc limit 1";
+    $result=mysqli_query($con,$query);
+    if (mysqli_num_rows($result)>0)
+    { 
+      $arr=mysqli_fetch_assoc($result);
+      $OrderID=$arr['OrderID'];
+
+    }
+
+
+    $sql = "INSERT INTO projects.site (DivisionCode, SiteName)
+    VALUES ($DivisionCode, '$SiteName')";
+
+    if ($con->query($sql) === TRUE) {
+      $SiteCode = $con->insert_id;
+    }else {
+      echo "Error: " . $sql . "<br>" . $con->error;
+    }
+
+    if (isset($_POST['Material'])) {
+      $NewMaterial=$_POST['Material'];
+      $NewRate=$_POST['NewRate'];
+      $NewQty=$_POST['NewQty'];
+
+      for ($i=0; $i < count($NewMaterial); $i++) { 
+
+        $sql = "INSERT INTO projects.rates (Description, DivisionCode, Rate)
+        VALUES ('$NewMaterial[$i]', $DivisionCode, $NewRate[$i])";
+
+        if ($con->query($sql) === TRUE) {
+          $RateID = $con->insert_id;
+
+
+          $sql = "INSERT INTO projects.demandextended (OrderID, RateID, Qty, SiteCode)
+          VALUES ($OrderID, $RateID, $NewQty[$i], $SiteCode)";
+          if ($con->query($sql) === TRUE) {
+
+          }else {
+            echo "Error: " . $sql . "<br>" . $con->error;
+          }
+
+        }else {
+          echo "Error: " . $sql . "<br>" . $con->error;
+        }
+
+      }
+
+    }
+
+    $SiteRateID=$_POST['SiteRateID'];
+    $SiteQty=$_POST['SiteQty'];
+
+    for ($i=0; $i < count($SiteRateID); $i++) { 
+
+      $sql = "INSERT INTO projects.demandextended (OrderID, RateID, Qty, SiteCode)
+      VALUES ($OrderID, $SiteRateID[$i], $SiteQty[$i], $SiteCode)";
+      if ($con->query($sql) === TRUE) {
+
+      }else {
+        echo "Error: " . $sql . "<br>" . $con->error;
+      }
+
+    }
+    echo 1;
+
+  }
+}
+
+
+$DivisionCodeO=!empty($_POST['DivisionCodeO'])?$_POST['DivisionCodeO']:'';
+if (!empty($DivisionCodeO))
+{   
+    //echo $BranchCode;
+  $DataOrders="SELECT datediff(DateOfCompletion, Current_date()) as LeftDays, OrderID, Description, LOADate, DateOfCompletion, BGAmount, BGDate, DATE_ADD(DateOfCompletion, INTERVAL Warranty Month) AS WarrantyDate FROM projects.orders WHERE DivisionCode=$DivisionCodeO order by OrderID desc";
+  $resultsOrders=mysqli_query($con,$DataOrders);
+  if (mysqli_num_rows($resultsOrders)>0)
+  {
+
+    while ($row3=mysqli_fetch_assoc($resultsOrders))
+    {
+
+      if (($row3["LeftDays"]<45) and ($row3["LeftDays"]>0)) {
+
+        $tr='<tr class="table-danger">';
+      }else{
+        $tr='<tr class="table-success">';
+      }
+
+      $enOrderID=base64_encode($row3["OrderID"]);
+
+      print $tr;
+      print '<td style="min-width: 100px;">'.$row3["OrderID"].'</a>';
+      print '<td style="min-width: 120px;">'.date("d-M-Y", strtotime($row3["LOADate"]))."</td>";
+      print '<td style="min-width: 160px;">'.date("d-M-Y", strtotime($row3["DateOfCompletion"]))."</td>"; 
+      print '<td style="min-width: 500px;">'.$row3["Description"]."</td>";
+      print '<td style="min-width: 150px;">'.$row3["BGAmount"]."</td>";
+      print '<td style="min-width: 120px;">'.date("d-M-Y", strtotime($row3["BGDate"]))."</td>";
+      print '<td style="min-width: 120px;">'.date("d-M-Y", strtotime($row3["WarrantyDate"]))."</td>";
+      print "</tr>";
+
+      if (($row3["LeftDays"]<45) and ($row3["LeftDays"]>0)) {
+        
+
+        echo '<script>swal("warning","you have '.$row3["LeftDays"].' left on this site","warning")</script>';
+      }
+
+    }
+
+
+  }
+}
+
 
 ?>
 

@@ -212,7 +212,7 @@ if(isset($_POST["CompletedO"]))
         join `reference table` on orders.OrderID=`reference table`.ID
         join districts on branchdetails.Address3=districts.District
         join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-        where AttendDate is not null and Attended=1 and datediff(AttendDate, AssignDate)>30 and ControlerID=$EXEID and Discription not like '%AMC%'and orders.EmployeeCode=$EmployeeID and Reference='Order' and AttendDate>='2022-01-01'";
+        where AttendDate is not null and Attended=1 and datediff(AttendDate, AssignDate)>30 and ControlerID=$EXEID and Discription not like '%AMC%'and orders.EmployeeCode=$EmployeeID and Reference='Order' and month(AttendDate)=month(current_date()) and year(AttendDate)=year(current_date())";
         
         $result=mysqli_query($con,$query);
         if (mysqli_num_rows($result)>0)

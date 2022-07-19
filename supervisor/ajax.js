@@ -38,12 +38,51 @@
 
       }
     });
-     
+    
   }else{
 
     $('#Branch').html('<option value=""> Branch </option>'); 
   }
 });
+
+
+
+ $(document).on('change','#BankVisit', function(){
+  var BankCode = $(this).val();
+  if(BankCode){
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'BankCode':BankCode},
+      success:function(result){
+        $('#ZoneVisit').html(result);
+
+      }
+    }); 
+  }else{
+    $('#ZoneVisit').html('<option value="">Zone</option>');
+  }
+});
+
+
+ $(document).on('change','#DesignationVisit', function(){
+  var DesignationID = $(this).val();
+  var ZoneCode=document.getElementById("ZoneVisit").value;
+  if(DesignationID){
+    $.ajax({
+      type:'POST',
+      url:'dataget.php',
+      data:{'DesignationIDVisit':DesignationID, 'ZoneCodeVisit':ZoneCode},
+      success:function(result){
+        $('#BEmployeeVisit').html(result);
+
+      }
+    }); 
+  }else{
+    $('#BEmployeeVisit').html('<option value="">No Bank Employee</option>');
+  }
+});
+
 
  $(document).on('click', '.add', function(){
   //$('#dataModal').modal();
@@ -783,130 +822,61 @@
   }
 });
 });
+ $(document).on('click', '.BankVisit', function(){
 
- /*
- $(document).on('click', '.Delete', function(){
-  //$('#dataModal').modal();
-  //var userid = document.getElementById("delete").value;
-  var EstimateID=document.getElementById("delest").value;
-  var ApprovalID=document.getElementById("delap").value;
- // var rawData = $(this).val();
- console.log(ApprovalID);
- console.log(EstimateID);
-
-
-
-
- if(EstimateID){
   $.ajax({
-    url:"/cyrus/reporting/estupdate.php",
-    method:"POST",
-    data:{EstimateID:EstimateID},
-    success:function(data){
-
-      $.ajax({
-       url:"/cyrus/reporting/Estimate.php",
-       method:"POST",
-       data:{ApprovalID:ApprovalID},
-       success:function(data){
-        $('#EstimateData').html(data);
-        $('#Estimate').modal('show');
-      }
-    });
-
+    type:'POST',
+    url:'dataget.php',
+    data:{'BankVisit':'BankCode'},
+    success:function(result){
+      $('#BankVisitData').html(result);
     }
-  });
-}
+  }); 
 });
 
 
+ $(document).on('click', '.saveBankVisit', function(){
 
+  var DesignationID=document.getElementById("DesignationVisit").value;
+  var BEmployeeVisit=document.getElementById("BEmployeeVisit").value;
+  var VisitDate=document.getElementById("VisitDateD").value;
+  var Description=document.getElementById("DescriptionD").value;
+  var NextVisitDate=document.getElementById("NextVisitDateD").value;
+  var ZoneCode=document.getElementById("ZoneVisit").value;
+  console.log(DesignationID);
+  console.log(BEmployeeVisit);
+  console.log(VisitDate);
+  console.log(Description);
+  console.log(NextVisitDate);
+  
+  if (DesignationID && BEmployeeVisit && VisitDate && Description && NextVisitDate) {
 
- $(document).on('click','.QtyUpdate', function(){
-  var EstimateID=document.getElementById("es").value;
-  var newQty=document.getElementById("newQty").value;
-  var ApprovalID=document.getElementById("ap").value;
-  if (newQty==='0') {
-    alert("Quantity must be greater than 0");
-  }else{
-    if(newQty){
-      newObj={EstimateID: EstimateID, newQty: newQty};
-      const Data = JSON.stringify(newObj);
-      console.log(Data);
-      $.ajax({
-        type:'POST',
-        url:'/cyrus/reporting/estupdate.php',
-        data:{Data:Data},
-        success:function(result){
-          $.ajax({
-           url:"/cyrus/reporting/Estimate.php",
-           method:"POST",
-           data:{ApprovalID:ApprovalID},
-           success:function(data){
-            $('#EstimateData').html(data);
-            $('#Estimate').modal('show');
-          }
-        });
-
-        }
-      }); 
-    }
-  }
-});
-
- $(document).on('click','.addItems', function(){
-  var RateID=document.getElementById("items").value;
-  var Qty=document.getElementById("addQty").value;
-  var ApprovalID=document.getElementById("apd").value;
-  if (Qty==='') {
-    alert("Please enter quantity");
-  }else{
-    if(Qty){
-      newObj={RateID: RateID, Qty: Qty, ApprovalID: ApprovalID};
-      const Data = JSON.stringify(newObj);
-      console.log(Data);
-      $.ajax({
-        type:'POST',
-        url:'/cyrus/reporting/estupdate.php',
-        data:{AddData:Data},
-        success:function(result){
-          $.ajax({
-           url:"/cyrus/reporting/Estimate.php",
-           method:"POST",
-           data:{ApprovalID:ApprovalID},
-           success:function(data){
-            $('#EstimateData').html(data);
-            $('#Estimate').modal('show');
-          }
-        });
-
-        }
-      }); 
-    }
-  }
-});
-
-
- $(document).on('change','#Edate', function(){
-  var EndDate = $(this).val();
-  var StartDate = document.getElementById("Sdate").value;
-  var EmployeeCode = document.getElementById("EmployeeCodeW").value;
-  newObj={EmployeeCode: EmployeeCode, StartDate: StartDate, EndDate: EndDate};
-  const Data = JSON.stringify(newObj);
-  console.log(Data);
-  console.log(EndDate)
-  if(Data){
     $.ajax({
       type:'POST',
       url:'dataget.php',
-      data:{'Data':Data},
+      data:{'DesignationIDVEntry':DesignationID, 'BEmployeeVisit':BEmployeeVisit, 'VisitDate':VisitDate, 'Description':Description, 'NextVisitDate':NextVisitDate, 'ZoneCodeVEntry':ZoneCode},
       success:function(result){
-        $('#EmployeeWorkData').html(result);
-        
+        if ((result)==1) {
+          swal("success","Data enter successfully",'success');
+          $('#FBankVisit').trigger('reset');
+        }else{
+          swal("error",(result),'error');
+        }
+
+      }
+    });
+
+  }else{
+    swal("error","Please enter all fields","error");
+  } 
+
+  $.ajax({
+    type:'POST',
+    url:'dataget.php',
+    data:{'BankVisit':'BankCode'},
+    success:function(result){
+      $('#BankVisitData').html(result);
+        //$('#AddBankVisit').modal('show');
       }
     }); 
-  }
 });
-
-*/
-

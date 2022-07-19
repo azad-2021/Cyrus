@@ -173,19 +173,20 @@
     <span>Add Bank Visit</span>
   </a>
 </li>
+<!--
 <li class="nav-item">
   <a class="nav-link collapsed BankVisit" href="DelayedPendingWork.php">
     <i class="bi bi-grid"></i>
     <span>Delayed Work</span>
   </a>
 </li>
-<!--
+-->
 <li class="nav-item">
-  <a class="nav-link collapsed" href="oldwork.php">
-    <i class="bi bi-grid"></i><span>Old Pending Work</span>
+  <a class="nav-link collapsed" href="performance.php">
+    <i class="bi bi-grid"></i><span>Performance</span>
   </a>
 </li>
--->
+
 <!-- End Register Page Nav -->
 
 </ul>

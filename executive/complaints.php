@@ -218,7 +218,7 @@ if(isset($_POST["Zone"]))
             join `reference table` on complaints.ComplaintID=`reference table`.ID
             join districts on branchdetails.Address3=districts.District
             join `cyrus regions` on districts.RegionCode=`cyrus regions`.RegionCode
-            where AttendDate is not null and Attended=1 and datediff(AttendDate, AssignDate)>10 and ControlerID=$EXEID and complaints.EmployeeCode=$EmployeeID and Reference='Complaint' and AttendDate>='2022-01-01'";
+            where AttendDate is not null and Attended=1 and datediff(AttendDate, AssignDate)>10 and ControlerID=$EXEID and complaints.EmployeeCode=$EmployeeID and Reference='Complaint' and month(AttendDate)=month(current_date()) and year(AttendDate)=year(current_date())";
 
             $result2=mysqli_query($con,$query2);
             while($row = mysqli_fetch_array($result2)){
